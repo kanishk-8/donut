@@ -62,10 +62,10 @@ const SideBar = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white w-72 py-4 px-2">
+    <div className="flex flex-col h-screen bg-black/50 backdrop-blur-3xl text-white w-72 py-4 px-2">
       <div className="px-4 mb-6">
         <div className="flex items-center">
-          <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10  rounded-full flex items-center justify-center">
             <Bot className="w-6 h-6" />
             <Image
               src="/logo.png"
