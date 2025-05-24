@@ -10,7 +10,6 @@ import {
   BarChart2,
   Users,
   Zap,
-  PlusCircle,
   MessageSquare,
 } from "lucide-react";
 import Image from "next/image";
@@ -87,7 +86,7 @@ const SideBar = () => {
                 href={item.path}
                 className={`flex items-center px-4 py-2.5 text-sm rounded-lg transition-colors ${
                   pathname === item.path
-                    ? "bg-indigo-800 text-white"
+                    ? "bg-[#6b46c1] text-white"
                     : "text-gray-300 hover:bg-gray-800"
                 }`}
               >
@@ -105,7 +104,7 @@ const SideBar = () => {
             href={"/authenticated/profile"}
             className={`flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
               pathname === "/authenticated/profile"
-                ? "bg-indigo-800 text-white"
+                ? "bg-[#6b46c1] text-white"
                 : "text-gray-300 hover:bg-gray-800"
             }`}
           >
@@ -113,8 +112,8 @@ const SideBar = () => {
               <span className="text-xs font-semibold">JD</span>
             </div>
             <div className="ml-3">
-              <p className="font-medium">John Doe</p>
-              <p className="text-xs text-gray-500">Pro Plan</p>
+              <p className="font-bold">John Doe</p>
+              <p className="text-xs text-gray-200">Pro Plan</p>
             </div>
           </Link>
         </div>
