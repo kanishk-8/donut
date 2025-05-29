@@ -13,8 +13,10 @@ import {
   MessageSquare,
 } from "lucide-react";
 import Image from "next/image";
+import { useAuth } from "@/context/authcontext";
 
 const SideBar = () => {
+  const { user } = useAuth();
   const pathname = usePathname();
 
   const menuItems = [
@@ -109,11 +111,21 @@ const SideBar = () => {
             }`}
           >
             <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-              <span className="text-xs font-semibold">JD</span>
+              <span className="text-xs font-semibold">
+                {user?.name
+                  ? user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                  : "U"}
+              </span>
             </div>
             <div className="ml-3">
-              <p className="font-bold">John Doe</p>
-              <p className="text-xs text-gray-200">Pro Plan</p>
+              <p className="font-bold">{user?.name || user?.email || "User"}</p>
+              <p className="text-xs text-gray-200">
+                {user?.plan || "Pro Plan"}
+              </p>
             </div>
           </Link>
         </div>

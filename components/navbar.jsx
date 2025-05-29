@@ -46,12 +46,12 @@ export const Navbar = () => {
             Dashboard
           </Link>
         ) : (
-          <button
-            onClick={() => setLoggedIn(true)}
+          <Link
+            href={"/unauthenticated/login"}
             className="rounded-full bg-[#6b46c1] text-white font-bold px-5 p-3 hover:bg-pink-500 transition-all duration-200 hover:scale-105"
           >
             Login
-          </button>
+          </Link>
         )}
       </div>
     </div>
