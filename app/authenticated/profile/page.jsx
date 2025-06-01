@@ -12,6 +12,7 @@ import {
   Save,
   X,
 } from "lucide-react";
+import { useTheme } from "@/context/themecontext";
 
 const page = () => {
   const { user, updateUser } = useAuth();
@@ -62,21 +63,39 @@ const page = () => {
     setIsEditing(false);
   };
 
+  const handlePhotoUpload = () => {
+    alert("uploadfile");
+  };
+
+  const { theme, toggleTheme } = useTheme();
+
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-zinc-900 p-6 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div
+        className={`min-h-screen p-6 flex items-center justify-center ${
+          theme === "dark" ? "bg-zinc-900" : "bg-gray-50"
+        }`}
+      >
+        <div className={theme === "dark" ? "text-white" : "text-gray-900"}>
+          Loading...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen  p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Profile</h1>
-          <p className="text-gray-400">
+          <h1
+            className={`text-3xl font-bold mb-2 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Profile
+          </h1>
+          <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
             Manage your account settings and preferences
           </p>
         </div>
@@ -84,7 +103,13 @@ const page = () => {
         <div className="gap-6">
           {/* Profile Card */}
           <div className="lg:col-span-1 mb-6">
-            <div className="bg-zinc-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-700">
+            <div
+              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+                theme === "dark"
+                  ? "bg-zinc-800/50 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
               <div className="text-center">
                 {/* Profile Picture */}
                 <div className="relative inline-block mb-4">
@@ -95,31 +120,60 @@ const page = () => {
                       .join("")
                       .toUpperCase()}
                   </div>
-                  <button className="absolute bottom-0 right-0 bg-[#6b46c1] text-white p-2 rounded-full hover:bg-[#5b3ba3] transition-colors">
+                  <button
+                    onClick={() => handlePhotoUpload()}
+                    className="absolute bottom-0 right-0 bg-[#6b46c1] text-white p-2 rounded-full hover:bg-[#5b3ba3] transition-colors"
+                  >
                     <Camera className="w-4 h-4" />
                   </button>
                 </div>
 
                 {/* Profile Info */}
-                <h2 className="text-xl font-bold text-white mb-1">
+                <h2
+                  className={`text-xl font-bold mb-1 ${
+                    theme === "dark" ? "text-white" : "text-gray-900"
+                  }`}
+                >
                   {profileData.name}
                 </h2>
-                <p className="text-gray-400 mb-2">{profileData.email}</p>
+                <p
+                  className={
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }
+                >
+                  {profileData.email}
+                </p>
                 <span className="inline-block bg-[#6b46c1]/20 text-[#6b46c1] px-3 py-1 rounded-full text-sm font-medium border border-[#6b46c1]/30">
                   {profileData.plan}
                 </span>
               </div>
 
               {/* Stats */}
-              <div className="mt-6 pt-6 border-t border-gray-700">
+              <div
+                className={`mt-6 pt-6 border-t ${
+                  theme === "dark" ? "border-gray-700" : "border-gray-200"
+                }`}
+              >
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <p className="text-2xl font-bold text-[#6b46c1]">12</p>
-                    <p className="text-sm text-gray-400">Agents Created</p>
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      Agents Created
+                    </p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-[#6b46c1]">89</p>
-                    <p className="text-sm text-gray-400">Conversations</p>
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      Conversations
+                    </p>
                   </div>
                 </div>
               </div>
@@ -129,9 +183,19 @@ const page = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Information */}
-            <div className="bg-zinc-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-700">
+            <div
+              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+                theme === "dark"
+                  ? "bg-zinc-800/50 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-white flex items-center">
+                <h3
+                  className={`text-lg font-semibold flex items-center ${
+                    theme === "dark" ? "text-white" : "text-gray-900"
+                  }`}
+                >
                   <User className="w-5 h-5 mr-2 text-[#6b46c1]" />
                   Personal Information
                 </h3>
@@ -165,7 +229,11 @@ const page = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     Full Name
                   </label>
                   {isEditing ? (
@@ -175,17 +243,31 @@ const page = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, name: e.target.value })
                       }
-                      className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] text-white"
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] ${
+                        theme === "dark"
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
                     />
                   ) : (
-                    <p className="p-3 bg-gray-700/50 rounded-lg text-gray-200">
+                    <p
+                      className={`p-3 rounded-lg ${
+                        theme === "dark"
+                          ? "bg-gray-700/50 text-gray-200"
+                          : "bg-gray-100 text-gray-900"
+                      }`}
+                    >
                       {profileData.name}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     Email Address
                   </label>
                   {isEditing ? (
@@ -195,18 +277,36 @@ const page = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, email: e.target.value })
                       }
-                      className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] text-white"
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] ${
+                        theme === "dark"
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
                     />
                   ) : (
-                    <p className="p-3 bg-gray-700/50 rounded-lg flex items-center text-gray-200">
-                      <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                    <p
+                      className={`p-3 rounded-lg flex items-center ${
+                        theme === "dark"
+                          ? "bg-gray-700/50 text-gray-200"
+                          : "bg-gray-100 text-gray-900"
+                      }`}
+                    >
+                      <Mail
+                        className={`w-4 h-4 mr-2 ${
+                          theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      />
                       {profileData.email}
                     </p>
                   )}
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     Bio
                   </label>
                   {isEditing ? (
@@ -216,21 +316,45 @@ const page = () => {
                         setTempData({ ...tempData, bio: e.target.value })
                       }
                       rows={3}
-                      className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] text-white"
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] ${
+                        theme === "dark"
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
                     />
                   ) : (
-                    <p className="p-3 bg-gray-700/50 rounded-lg text-gray-200">
+                    <p
+                      className={`p-3 rounded-lg ${
+                        theme === "dark"
+                          ? "bg-gray-700/50 text-gray-200"
+                          : "bg-gray-100 text-gray-900"
+                      }`}
+                    >
                       {profileData.bio}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label
+                    className={`block text-sm font-medium mb-2 ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     Member Since
                   </label>
-                  <p className="p-3 bg-gray-700/50 rounded-lg flex items-center text-gray-200">
-                    <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                  <p
+                    className={`p-3 rounded-lg flex items-center ${
+                      theme === "dark"
+                        ? "bg-gray-700/50 text-gray-200"
+                        : "bg-gray-100 text-gray-900"
+                    }`}
+                  >
+                    <Calendar
+                      className={`w-4 h-4 mr-2 ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    />
                     {profileData.joinDate}
                   </p>
                 </div>
@@ -238,19 +362,41 @@ const page = () => {
             </div>
 
             {/* Account Settings */}
-            <div className="bg-zinc-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-6 flex items-center">
+            <div
+              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+                theme === "dark"
+                  ? "bg-zinc-800/50 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
+              <h3
+                className={`text-lg font-semibold mb-6 flex items-center ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}
+              >
                 <Settings className="w-5 h-5 mr-2 text-[#6b46c1]" />
                 Account Settings
               </h3>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg ${
+                    theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
+                  }`}
+                >
                   <div>
-                    <h4 className="font-medium text-white">
+                    <h4
+                      className={`font-medium ${
+                        theme === "dark" ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       Email Notifications
                     </h4>
-                    <p className="text-sm text-gray-400">
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Receive updates about your agents
                     </p>
                   </div>
@@ -260,16 +406,34 @@ const page = () => {
                       className="sr-only peer"
                       defaultChecked
                     />
-                    <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#6b46c1]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6b46c1]"></div>
+                    <div
+                      className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#6b46c1]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6b46c1] ${
+                        theme === "dark"
+                          ? "bg-gray-600 after:border-gray-300"
+                          : "bg-gray-300 after:border-gray-400"
+                      }`}
+                    ></div>
                   </label>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg">
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg ${
+                    theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
+                  }`}
+                >
                   <div>
-                    <h4 className="font-medium text-white">
+                    <h4
+                      className={`font-medium ${
+                        theme === "dark" ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       Two-Factor Authentication
                     </h4>
-                    <p className="text-sm text-gray-400">
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Add an extra layer of security
                     </p>
                   </div>
@@ -280,9 +444,77 @@ const page = () => {
               </div>
             </div>
 
+            {/* Theme Settings */}
+            <div
+              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+                theme === "dark"
+                  ? "bg-zinc-800/50 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
+              <h3
+                className={`text-lg font-semibold mb-6 flex items-center ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}
+              >
+                <Settings className="w-5 h-5 mr-2 text-[#6b46c1]" />
+                Theme Settings
+              </h3>
+
+              <div className="space-y-4">
+                <div
+                  className={`flex items-center justify-between p-4 rounded-lg ${
+                    theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
+                  }`}
+                >
+                  <div>
+                    <h4
+                      className={`font-medium ${
+                        theme === "dark" ? "text-white" : "text-gray-900"
+                      }`}
+                    >
+                      Dark Theme
+                    </h4>
+                    <p
+                      className={`text-sm ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      Turn on the dark theme across the whole app
+                    </p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      onChange={() => toggleTheme()}
+                      className="sr-only peer"
+                      checked={theme === "dark"}
+                    />
+                    <div
+                      className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#6b46c1]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6b46c1] ${
+                        theme === "dark"
+                          ? "bg-gray-600 after:border-gray-300"
+                          : "bg-gray-300 after:border-gray-400"
+                      }`}
+                    ></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
             {/* Activity Tracker */}
-            <div className="bg-zinc-800/50 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-6">
+            <div
+              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+                theme === "dark"
+                  ? "bg-zinc-800/50 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
+              <h3
+                className={`text-lg font-semibold mb-6 ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}
+              >
                 Recent Activity
               </h3>
               <ActivityTracker />

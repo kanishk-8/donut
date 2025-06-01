@@ -14,9 +14,11 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
+import { useTheme } from "@/context/themecontext";
 
 const SideBar = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const pathname = usePathname();
 
   const menuItems = [
@@ -63,10 +65,16 @@ const SideBar = () => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-black/50 backdrop-blur-3xl text-white w-72 py-4 px-2">
+    <div
+      className={`flex flex-col h-screen backdrop-blur-3xl w-72 py-4 px-2 ${
+        theme === "dark"
+          ? "bg-black/50 text-white"
+          : "bg-white/50 text-gray-900 border-r border-gray-200"
+      }`}
+    >
       <div className="px-4 mb-6">
         <div className="flex items-center">
-          <div className="w-10 h-10  rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center">
             <Bot className="w-6 h-6" />
             <Image
               src="/logo.png"
@@ -76,7 +84,13 @@ const SideBar = () => {
               className="rounded-full"
             />
           </div>
-          <h1 className="ml-2 text-xl font-bold">DonutAgentBuilder</h1>
+          <h1
+            className={`ml-2 text-xl font-bold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            DonutAgentBuilder
+          </h1>
         </div>
       </div>
 
@@ -89,7 +103,9 @@ const SideBar = () => {
                 className={`flex items-center px-4 py-2.5 text-sm rounded-lg transition-colors ${
                   pathname === item.path
                     ? "bg-[#6b46c1] text-white"
-                    : "text-gray-300 hover:bg-gray-800"
+                    : theme === "dark"
+                    ? "text-gray-300 hover:bg-gray-800"
+                    : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 {item.icon}
@@ -101,17 +117,31 @@ const SideBar = () => {
       </nav>
 
       <div className="px-4 py-2">
-        <div className="border-t border-gray-700 pt-4">
+        <div
+          className={`border-t pt-4 ${
+            theme === "dark" ? "border-gray-700" : "border-gray-200"
+          }`}
+        >
           <Link
             href={"/authenticated/profile"}
             className={`flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
               pathname === "/authenticated/profile"
                 ? "bg-[#6b46c1] text-white"
-                : "text-gray-300 hover:bg-gray-800"
+                : theme === "dark"
+                ? "text-gray-300 hover:bg-gray-800"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
           >
-            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-              <span className="text-xs font-semibold">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+              }`}
+            >
+              <span
+                className={`text-xs font-semibold ${
+                  theme === "dark" ? "text-white" : "text-gray-900"
+                }`}
+              >
                 {user?.name
                   ? user.name
                       .split(" ")
@@ -122,8 +152,26 @@ const SideBar = () => {
               </span>
             </div>
             <div className="ml-3">
-              <p className="font-bold">{user?.name || user?.email || "User"}</p>
-              <p className="text-xs text-gray-200">
+              <p
+                className={`font-bold ${
+                  pathname === "/authenticated/profile"
+                    ? "text-white"
+                    : theme === "dark"
+                    ? "text-white"
+                    : "text-gray-900"
+                }`}
+              >
+                {user?.name || user?.email || "User"}
+              </p>
+              <p
+                className={`text-xs ${
+                  pathname === "/authenticated/profile"
+                    ? "text-gray-200"
+                    : theme === "dark"
+                    ? "text-gray-400"
+                    : "text-gray-500"
+                }`}
+              >
                 {user?.plan || "Pro Plan"}
               </p>
             </div>

@@ -1,25 +1,57 @@
 "use client";
 import React from "react";
 import { Bot, MessageSquare, Brain, Users } from "lucide-react";
+import { useTheme } from "@/context/themecontext";
 
-const DashboardStats = ({ icon, title, value, description, bgColor }) => {
+const DashboardStats = ({
+  icon,
+  title,
+  value,
+  description,
+  bgColor,
+  theme,
+}) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div
+      className={`rounded-lg shadow-md p-6 ${
+        theme === "dark" ? "bg-zinc-800/50 border border-gray-700" : "bg-white"
+      }`}
+    >
       <div className="flex items-center mb-4">
         <div className={`p-3 rounded-full ${bgColor} text-white mr-4`}>
           {icon}
         </div>
-        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+        <h3
+          className={`text-lg font-semibold ${
+            theme === "dark" ? "text-white" : "text-gray-800"
+          }`}
+        >
+          {title}
+        </h3>
       </div>
       <div className="flex flex-col">
-        <span className="text-3xl font-bold text-gray-900 mb-1">{value}</span>
-        <span className="text-sm text-gray-500">{description}</span>
+        <span
+          className={`text-3xl font-bold mb-1 ${
+            theme === "dark" ? "text-white" : "text-gray-900"
+          }`}
+        >
+          {value}
+        </span>
+        <span
+          className={`text-sm ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
+          {description}
+        </span>
       </div>
     </div>
   );
 };
 
 const DashBoard = () => {
+  const { theme } = useTheme();
+
   const stats = [
     {
       icon: <Bot className="w-5 h-5" />,
@@ -54,15 +86,21 @@ const DashBoard = () => {
   return (
     <div className="p-8 overflow-y-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-100 mb-2">Dashboard</h1>
-        <p className="text-gray-600">
+        <h1
+          className={`text-3xl font-bold mb-2 ${
+            theme === "dark" ? "text-white" : "text-gray-900"
+          }`}
+        >
+          Dashboard
+        </h1>
+        <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
           Welcome back to your AI Agent Builder dashboard
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => (
-          <DashboardStats key={index} {...stat} />
+          <DashboardStats key={index} {...stat} theme={theme} />
         ))}
       </div>
 
