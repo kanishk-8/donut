@@ -1,12 +1,16 @@
 "use client";
-import { useAuth } from "@/context/authcontext";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { Eye, EyeOff, Bot, Mail, Lock } from "lucide-react";
+import { useAuth } from "@/context/authcontext";
+import Image from "next/image";
 
 const page = () => {
   const { login, user } = useAuth();
   const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const handleLogin = (e) => {
     e.preventDefault();
@@ -19,69 +23,135 @@ const page = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <div>
-        {/* Background decorative elements - now covering the entire page */}
-        <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-          <div className="absolute top-1/4 -left-24 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-          <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-          <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-          <div className="absolute top-1/2 right-1/4 w-60 h-60 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-          <div className="absolute top-3/4 left-1/4 w-48 h-48 bg-violet-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-          <div className="absolute bottom-1/3 right-1/4 w-40 h-40 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
-        </div>
+      {/* Background decorative elements */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden z-0">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute top-1/4 -left-24 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute top-1/2 right-1/4 w-60 h-60 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute top-3/4 left-1/4 w-48 h-48 bg-violet-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-40 h-40 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
       </div>
-      {/* Login form */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className="absolute inset-0 bg-gradient-to-br  opacity-80 pointer-events-none rounded-xl shadow-2xl"></div>
-        <form
-          onSubmit={handleLogin}
-          className="relative bg-white/10 backdrop-blur-3xl bg-opacity-95 p-10 rounded-3xl shadow-2xl w-full max-w-md flex flex-col gap-6 border border-indigo-100 "
-        >
-          <div className="flex flex-col items-center mb-2">
-            <span className="inline-block bg-gradient-to-r from-indigo-500 via-pink-400 to-purple-400 bg-clip-text text-transparent text-4xl font-extrabold tracking-tight mb-2">
-              Donut
-            </span>
-            <h2 className="text-xl font-semibold text-indigo-700 mb-1">
-              Welcome Back
-            </h2>
-            <p className="text-sm text-gray-400">Login to your account</p>
+
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          {/* Logo and Header */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-12 h-12  rounded-full flex items-center justify-center">
+                <Image src={"/logo.png"} width={500} height={500} alt="logo" />
+              </div>
+              <h1 className="ml-3 text-2xl font-bold text-white">
+                DonutAgentBuilder
+              </h1>
+            </div>
+            <h2 className="text-3xl font-bold mb-2 text-white">Welcome back</h2>
+            <p className="text-gray-400">Sign in to your account</p>
           </div>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-400">Email</span>
-            <input
-              type="email"
-              onChange={(e) => setUserName(e.target.value)}
-              className="p-3 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 transition placeholder:text-gray-400 bg-indigo-50"
-              placeholder="Enter your email"
-              required
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-400">Password</span>
-            <input
-              type="password"
-              className="p-3 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 transition placeholder:text-gray-400 bg-indigo-50"
-              placeholder="Enter your password"
-              required
-            />
-          </label>
-          <button
-            type="submit"
-            className="mt-2 p-3 rounded-xl bg-gradient-to-r from-indigo-500 via-pink-400 to-purple-400 text-white font-bold shadow-md hover:scale-105 transition-transform duration-200 text-center"
-          >
-            Login
-          </button>
-          <p className="text-center text-sm mt-2 text-gray-500">
-            Don't have an account?{" "}
-            <Link
-              href={"/unauthenticated/signup"}
-              className="text-pink-500 font-semibold hover:underline"
-            >
-              Sign Up
-            </Link>
-          </p>
-        </form>
+
+          {/* Login Form */}
+          <div className="backdrop-blur-xl rounded-2xl shadow-2xl p-8 border bg-black/20 border-gray-700">
+            <form onSubmit={handleLogin} className="space-y-6">
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium mb-2 text-gray-300">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-gray-400" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Forgot Password */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="remember-me"
+                    className="ml-2 block text-sm text-gray-300"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-indigo-500 hover:text-indigo-400"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02]"
+              >
+                Sign In
+              </button>
+            </form>
+
+            {/* Sign up link */}
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-300">
+                Don't have an account?{" "}
+                <Link
+                  href="/unauthenticated/signup"
+                  className="text-indigo-500 hover:text-indigo-400 font-medium"
+                >
+                  Sign up
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

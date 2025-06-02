@@ -105,8 +105,18 @@ const DashBoard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <div
+          className={`rounded-lg shadow-md p-6 ${
+            theme === "dark"
+              ? "bg-zinc-800/50 border border-gray-700"
+              : "bg-white"
+          }`}
+        >
+          <h2
+            className={`text-xl font-semibold mb-4 ${
+              theme === "dark" ? "text-white" : "text-gray-800"
+            }`}
+          >
             Recent Agents
           </h2>
           <div className="space-y-4">
@@ -132,11 +142,23 @@ const DashBoard = () => {
             ].map((agent, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                className={`flex justify-between items-center p-3 rounded-lg ${
+                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                }`}
               >
                 <div>
-                  <h3 className="font-medium text-gray-800">{agent.name}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3
+                    className={`font-medium ${
+                      theme === "dark" ? "text-white" : "text-gray-800"
+                    }`}
+                  >
+                    {agent.name}
+                  </h3>
+                  <p
+                    className={`text-sm ${
+                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
                     {agent.type} • Created {agent.created}
                   </p>
                 </div>
@@ -144,6 +166,8 @@ const DashBoard = () => {
                   className={`px-2 py-1 text-xs rounded-full ${
                     agent.status === "Active"
                       ? "bg-green-100 text-green-800"
+                      : theme === "dark"
+                      ? "bg-gray-600 text-gray-300"
                       : "bg-gray-100 text-gray-800"
                   }`}
                 >
@@ -152,24 +176,52 @@ const DashBoard = () => {
               </div>
             ))}
           </div>
-          <button className="mt-4 text-indigo-600 text-sm font-medium hover:text-indigo-800">
+          <button
+            className={`mt-4 text-sm font-medium hover:text-indigo-800 ${
+              theme === "dark" ? "text-indigo-400" : "text-indigo-600"
+            }`}
+          >
             View all agents →
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <div
+          className={`rounded-lg shadow-md p-6 ${
+            theme === "dark"
+              ? "bg-zinc-800/50 border border-gray-700"
+              : "bg-white"
+          }`}
+        >
+          <h2
+            className={`text-xl font-semibold mb-4 ${
+              theme === "dark" ? "text-white" : "text-gray-800"
+            }`}
+          >
             Performance Metrics
           </h2>
           <div className="space-y-4">
             <div className="mb-4">
               <div className="flex justify-between mb-1">
-                <span className="text-sm font-medium text-gray-700">
+                <span
+                  className={`text-sm font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   Response Rate
                 </span>
-                <span className="text-sm font-medium text-gray-700">92%</span>
+                <span
+                  className={`text-sm font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  92%
+                </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`w-full rounded-full h-2 ${
+                  theme === "dark" ? "bg-gray-600" : "bg-gray-200"
+                }`}
+              >
                 <div
                   className="bg-indigo-600 h-2 rounded-full"
                   style={{ width: "92%" }}
@@ -178,12 +230,26 @@ const DashBoard = () => {
             </div>
             <div className="mb-4">
               <div className="flex justify-between mb-1">
-                <span className="text-sm font-medium text-gray-700">
+                <span
+                  className={`text-sm font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   Accuracy
                 </span>
-                <span className="text-sm font-medium text-gray-700">87%</span>
+                <span
+                  className={`text-sm font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  87%
+                </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`w-full rounded-full h-2 ${
+                  theme === "dark" ? "bg-gray-600" : "bg-gray-200"
+                }`}
+              >
                 <div
                   className="bg-indigo-600 h-2 rounded-full"
                   style={{ width: "87%" }}
@@ -192,12 +258,26 @@ const DashBoard = () => {
             </div>
             <div className="mb-4">
               <div className="flex justify-between mb-1">
-                <span className="text-sm font-medium text-gray-700">
+                <span
+                  className={`text-sm font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
                   User Satisfaction
                 </span>
-                <span className="text-sm font-medium text-gray-700">95%</span>
+                <span
+                  className={`text-sm font-medium ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  95%
+                </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`w-full rounded-full h-2 ${
+                  theme === "dark" ? "bg-gray-600" : "bg-gray-200"
+                }`}
+              >
                 <div
                   className="bg-indigo-600 h-2 rounded-full"
                   style={{ width: "95%" }}
@@ -205,7 +285,13 @@ const DashBoard = () => {
               </div>
             </div>
           </div>
-          <button className="mt-4 text-indigo-600 text-sm font-medium hover:text-indigo-800">
+          <button
+            className={`mt-4 text-sm font-medium ${
+              theme === "dark"
+                ? "text-indigo-400 hover:text-indigo-300"
+                : "text-indigo-600 hover:text-indigo-800"
+            }`}
+          >
             View detailed analytics →
           </button>
         </div>

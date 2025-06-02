@@ -42,7 +42,7 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-8">
             <Link
-              href="/authenticated/dashboard"
+              href="/unauthenticated/signup"
               className="px-8 py-3 bg-[#6b46c1] hover:bg-pink-500 rounded-full font-bold transition-all duration-200 hover:scale-105  text-center"
             >
               Get Started
