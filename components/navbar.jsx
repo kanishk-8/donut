@@ -28,7 +28,7 @@ export const Navbar = () => {
     <div className="w-full flex justify-center mt-3 fixed top-0 z-50">
       <div
         className={`w-[85%] flex justify-between items-center px-6 py-2 rounded-full z-10 transition-all duration-300 ${
-          scrolled ? "bg-gray-300/20 backdrop-blur-3xl" : "bg-transparent"
+          scrolled ? "bg-gray-500/20 backdrop-blur-3xl" : "bg-transparent"
         } text-white`}
       >
         <div className="text-2xl font-bold flex gap-2 items-center">
