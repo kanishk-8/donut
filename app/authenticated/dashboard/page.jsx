@@ -13,8 +13,10 @@ const DashboardStats = ({
 }) => {
   return (
     <div
-      className={`rounded-lg shadow-md p-6 ${
-        theme === "dark" ? "bg-zinc-800/50 border border-gray-700" : "bg-white"
+      className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border transition-all duration-200 hover:scale-105 ${
+        theme === "dark"
+          ? "bg-zinc-800/50 border-gray-700"
+          : "bg-white border-gray-200"
       }`}
     >
       <div className="flex items-center mb-4">
@@ -23,7 +25,7 @@ const DashboardStats = ({
         </div>
         <h3
           className={`text-lg font-semibold ${
-            theme === "dark" ? "text-white" : "text-gray-800"
+            theme === "dark" ? "text-white" : "text-gray-900"
           }`}
         >
           {title}
@@ -84,7 +86,11 @@ const DashBoard = () => {
   ];
 
   return (
-    <div className="p-4 md:p-8 pt-20 md:pt-8 overflow-y-auto">
+    <div
+      className={`p-4 md:p-8 pt-20 md:pt-8 overflow-y-auto min-h-screen ${
+        theme === "dark" ? "bg-black" : "bg-gray-50/50"
+      }`}
+    >
       <div className="mb-8">
         <h1
           className={`text-3xl font-bold mb-2 ${
@@ -106,15 +112,15 @@ const DashBoard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div
-          className={`rounded-lg shadow-md p-6 ${
+          className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
             theme === "dark"
-              ? "bg-zinc-800/50 border border-gray-700"
-              : "bg-white"
+              ? "bg-zinc-800/50 border-gray-700"
+              : "bg-white border-gray-200"
           }`}
         >
           <h2
             className={`text-xl font-semibold mb-4 ${
-              theme === "dark" ? "text-white" : "text-gray-800"
+              theme === "dark" ? "text-white" : "text-gray-900"
             }`}
           >
             Recent Agents
@@ -149,14 +155,14 @@ const DashBoard = () => {
                 <div>
                   <h3
                     className={`font-medium ${
-                      theme === "dark" ? "text-white" : "text-gray-800"
+                      theme === "dark" ? "text-white" : "text-gray-900"
                     }`}
                   >
                     {agent.name}
                   </h3>
                   <p
                     className={`text-sm ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                      theme === "dark" ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
                     {agent.type} • Created {agent.created}
@@ -186,15 +192,15 @@ const DashBoard = () => {
         </div>
 
         <div
-          className={`rounded-lg shadow-md p-6 ${
+          className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
             theme === "dark"
-              ? "bg-zinc-800/50 border border-gray-700"
-              : "bg-white"
+              ? "bg-zinc-800/50 border-gray-700"
+              : "bg-white border-gray-200"
           }`}
         >
           <h2
             className={`text-xl font-semibold mb-4 ${
-              theme === "dark" ? "text-white" : "text-gray-800"
+              theme === "dark" ? "text-white" : "text-gray-900"
             }`}
           >
             Performance Metrics

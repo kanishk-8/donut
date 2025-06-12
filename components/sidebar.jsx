@@ -69,7 +69,11 @@ const SideBar = () => {
     <>
       {/* Mobile menu button */}
       <button
-        className="md:hidden fixed top-4 left-4 z-40 bg-white/20 backdrop-blur-3xl text-white rounded-full shadow-lg focus:outline-none"
+        className={`md:hidden fixed top-4 left-4 z-40 backdrop-blur-3xl rounded-full focus:outline-none ${
+          theme === "dark"
+            ? "bg-black/20 text-white"
+            : "bg-white/20 text-gray-800"
+        }`}
         onClick={() => setOpen(true)}
         aria-label="Open sidebar"
       >
@@ -92,10 +96,10 @@ const SideBar = () => {
       <div
         className={`fixed md:static top-0 left-0 z-40 h-full w-72 flex flex-col backdrop-blur-3xl py-4 px-2 transition-transform duration-300 md:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:flex md:w-72 md:h-screen ${
+        } md:translate-x-0 md:flex md:w-72 md:h-screen border-r ${
           theme === "dark"
-            ? "bg-black/50 text-white"
-            : "bg-white/50 text-gray-900 border-r border-gray-200"
+            ? "bg-black/20 text-white border-white/10"
+            : "bg-white/90 text-gray-900 border-gray-200"
         }`}
       >
         <div className="px-4 mb-6 flex items-center justify-between">
@@ -119,7 +123,11 @@ const SideBar = () => {
           </div>
           {/* Close button for mobile */}
           <button
-            className="md:hidden ml-2 p-2 rounded-full hover:bg-gray-700/30 focus:outline-none"
+            className={`md:hidden ml-2 p-2 rounded-full focus:outline-none transition-colors duration-200 ${
+              theme === "dark"
+                ? "hover:bg-white/10 text-white"
+                : "hover:bg-gray-200 text-gray-600"
+            }`}
             onClick={() => setOpen(false)}
             aria-label="Close sidebar"
           >
@@ -146,12 +154,12 @@ const SideBar = () => {
                 <Link
                   href={item.path}
                   onClick={() => setOpen(false)}
-                  className={`flex items-center px-4 py-2.5 text-sm rounded-lg transition-colors ${
+                  className={`flex items-center px-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${
                     pathname === item.path
-                      ? "bg-[#6b46c1] text-white"
+                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg scale-105"
                       : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-800"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "text-indigo-200 hover:bg-white/10 hover:text-white hover:scale-105"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:scale-105"
                   }`}
                 >
                   {item.icon}
@@ -165,30 +173,22 @@ const SideBar = () => {
         <div className="px-4 py-2">
           <div
             className={`border-t pt-4 ${
-              theme === "dark" ? "border-gray-700" : "border-gray-200"
+              theme === "dark" ? "border-white/10" : "border-gray-200"
             }`}
           >
             <Link
               href={"/authenticated/profile"}
               onClick={() => setOpen(false)}
-              className={`flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
+              className={`flex items-center px-4 py-2 text-sm rounded-lg transition-all duration-200 ${
                 pathname === "/authenticated/profile"
-                  ? "bg-[#6b46c1] text-white"
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white scale-105"
                   : theme === "dark"
-                  ? "text-gray-300 hover:bg-gray-800"
-                  : "text-gray-600 hover:bg-gray-100"
+                  ? "text-indigo-200 hover:bg-white/10 hover:text-white hover:scale-105"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:scale-105"
               }`}
             >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  theme === "dark" ? "bg-gray-700" : "bg-gray-200"
-                }`}
-              >
-                <span
-                  className={`text-xs font-semibold ${
-                    theme === "dark" ? "text-white" : "text-gray-900"
-                  }`}
-                >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center justify-center">
+                <span className="text-xs font-semibold text-white">
                   {user?.name
                     ? user.name
                         .split(" ")
@@ -215,7 +215,7 @@ const SideBar = () => {
                     pathname === "/authenticated/profile"
                       ? "text-gray-200"
                       : theme === "dark"
-                      ? "text-gray-400"
+                      ? "text-indigo-300"
                       : "text-gray-500"
                   }`}
                 >

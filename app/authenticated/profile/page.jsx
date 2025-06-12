@@ -84,7 +84,11 @@ const page = () => {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6 pt-20 md:pt-6">
+    <div
+      className={`min-h-screen p-4 md:p-6 pt-20 md:pt-6 ${
+        theme === "dark" ? "bg-black" : "bg-gray-50/50"
+      }`}
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -122,7 +126,7 @@ const page = () => {
                   </div>
                   <button
                     onClick={() => handlePhotoUpload()}
-                    className="absolute bottom-0 right-0 bg-[#6b46c1] text-white p-2 rounded-full hover:bg-[#5b3ba3] transition-colors"
+                    className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors"
                   >
                     <Camera className="w-4 h-4" />
                   </button>
@@ -143,7 +147,7 @@ const page = () => {
                 >
                   {profileData.email}
                 </p>
-                <span className="inline-block bg-[#6b46c1]/20 text-[#6b46c1] px-3 py-1 rounded-full text-sm font-medium border border-[#6b46c1]/30">
+                <span className="inline-block bg-indigo-600/20 text-indigo-600 px-3 py-1 rounded-full text-sm font-medium border border-indigo-600/30">
                   {profileData.plan}
                 </span>
               </div>
@@ -156,7 +160,7 @@ const page = () => {
               >
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <p className="text-2xl font-bold text-[#6b46c1]">12</p>
+                    <p className="text-2xl font-bold text-indigo-600">12</p>
                     <p
                       className={`text-sm ${
                         theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -166,7 +170,7 @@ const page = () => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-[#6b46c1]">89</p>
+                    <p className="text-2xl font-bold text-indigo-600">89</p>
                     <p
                       className={`text-sm ${
                         theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -196,13 +200,13 @@ const page = () => {
                     theme === "dark" ? "text-white" : "text-gray-900"
                   }`}
                 >
-                  <User className="w-5 h-5 mr-2 text-[#6b46c1]" />
+                  <User className="w-5 h-5 mr-2 text-indigo-600" />
                   Personal Information
                 </h3>
                 {!isEditing ? (
                   <button
                     onClick={handleEdit}
-                    className="flex items-center text-[#6b46c1] hover:text-[#5b3ba3] transition-colors"
+                    className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors"
                   >
                     <Edit2 className="w-4 h-4 mr-1" />
                     Edit
@@ -243,7 +247,7 @@ const page = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, name: e.target.value })
                       }
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] ${
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                         theme === "dark"
                           ? "bg-gray-700 border-gray-600 text-white"
                           : "bg-white border-gray-300 text-gray-900"
@@ -277,7 +281,7 @@ const page = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, email: e.target.value })
                       }
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] ${
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                         theme === "dark"
                           ? "bg-gray-700 border-gray-600 text-white"
                           : "bg-white border-gray-300 text-gray-900"
@@ -316,7 +320,7 @@ const page = () => {
                         setTempData({ ...tempData, bio: e.target.value })
                       }
                       rows={3}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6b46c1] ${
+                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                         theme === "dark"
                           ? "bg-gray-700 border-gray-600 text-white"
                           : "bg-white border-gray-300 text-gray-900"
@@ -374,7 +378,7 @@ const page = () => {
                   theme === "dark" ? "text-white" : "text-gray-900"
                 }`}
               >
-                <Settings className="w-5 h-5 mr-2 text-[#6b46c1]" />
+                <Settings className="w-5 h-5 mr-2 text-indigo-600" />
                 Account Settings
               </h3>
 
@@ -407,7 +411,7 @@ const page = () => {
                       defaultChecked
                     />
                     <div
-                      className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#6b46c1]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6b46c1] ${
+                      className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-600/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 ${
                         theme === "dark"
                           ? "bg-gray-600 after:border-gray-300"
                           : "bg-gray-300 after:border-gray-400"
@@ -437,7 +441,7 @@ const page = () => {
                       Add an extra layer of security
                     </p>
                   </div>
-                  <button className="px-4 py-2 bg-[#6b46c1] text-white rounded-lg hover:bg-[#5b3ba3] transition-colors">
+                  <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                     Enable
                   </button>
                 </div>
@@ -457,7 +461,7 @@ const page = () => {
                   theme === "dark" ? "text-white" : "text-gray-900"
                 }`}
               >
-                <Settings className="w-5 h-5 mr-2 text-[#6b46c1]" />
+                <Settings className="w-5 h-5 mr-2 text-indigo-600" />
                 Theme Settings
               </h3>
 
@@ -491,7 +495,7 @@ const page = () => {
                       checked={theme === "dark"}
                     />
                     <div
-                      className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#6b46c1]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6b46c1] ${
+                      className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-600/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 ${
                         theme === "dark"
                           ? "bg-gray-600 after:border-gray-300"
                           : "bg-gray-300 after:border-gray-400"
