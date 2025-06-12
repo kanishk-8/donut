@@ -84,7 +84,7 @@ const page = () => {
   }
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-4 md:p-6 pt-20 md:pt-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">

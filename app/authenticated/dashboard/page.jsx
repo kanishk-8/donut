@@ -84,7 +84,7 @@ const DashBoard = () => {
   ];
 
   return (
-    <div className="p-8 overflow-y-auto">
+    <div className="p-4 md:p-8 pt-20 md:pt-8 overflow-y-auto">
       <div className="mb-8">
         <h1
           className={`text-3xl font-bold mb-2 ${
