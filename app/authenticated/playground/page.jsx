@@ -25,7 +25,7 @@ const PlaygroundPage = () => {
     {
       id: "voice",
       name: "Start Voice Call",
-      method: "POST", 
+      method: "POST",
       path: "/v1/voice/call",
       description: "Initiate a voice call with the AI agent",
     },
@@ -38,7 +38,7 @@ const PlaygroundPage = () => {
     },
     {
       id: "logs",
-      name: "Get Conversation Logs", 
+      name: "Get Conversation Logs",
       method: "GET",
       path: "/v1/logs/conversations",
       description: "Retrieve conversation history",
@@ -87,7 +87,7 @@ const PlaygroundPage = () => {
 
   const executeRequest = async () => {
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       const mockResponses = {
@@ -144,7 +144,7 @@ const PlaygroundPage = () => {
   "has_more": false
 }`,
       };
-      
+
       setResponse(mockResponses[selectedEndpoint]);
       setIsLoading(false);
     }, 1000);
@@ -154,7 +154,7 @@ const PlaygroundPage = () => {
     navigator.clipboard.writeText(response);
   };
 
-  const selectedEndpointData = endpoints.find(e => e.id === selectedEndpoint);
+  const selectedEndpointData = endpoints.find((e) => e.id === selectedEndpoint);
 
   return (
     <div
@@ -340,7 +340,9 @@ const PlaygroundPage = () => {
                 >
                   <Zap className="w-12 h-12 mb-4 opacity-50" />
                   <p className="text-lg font-medium mb-2">No response yet</p>
-                  <p className="text-sm">Execute a request to see the API response here</p>
+                  <p className="text-sm">
+                    Execute a request to see the API response here
+                  </p>
                 </div>
               )}
             </div>

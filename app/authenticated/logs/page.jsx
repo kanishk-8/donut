@@ -1,7 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "@/context/themecontext";
-import { Search, Filter, Download, Eye, MessageSquare, Phone, Activity } from "lucide-react";
+import {
+  Search,
+  Filter,
+  Download,
+  Eye,
+  MessageSquare,
+  Phone,
+  Activity,
+} from "lucide-react";
 
 const LogsPage = () => {
   const { theme } = useTheme();
@@ -22,7 +30,7 @@ const LogsPage = () => {
     },
     {
       id: 2,
-      timestamp: "2024-01-15 14:28:15", 
+      timestamp: "2024-01-15 14:28:15",
       method: "GET",
       endpoint: "/v1/logs/conversations",
       status: 200,
@@ -98,7 +106,7 @@ const LogsPage = () => {
     },
     {
       id: 2,
-      callId: "call_def456", 
+      callId: "call_def456",
       timestamp: "2024-01-15 13:30:00",
       phoneNumber: "+1 (555) 987-6543",
       duration: "2m 15s",
@@ -112,7 +120,7 @@ const LogsPage = () => {
       timestamp: "2024-01-15 13:00:00",
       phoneNumber: "+1 (555) 456-7890",
       duration: "6m 48s",
-      status: "completed", 
+      status: "completed",
       resolution: "Billing inquiry - Resolved",
       transcript: "Available",
     },
@@ -149,7 +157,12 @@ const LogsPage = () => {
 
   const tabs = [
     { id: "api", label: "API Logs", icon: Activity, count: apiLogs.length },
-    { id: "chat", label: "Chat Transcripts", icon: MessageSquare, count: chatLogs.length },
+    {
+      id: "chat",
+      label: "Chat Transcripts",
+      icon: MessageSquare,
+      count: chatLogs.length,
+    },
     { id: "voice", label: "Voice Calls", icon: Phone, count: voiceLogs.length },
   ];
 
@@ -418,14 +431,18 @@ const LogsPage = () => {
                         <div className="flex items-center space-x-4 mt-1">
                           <span
                             className={`text-sm ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-600"
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-600"
                             }`}
                           >
                             {chat.timestamp}
                           </span>
                           <span
                             className={`text-sm ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-600"
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-600"
                             }`}
                           >
                             Customer: {chat.customer}

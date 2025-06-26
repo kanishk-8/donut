@@ -1,7 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "@/context/themecontext";
-import { Key, Copy, Eye, EyeOff, Plus, Trash2, Calendar, Shield } from "lucide-react";
+import {
+  Key,
+  Copy,
+  Eye,
+  EyeOff,
+  Plus,
+  Trash2,
+  Calendar,
+  Shield,
+} from "lucide-react";
 
 const APIKeysPage = () => {
   const { theme } = useTheme();
@@ -31,10 +40,8 @@ const APIKeysPage = () => {
   const [selectedPermissions, setSelectedPermissions] = useState(["read"]);
 
   const toggleKeyVisibility = (id) => {
-    setApiKeys(keys => 
-      keys.map(key => 
-        key.id === id ? { ...key, hidden: !key.hidden } : key
-      )
+    setApiKeys((keys) =>
+      keys.map((key) => (key.id === id ? { ...key, hidden: !key.hidden } : key))
     );
   };
 
@@ -48,7 +55,7 @@ const APIKeysPage = () => {
       id: Date.now(),
       name: newKeyName,
       key: `dk_live_${Math.random().toString(36).substring(2, 50)}`,
-      createdAt: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString().split("T")[0],
       lastUsed: "Never",
       permissions: selectedPermissions,
       hidden: false,
@@ -60,7 +67,7 @@ const APIKeysPage = () => {
   };
 
   const deleteKey = (id) => {
-    setApiKeys(keys => keys.filter(key => key.id !== id));
+    setApiKeys((keys) => keys.filter((key) => key.id !== id));
   };
 
   return (
@@ -81,8 +88,11 @@ const APIKeysPage = () => {
               >
                 API Keys
               </h1>
-              <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-                Manage your API keys to integrate with the Donut customer service platform
+              <p
+                className={theme === "dark" ? "text-gray-400" : "text-gray-600"}
+              >
+                Manage your API keys to integrate with the Donut customer
+                service platform
               </p>
             </div>
             <button
@@ -173,7 +183,7 @@ const APIKeysPage = () => {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div
                     className={`p-3 rounded-lg font-mono text-sm ${
                       theme === "dark"
@@ -181,10 +191,9 @@ const APIKeysPage = () => {
                         : "bg-gray-100 text-gray-700"
                     }`}
                   >
-                    {apiKey.hidden 
+                    {apiKey.hidden
                       ? "••••••••••••••••••••••••••••••••••••••••"
-                      : apiKey.key
-                    }
+                      : apiKey.key}
                   </div>
 
                   <div className="flex items-center justify-between mt-3">
@@ -283,7 +292,7 @@ const APIKeysPage = () => {
               >
                 Create New API Key
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label
@@ -322,9 +331,16 @@ const APIKeysPage = () => {
                           checked={selectedPermissions.includes(permission)}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setSelectedPermissions([...selectedPermissions, permission]);
+                              setSelectedPermissions([
+                                ...selectedPermissions,
+                                permission,
+                              ]);
                             } else {
-                              setSelectedPermissions(selectedPermissions.filter(p => p !== permission));
+                              setSelectedPermissions(
+                                selectedPermissions.filter(
+                                  (p) => p !== permission
+                                )
+                              );
                             }
                           }}
                           className="mr-2"

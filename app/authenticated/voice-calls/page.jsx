@@ -1,7 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/context/themecontext";
-import { Phone, Play, Pause, Square, Volume2, Mic, Clock, User } from "lucide-react";
+import {
+  Phone,
+  Play,
+  Pause,
+  Square,
+  Volume2,
+  Mic,
+  Clock,
+  User,
+} from "lucide-react";
 
 const VoiceCallsPage = () => {
   const { theme } = useTheme();
@@ -26,7 +35,7 @@ const VoiceCallsPage = () => {
     },
     {
       id: 3,
-      speaker: "customer", 
+      speaker: "customer",
       text: "Yes, it's order number 12345",
       timestamp: "00:00:15",
     },
@@ -51,7 +60,9 @@ const VoiceCallsPage = () => {
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const startCall = () => {
@@ -59,22 +70,22 @@ const VoiceCallsPage = () => {
     setIsRecording(true);
     setCallDuration(0);
     setTranscript([]);
-    
+
     // Simulate conversation
     setTimeout(() => {
       setTranscript([mockTranscript[0]]);
     }, 5000);
-    
+
     setTimeout(() => {
-      setTranscript(prev => [...prev, mockTranscript[1]]);
+      setTranscript((prev) => [...prev, mockTranscript[1]]);
     }, 8000);
-    
+
     setTimeout(() => {
-      setTranscript(prev => [...prev, mockTranscript[2]]);
+      setTranscript((prev) => [...prev, mockTranscript[2]]);
     }, 15000);
-    
+
     setTimeout(() => {
-      setTranscript(prev => [...prev, mockTranscript[3]]);
+      setTranscript((prev) => [...prev, mockTranscript[3]]);
     }, 18000);
   };
 
@@ -94,7 +105,7 @@ const VoiceCallsPage = () => {
     },
     {
       id: 2,
-      phone: "+1 (555) 987-6543", 
+      phone: "+1 (555) 987-6543",
       duration: "1:23",
       status: "completed",
       timestamp: "4 hours ago",
@@ -104,7 +115,7 @@ const VoiceCallsPage = () => {
       id: 3,
       phone: "+1 (555) 456-7890",
       duration: "5:12",
-      status: "completed", 
+      status: "completed",
       timestamp: "6 hours ago",
       resolution: "Billing inquiry - Resolved",
     },
@@ -175,14 +186,12 @@ const VoiceCallsPage = () => {
               <div className="text-center mb-6">
                 <div
                   className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-4 ${
-                    isCallActive
-                      ? "bg-green-500 animate-pulse"
-                      : "bg-gray-400"
+                    isCallActive ? "bg-green-500 animate-pulse" : "bg-gray-400"
                   }`}
                 >
                   <Phone className="w-10 h-10 text-white" />
                 </div>
-                
+
                 <div
                   className={`text-lg font-semibold mb-2 ${
                     theme === "dark" ? "text-white" : "text-gray-900"
@@ -190,7 +199,7 @@ const VoiceCallsPage = () => {
                 >
                   {isCallActive ? "Call in Progress" : "Ready to Call"}
                 </div>
-                
+
                 {isCallActive && (
                   <div className="flex items-center justify-center space-x-4">
                     <div className="flex items-center">
@@ -325,7 +334,9 @@ const VoiceCallsPage = () => {
                           <div className="flex items-center mb-1">
                             <User className="w-3 h-3 mr-1" />
                             <span className="text-xs font-medium">
-                              {entry.speaker === "customer" ? "Customer" : "AI Agent"}
+                              {entry.speaker === "customer"
+                                ? "Customer"
+                                : "AI Agent"}
                             </span>
                             <span
                               className={`text-xs ml-2 ${

@@ -1,7 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "@/context/themecontext";
-import { Plus, Edit2, Trash2, Copy, CheckCircle, XCircle, Activity, Webhook } from "lucide-react";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Copy,
+  CheckCircle,
+  XCircle,
+  Activity,
+  Webhook,
+} from "lucide-react";
 
 const WebhooksPage = () => {
   const { theme } = useTheme();
@@ -49,14 +58,46 @@ const WebhooksPage = () => {
   });
 
   const availableEvents = [
-    { id: "chat.message.sent", name: "Chat Message Sent", description: "Triggered when a chat message is sent" },
-    { id: "chat.session.started", name: "Chat Session Started", description: "Triggered when a new chat session begins" },
-    { id: "chat.session.ended", name: "Chat Session Ended", description: "Triggered when a chat session ends" },
-    { id: "voice.call.started", name: "Voice Call Started", description: "Triggered when a voice call begins" },
-    { id: "voice.call.ended", name: "Voice Call Ended", description: "Triggered when a voice call ends" },
-    { id: "ticket.created", name: "Ticket Created", description: "Triggered when a support ticket is created" },
-    { id: "ticket.updated", name: "Ticket Updated", description: "Triggered when a support ticket is updated" },
-    { id: "ticket.resolved", name: "Ticket Resolved", description: "Triggered when a support ticket is resolved" },
+    {
+      id: "chat.message.sent",
+      name: "Chat Message Sent",
+      description: "Triggered when a chat message is sent",
+    },
+    {
+      id: "chat.session.started",
+      name: "Chat Session Started",
+      description: "Triggered when a new chat session begins",
+    },
+    {
+      id: "chat.session.ended",
+      name: "Chat Session Ended",
+      description: "Triggered when a chat session ends",
+    },
+    {
+      id: "voice.call.started",
+      name: "Voice Call Started",
+      description: "Triggered when a voice call begins",
+    },
+    {
+      id: "voice.call.ended",
+      name: "Voice Call Ended",
+      description: "Triggered when a voice call ends",
+    },
+    {
+      id: "ticket.created",
+      name: "Ticket Created",
+      description: "Triggered when a support ticket is created",
+    },
+    {
+      id: "ticket.updated",
+      name: "Ticket Updated",
+      description: "Triggered when a support ticket is updated",
+    },
+    {
+      id: "ticket.resolved",
+      name: "Ticket Resolved",
+      description: "Triggered when a support ticket is resolved",
+    },
   ];
 
   const recentDeliveries = [
@@ -103,7 +144,7 @@ const WebhooksPage = () => {
       id: Date.now(),
       ...newWebhook,
       status: "active",
-      createdAt: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString().split("T")[0],
       lastTriggered: "Never",
       deliveries: 0,
       failures: 0,
@@ -114,15 +155,17 @@ const WebhooksPage = () => {
   };
 
   const deleteWebhook = (id) => {
-    setWebhooks(webhooks.filter(w => w.id !== id));
+    setWebhooks(webhooks.filter((w) => w.id !== id));
   };
 
   const toggleWebhookStatus = (id) => {
-    setWebhooks(webhooks.map(w => 
-      w.id === id 
-        ? { ...w, status: w.status === "active" ? "inactive" : "active" }
-        : w
-    ));
+    setWebhooks(
+      webhooks.map((w) =>
+        w.id === id
+          ? { ...w, status: w.status === "active" ? "inactive" : "active" }
+          : w
+      )
+    );
   };
 
   const testWebhook = (webhook) => {
@@ -148,8 +191,11 @@ const WebhooksPage = () => {
               >
                 Webhooks
               </h1>
-              <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-                Configure webhooks to receive real-time notifications about events
+              <p
+                className={theme === "dark" ? "text-gray-400" : "text-gray-600"}
+              >
+                Configure webhooks to receive real-time notifications about
+                events
               </p>
             </div>
             <button
@@ -443,7 +489,7 @@ const WebhooksPage = () => {
               >
                 Create New Webhook
               </h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label
@@ -456,7 +502,9 @@ const WebhooksPage = () => {
                   <input
                     type="text"
                     value={newWebhook.name}
-                    onChange={(e) => setNewWebhook({ ...newWebhook, name: e.target.value })}
+                    onChange={(e) =>
+                      setNewWebhook({ ...newWebhook, name: e.target.value })
+                    }
                     placeholder="e.g., Order Notifications Webhook"
                     className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                       theme === "dark"
@@ -477,7 +525,9 @@ const WebhooksPage = () => {
                   <input
                     type="url"
                     value={newWebhook.url}
-                    onChange={(e) => setNewWebhook({ ...newWebhook, url: e.target.value })}
+                    onChange={(e) =>
+                      setNewWebhook({ ...newWebhook, url: e.target.value })
+                    }
                     placeholder="https://api.yoursite.com/webhooks/donut"
                     className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                       theme === "dark"
@@ -497,7 +547,10 @@ const WebhooksPage = () => {
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
                     {availableEvents.map((event) => (
-                      <label key={event.id} className="flex items-start space-x-2">
+                      <label
+                        key={event.id}
+                        className="flex items-start space-x-2"
+                      >
                         <input
                           type="checkbox"
                           checked={newWebhook.events.includes(event.id)}
@@ -505,12 +558,14 @@ const WebhooksPage = () => {
                             if (e.target.checked) {
                               setNewWebhook({
                                 ...newWebhook,
-                                events: [...newWebhook.events, event.id]
+                                events: [...newWebhook.events, event.id],
                               });
                             } else {
                               setNewWebhook({
                                 ...newWebhook,
-                                events: newWebhook.events.filter(id => id !== event.id)
+                                events: newWebhook.events.filter(
+                                  (id) => id !== event.id
+                                ),
                               });
                             }
                           }}
@@ -519,14 +574,18 @@ const WebhooksPage = () => {
                         <div>
                           <span
                             className={`text-sm font-medium ${
-                              theme === "dark" ? "text-gray-300" : "text-gray-700"
+                              theme === "dark"
+                                ? "text-gray-300"
+                                : "text-gray-700"
                             }`}
                           >
                             {event.name}
                           </span>
                           <p
                             className={`text-xs ${
-                              theme === "dark" ? "text-gray-400" : "text-gray-500"
+                              theme === "dark"
+                                ? "text-gray-400"
+                                : "text-gray-500"
                             }`}
                           >
                             {event.description}
@@ -551,7 +610,11 @@ const WebhooksPage = () => {
                 </button>
                 <button
                   onClick={createWebhook}
-                  disabled={!newWebhook.name.trim() || !newWebhook.url.trim() || newWebhook.events.length === 0}
+                  disabled={
+                    !newWebhook.name.trim() ||
+                    !newWebhook.url.trim() ||
+                    newWebhook.events.length === 0
+                  }
                   className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
                 >
                   Create Webhook

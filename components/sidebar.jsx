@@ -128,13 +128,6 @@ const SideBar = () => {
             >
               donut
             </h1>
-            <span
-              className={`ml-2 text-xs ${
-                theme === "dark" ? "text-indigo-300" : "text-indigo-600"
-              }`}
-            >
-              customer service ai
-            </span>
           </div>
           {/* Close button for mobile */}
           <button

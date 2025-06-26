@@ -150,8 +150,8 @@ const DashBoard = () => {
               <div
                 key={index}
                 className={`flex justify-between items-center p-4 rounded-lg border ${
-                  theme === "dark" 
-                    ? "bg-gray-700/30 border-gray-600" 
+                  theme === "dark"
+                    ? "bg-gray-700/30 border-gray-600"
                     : "bg-gray-50 border-gray-200"
                 }`}
               >
@@ -171,9 +171,7 @@ const DashBoard = () => {
                     {item.description}
                   </p>
                 </div>
-                <button
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
-                >
+                <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
                   {item.action}
                 </button>
               </div>
@@ -305,19 +303,31 @@ const DashBoard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
             <div className="text-3xl font-bold text-indigo-600 mb-2">92%</div>
-            <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+            <div
+              className={`text-sm ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               Success Rate
             </div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-emerald-600 mb-2">1.2s</div>
-            <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+            <div
+              className={`text-sm ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               Avg Response Time
             </div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-purple-600 mb-2">15.6k</div>
-            <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+            <div
+              className={`text-sm ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               Total Requests
             </div>
           </div>

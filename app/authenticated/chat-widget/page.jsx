@@ -1,7 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "@/context/themecontext";
-import { Copy, Eye, Code, Palette, MessageSquare, Download } from "lucide-react";
+import {
+  Copy,
+  Eye,
+  Code,
+  Palette,
+  MessageSquare,
+  Download,
+} from "lucide-react";
 
 const ChatWidgetPage = () => {
   const { theme } = useTheme();
@@ -605,8 +612,8 @@ function App() {
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                This is how the widget will appear on your website. Click the eye
-                icon to toggle visibility.
+                This is how the widget will appear on your website. Click the
+                eye icon to toggle visibility.
               </p>
             </div>
           </div>

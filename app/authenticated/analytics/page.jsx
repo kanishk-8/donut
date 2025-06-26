@@ -1,18 +1,18 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "@/context/themecontext";
-import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown, 
-  Users, 
-  MessageSquare, 
-  Phone, 
-  Clock, 
+import {
+  BarChart3,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  MessageSquare,
+  Phone,
+  Clock,
   Target,
   Calendar,
   Download,
-  Filter
+  Filter,
 } from "lucide-react";
 
 const AnalyticsPage = () => {
@@ -28,10 +28,38 @@ const AnalyticsPage = () => {
   ];
 
   const metrics = [
-    { id: "api_calls", name: "API Calls", icon: BarChart3, value: "12,456", change: "+12.5%", trend: "up" },
-    { id: "chat_sessions", name: "Chat Sessions", icon: MessageSquare, value: "3,248", change: "+8.3%", trend: "up" },
-    { id: "voice_minutes", name: "Voice Minutes", icon: Phone, value: "1,847", change: "-2.1%", trend: "down" },
-    { id: "unique_users", name: "Unique Users", icon: Users, value: "892", change: "+15.7%", trend: "up" },
+    {
+      id: "api_calls",
+      name: "API Calls",
+      icon: BarChart3,
+      value: "12,456",
+      change: "+12.5%",
+      trend: "up",
+    },
+    {
+      id: "chat_sessions",
+      name: "Chat Sessions",
+      icon: MessageSquare,
+      value: "3,248",
+      change: "+8.3%",
+      trend: "up",
+    },
+    {
+      id: "voice_minutes",
+      name: "Voice Minutes",
+      icon: Phone,
+      value: "1,847",
+      change: "-2.1%",
+      trend: "down",
+    },
+    {
+      id: "unique_users",
+      name: "Unique Users",
+      icon: Users,
+      value: "892",
+      change: "+15.7%",
+      trend: "up",
+    },
   ];
 
   const chartData = {
@@ -56,15 +84,35 @@ const AnalyticsPage = () => {
   };
 
   const performanceMetrics = [
-    { label: "Average Response Time", value: "1.2s", target: "< 2s", status: "good" },
-    { label: "Success Rate", value: "99.2%", target: "> 99%", status: "excellent" },
-    { label: "Customer Satisfaction", value: "4.8/5", target: "> 4.5", status: "excellent" },
+    {
+      label: "Average Response Time",
+      value: "1.2s",
+      target: "< 2s",
+      status: "good",
+    },
+    {
+      label: "Success Rate",
+      value: "99.2%",
+      target: "> 99%",
+      status: "excellent",
+    },
+    {
+      label: "Customer Satisfaction",
+      value: "4.8/5",
+      target: "> 4.5",
+      status: "excellent",
+    },
     { label: "Resolution Rate", value: "87%", target: "> 85%", status: "good" },
   ];
 
   const topEndpoints = [
     { endpoint: "/v1/chat", calls: 8456, percentage: 68, avgTime: "1.1s" },
-    { endpoint: "/v1/voice/call", calls: 2341, percentage: 19, avgTime: "2.3s" },
+    {
+      endpoint: "/v1/voice/call",
+      calls: 2341,
+      percentage: 19,
+      avgTime: "2.3s",
+    },
     { endpoint: "/v1/tickets", calls: 892, percentage: 7, avgTime: "0.8s" },
     { endpoint: "/v1/logs", calls: 767, percentage: 6, avgTime: "0.5s" },
   ];
@@ -104,9 +152,11 @@ const AnalyticsPage = () => {
         <div className="p-3 rounded-full bg-indigo-600 text-white">
           <metric.icon className="w-5 h-5" />
         </div>
-        <div className={`flex items-center text-sm ${
-          metric.trend === "up" ? "text-green-600" : "text-red-600"
-        }`}>
+        <div
+          className={`flex items-center text-sm ${
+            metric.trend === "up" ? "text-green-600" : "text-red-600"
+          }`}
+        >
           {metric.trend === "up" ? (
             <TrendingUp className="w-4 h-4 mr-1" />
           ) : (
@@ -133,8 +183,8 @@ const AnalyticsPage = () => {
   );
 
   const SimpleChart = ({ data }) => {
-    const maxValue = Math.max(...data.map(d => d.value));
-    
+    const maxValue = Math.max(...data.map((d) => d.value));
+
     return (
       <div className="h-64 flex items-end space-x-2">
         {data.map((item, index) => (
@@ -143,7 +193,7 @@ const AnalyticsPage = () => {
               className="w-full bg-indigo-600 rounded-t"
               style={{
                 height: `${(item.value / maxValue) * 200}px`,
-                minHeight: "4px"
+                minHeight: "4px",
               }}
             />
             <span
@@ -177,8 +227,11 @@ const AnalyticsPage = () => {
               >
                 Analytics
               </h1>
-              <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-                Monitor your API usage, performance metrics, and customer engagement
+              <p
+                className={theme === "dark" ? "text-gray-400" : "text-gray-600"}
+              >
+                Monitor your API usage, performance metrics, and customer
+                engagement
               </p>
             </div>
             <div className="flex space-x-3">
@@ -248,7 +301,9 @@ const AnalyticsPage = () => {
                 <option value="chat_sessions">Chat Sessions</option>
               </select>
             </div>
-            <SimpleChart data={chartData[selectedMetric] || chartData.api_calls} />
+            <SimpleChart
+              data={chartData[selectedMetric] || chartData.api_calls}
+            />
           </div>
 
           {/* Performance Metrics */}

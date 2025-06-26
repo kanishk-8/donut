@@ -1,7 +1,17 @@
 "use client";
 import React, { useState } from "react";
 import { useTheme } from "@/context/themecontext";
-import { Building, Globe, Shield, Bell, Save, Plus, Trash2, CheckCircle, XCircle } from "lucide-react";
+import {
+  Building,
+  Globe,
+  Shield,
+  Bell,
+  Save,
+  Plus,
+  Trash2,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 
 const SettingsPage = () => {
   const { theme } = useTheme();
@@ -62,7 +72,7 @@ const SettingsPage = () => {
         id: Date.now(),
         domain: newDomain.trim(),
         status: "pending",
-        addedAt: new Date().toISOString().split('T')[0],
+        addedAt: new Date().toISOString().split("T")[0],
         verifiedAt: null,
       };
       setDomains([...domains, domain]);
@@ -71,15 +81,21 @@ const SettingsPage = () => {
   };
 
   const removeDomain = (id) => {
-    setDomains(domains.filter(d => d.id !== id));
+    setDomains(domains.filter((d) => d.id !== id));
   };
 
   const verifyDomain = (id) => {
-    setDomains(domains.map(d => 
-      d.id === id 
-        ? { ...d, status: "verified", verifiedAt: new Date().toISOString().split('T')[0] }
-        : d
-    ));
+    setDomains(
+      domains.map((d) =>
+        d.id === id
+          ? {
+              ...d,
+              status: "verified",
+              verifiedAt: new Date().toISOString().split("T")[0],
+            }
+          : d
+      )
+    );
   };
 
   const tabs = [
@@ -159,7 +175,12 @@ const SettingsPage = () => {
                 <input
                   type="text"
                   value={businessInfo.companyName}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, companyName: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      companyName: e.target.value,
+                    })
+                  }
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white"
@@ -179,7 +200,12 @@ const SettingsPage = () => {
                 <input
                   type="email"
                   value={businessInfo.contactEmail}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, contactEmail: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      contactEmail: e.target.value,
+                    })
+                  }
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white"
@@ -199,7 +225,12 @@ const SettingsPage = () => {
                 <input
                   type="tel"
                   value={businessInfo.phoneNumber}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, phoneNumber: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      phoneNumber: e.target.value,
+                    })
+                  }
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white"
@@ -219,7 +250,12 @@ const SettingsPage = () => {
                 <input
                   type="url"
                   value={businessInfo.website}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, website: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      website: e.target.value,
+                    })
+                  }
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white"
@@ -238,7 +274,12 @@ const SettingsPage = () => {
                 </label>
                 <select
                   value={businessInfo.industry}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, industry: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      industry: e.target.value,
+                    })
+                  }
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white"
@@ -264,7 +305,12 @@ const SettingsPage = () => {
                 </label>
                 <select
                   value={businessInfo.timezone}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, timezone: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      timezone: e.target.value,
+                    })
+                  }
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 text-white"
@@ -290,7 +336,12 @@ const SettingsPage = () => {
                 </label>
                 <textarea
                   value={businessInfo.address}
-                  onChange={(e) => setBusinessInfo({ ...businessInfo, address: e.target.value })}
+                  onChange={(e) =>
+                    setBusinessInfo({
+                      ...businessInfo,
+                      address: e.target.value,
+                    })
+                  }
                   rows={3}
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
                     theme === "dark"
@@ -332,7 +383,8 @@ const SettingsPage = () => {
                 theme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}
             >
-              Add domains where your chat widget and API calls are allowed to originate from.
+              Add domains where your chat widget and API calls are allowed to
+              originate from.
             </p>
 
             {/* Add Domain */}
@@ -383,7 +435,8 @@ const SettingsPage = () => {
                         }`}
                       >
                         Added: {domain.addedAt}
-                        {domain.verifiedAt && ` • Verified: ${domain.verifiedAt}`}
+                        {domain.verifiedAt &&
+                          ` • Verified: ${domain.verifiedAt}`}
                       </p>
                     </div>
                   </div>
@@ -465,7 +518,12 @@ const SettingsPage = () => {
                     <input
                       type="checkbox"
                       checked={security.twoFactorEnabled}
-                      onChange={(e) => setSecurity({ ...security, twoFactorEnabled: e.target.checked })}
+                      onChange={(e) =>
+                        setSecurity({
+                          ...security,
+                          twoFactorEnabled: e.target.checked,
+                        })
+                      }
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
@@ -490,11 +548,15 @@ const SettingsPage = () => {
                   Restrict API access to specific IP addresses or ranges
                 </p>
                 <textarea
-                  value={security.ipWhitelist.join('\n')}
-                  onChange={(e) => setSecurity({ 
-                    ...security, 
-                    ipWhitelist: e.target.value.split('\n').filter(ip => ip.trim())
-                  })}
+                  value={security.ipWhitelist.join("\n")}
+                  onChange={(e) =>
+                    setSecurity({
+                      ...security,
+                      ipWhitelist: e.target.value
+                        .split("\n")
+                        .filter((ip) => ip.trim()),
+                    })
+                  }
                   rows={4}
                   placeholder="192.168.1.0/24&#10;10.0.0.0/8"
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 font-mono ${
@@ -522,11 +584,15 @@ const SettingsPage = () => {
                   Define which origins can make cross-origin requests to the API
                 </p>
                 <textarea
-                  value={security.allowedOrigins.join('\n')}
-                  onChange={(e) => setSecurity({ 
-                    ...security, 
-                    allowedOrigins: e.target.value.split('\n').filter(origin => origin.trim())
-                  })}
+                  value={security.allowedOrigins.join("\n")}
+                  onChange={(e) =>
+                    setSecurity({
+                      ...security,
+                      allowedOrigins: e.target.value
+                        .split("\n")
+                        .filter((origin) => origin.trim()),
+                    })
+                  }
                   rows={4}
                   placeholder="https://yourdomain.com&#10;https://app.yourdomain.com"
                   className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 font-mono ${
@@ -569,27 +635,27 @@ const SettingsPage = () => {
                 {
                   key: "emailEnabled",
                   title: "Email Notifications",
-                  description: "Receive email alerts for important events"
+                  description: "Receive email alerts for important events",
                 },
                 {
                   key: "webhookEnabled",
                   title: "Webhook Notifications",
-                  description: "Send real-time notifications to your webhooks"
+                  description: "Send real-time notifications to your webhooks",
                 },
                 {
                   key: "apiLimitAlerts",
                   title: "API Limit Alerts",
-                  description: "Get notified when approaching API rate limits"
+                  description: "Get notified when approaching API rate limits",
                 },
                 {
                   key: "securityAlerts",
                   title: "Security Alerts",
-                  description: "Receive alerts for suspicious account activity"
+                  description: "Receive alerts for suspicious account activity",
                 },
                 {
                   key: "usageReports",
                   title: "Weekly Usage Reports",
-                  description: "Get weekly summaries of your API usage"
+                  description: "Get weekly summaries of your API usage",
                 },
               ].map((setting) => (
                 <div
@@ -620,10 +686,12 @@ const SettingsPage = () => {
                     <input
                       type="checkbox"
                       checked={notifications[setting.key]}
-                      onChange={(e) => setNotifications({ 
-                        ...notifications, 
-                        [setting.key]: e.target.checked 
-                      })}
+                      onChange={(e) =>
+                        setNotifications({
+                          ...notifications,
+                          [setting.key]: e.target.checked,
+                        })
+                      }
                       className="sr-only peer"
                     />
                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
