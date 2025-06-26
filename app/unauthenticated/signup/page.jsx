@@ -50,27 +50,28 @@ const SignupPage = () => {
               <h1 className="ml-3 text-3xl font-bold text-white">donut</h1>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Join the{" "}
+              Supercharge Your{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300">
-                AI revolution
+                Customer Service
               </span>
             </h2>
             <p className="text-xl text-indigo-200 mb-8 leading-relaxed">
-              Start building intelligent AI agents in minutes. No coding
-              required - just your creativity and vision for the future.
+              Deploy intelligent customer service agents that handle queries,
+              solve problems, and provide 24/7 support. Voice & chat agents
+              ready in minutes.
             </p>
             <div className="space-y-4 text-indigo-200">
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-indigo-400 rounded-full mr-3"></div>
-                <span>Create your first AI agent instantly</span>
+                <span>Deploy chat & voice agents instantly</span>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-purple-400 rounded-full mr-3"></div>
-                <span>Join 1,000+ early adopters</span>
+                <span>Join 500+ businesses served</span>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-pink-400 rounded-full mr-3"></div>
-                <span>Start free, scale as you grow</span>
+                <span>24/7 customer support automation</span>
               </div>
             </div>
           </div>
@@ -82,13 +83,18 @@ const SignupPage = () => {
             <div className="text-center mb-8 lg:hidden">
               <div className="flex items-center justify-center mb-4">
                 <Image src="/logo.png" width={40} height={40} alt="logo" />
-                <h1 className="ml-3 text-2xl font-bold text-white">donut</h1>
+                <div className="ml-3">
+                  <h1 className="text-2xl font-bold text-white">donut</h1>
+                  <span className="text-xs text-indigo-300">
+                    customer service ai
+                  </span>
+                </div>
               </div>
               <h2 className="text-3xl font-bold mb-2 text-white">
                 Create your account
               </h2>
               <p className="text-gray-400">
-                Start building intelligent AI agents today
+                Start building intelligent customer service agents today
               </p>
             </div>
 

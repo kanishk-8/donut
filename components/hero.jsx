@@ -30,16 +30,16 @@ const Hero = () => {
         {/* Content */}
         <div className="text-center max-w-5xl mx-auto">
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 sm:mb-8">
-            Build Your First{" "}
+            Supercharge Your{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300">
-              AI Agent
+              Customer Service
             </span>{" "}
-            in Minutes
+            with AI
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-indigo-200 mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed px-2">
-            The simplest way to create intelligent AI assistants. No coding, no
-            complexity - just drag, drop, and deploy. Join the AI revolution
-            today.
+            Deploy intelligent customer service agents that handle queries,
+            solve problems, and provide 24/7 support. Voice & chat agents ready
+            to integrate into your platform in minutes.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 items-center px-4">
             <Link

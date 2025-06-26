@@ -21,9 +21,9 @@ const page = () => {
   const [profileData, setProfileData] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
-    bio: "AI enthusiast and agent builder",
+    bio: "Customer service AI developer",
     joinDate: "January 2024",
-    plan: "Pro Plan",
+    plan: "Professional Plan",
   });
   const [tempData, setTempData] = useState(profileData);
 
@@ -38,9 +38,9 @@ const page = () => {
       const updatedData = {
         name: user.name || "John Doe",
         email: user.email || "john.doe@example.com",
-        bio: user.bio || "AI enthusiast and agent builder",
+        bio: user.bio || "Customer service AI developer",
         joinDate: user.joinDate || "January 2024",
-        plan: user.plan || "Pro Plan",
+        plan: user.plan || "Professional Plan",
       };
       setProfileData(updatedData);
       setTempData(updatedData);
@@ -160,23 +160,23 @@ const page = () => {
               >
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <p className="text-2xl font-bold text-indigo-600">12</p>
+                    <p className="text-2xl font-bold text-indigo-600">5</p>
                     <p
                       className={`text-sm ${
                         theme === "dark" ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      Agents Created
+                      API Keys
                     </p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-indigo-600">89</p>
+                    <p className="text-2xl font-bold text-indigo-600">12.4k</p>
                     <p
                       className={`text-sm ${
                         theme === "dark" ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      Conversations
+                      API Calls
                     </p>
                   </div>
                 </div>
@@ -401,7 +401,7 @@ const page = () => {
                         theme === "dark" ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      Receive updates about your agents
+                      Receive updates about your API usage
                     </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">

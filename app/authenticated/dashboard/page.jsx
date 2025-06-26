@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Bot, MessageSquare, Brain, Users } from "lucide-react";
+import { Bot, MessageSquare, Phone, BarChart3, Key, Globe } from "lucide-react";
 import { useTheme } from "@/context/themecontext";
 
 const DashboardStats = ({
@@ -56,31 +56,31 @@ const DashBoard = () => {
 
   const stats = [
     {
-      icon: <Bot className="w-5 h-5" />,
-      title: "Active Agents",
-      value: "12",
-      description: "3 new this month",
+      icon: <BarChart3 className="w-5 h-5" />,
+      title: "API Calls",
+      value: "12,456",
+      description: "+12% from last month",
       bgColor: "bg-indigo-600",
     },
     {
       icon: <MessageSquare className="w-5 h-5" />,
-      title: "Conversations",
-      value: "4,325",
-      description: "+12% from last month",
+      title: "Chat Sessions",
+      value: "3,248",
+      description: "85% resolution rate",
       bgColor: "bg-emerald-600",
     },
     {
-      icon: <Brain className="w-5 h-5" />,
-      title: "Automations",
-      value: "28",
-      description: "5 pending setup",
+      icon: <Phone className="w-5 h-5" />,
+      title: "Voice Minutes",
+      value: "1,847",
+      description: "892 calls handled",
       bgColor: "bg-purple-600",
     },
     {
-      icon: <Users className="w-5 h-5" />,
-      title: "Active Users",
-      value: "852",
-      description: "+18% this week",
+      icon: <Globe className="w-5 h-5" />,
+      title: "Active Domains",
+      value: "5",
+      description: "2 pending verification",
       bgColor: "bg-blue-600",
     },
   ];
@@ -97,10 +97,10 @@ const DashBoard = () => {
             theme === "dark" ? "text-white" : "text-gray-900"
           }`}
         >
-          Dashboard
+          Developer Dashboard
         </h1>
         <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-          Welcome back to your AI Agent Builder dashboard
+          Monitor your customer service AI integration and API usage
         </p>
       </div>
 
@@ -110,7 +110,8 @@ const DashBoard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Quick Start */}
         <div
           className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
             theme === "dark"
@@ -123,74 +124,64 @@ const DashBoard = () => {
               theme === "dark" ? "text-white" : "text-gray-900"
             }`}
           >
-            Recent Agents
+            Quick Start
           </h2>
           <div className="space-y-4">
             {[
               {
-                name: "Customer Support Bot",
-                type: "Chatbot",
-                created: "2 days ago",
-                status: "Active",
+                title: "Get your API key",
+                description: "Generate API keys to start integration",
+                action: "Generate Key",
+                href: "/authenticated/api-keys",
               },
               {
-                name: "Data Analyzer",
-                type: "Assistant",
-                created: "1 week ago",
-                status: "Active",
+                title: "Add chat widget",
+                description: "Embed customer service chat on your website",
+                action: "Get Code",
+                href: "/authenticated/chat-widget",
               },
               {
-                name: "Email Automation",
-                type: "Custom",
-                created: "3 weeks ago",
-                status: "Inactive",
+                title: "Test API endpoints",
+                description: "Try our API in the interactive playground",
+                action: "Try Now",
+                href: "/authenticated/playground",
               },
-            ].map((agent, index) => (
+            ].map((item, index) => (
               <div
                 key={index}
-                className={`flex justify-between items-center p-3 rounded-lg ${
-                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                className={`flex justify-between items-center p-4 rounded-lg border ${
+                  theme === "dark" 
+                    ? "bg-gray-700/30 border-gray-600" 
+                    : "bg-gray-50 border-gray-200"
                 }`}
               >
                 <div>
                   <h3
-                    className={`font-medium ${
+                    className={`font-medium mb-1 ${
                       theme === "dark" ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    {agent.name}
+                    {item.title}
                   </h3>
                   <p
                     className={`text-sm ${
                       theme === "dark" ? "text-gray-400" : "text-gray-600"
                     }`}
                   >
-                    {agent.type} • Created {agent.created}
+                    {item.description}
                   </p>
                 </div>
-                <span
-                  className={`px-2 py-1 text-xs rounded-full ${
-                    agent.status === "Active"
-                      ? "bg-green-100 text-green-800"
-                      : theme === "dark"
-                      ? "bg-gray-600 text-gray-300"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
+                <button
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
                 >
-                  {agent.status}
-                </span>
+                  {item.action}
+                </button>
               </div>
             ))}
           </div>
-          <button
-            className={`mt-4 text-sm font-medium hover:text-indigo-800 ${
-              theme === "dark" ? "text-indigo-400" : "text-indigo-600"
-            }`}
-          >
-            View all agents →
-          </button>
         </div>
 
+        {/* Recent Activity */}
         <div
           className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
             theme === "dark"
@@ -203,93 +194,73 @@ const DashBoard = () => {
               theme === "dark" ? "text-white" : "text-gray-900"
             }`}
           >
-            Performance Metrics
+            Recent API Activity
           </h2>
           <div className="space-y-4">
-            <div className="mb-4">
-              <div className="flex justify-between mb-1">
-                <span
-                  className={`text-sm font-medium ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  Response Rate
-                </span>
-                <span
-                  className={`text-sm font-medium ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  92%
-                </span>
-              </div>
+            {[
+              {
+                method: "POST",
+                endpoint: "/api/chat/send",
+                time: "2 min ago",
+                status: "200",
+              },
+              {
+                method: "GET",
+                endpoint: "/api/logs/chat",
+                time: "5 min ago",
+                status: "200",
+              },
+              {
+                method: "POST",
+                endpoint: "/api/voice/call",
+                time: "12 min ago",
+                status: "201",
+              },
+              {
+                method: "GET",
+                endpoint: "/api/analytics",
+                time: "18 min ago",
+                status: "200",
+              },
+            ].map((activity, index) => (
               <div
-                className={`w-full rounded-full h-2 ${
-                  theme === "dark" ? "bg-gray-600" : "bg-gray-200"
+                key={index}
+                className={`flex justify-between items-center p-3 rounded-lg ${
+                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
                 }`}
               >
-                <div
-                  className="bg-indigo-600 h-2 rounded-full"
-                  style={{ width: "92%" }}
-                ></div>
+                <div className="flex items-center space-x-3">
+                  <span
+                    className={`px-2 py-1 text-xs rounded font-mono ${
+                      activity.method === "POST"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-blue-100 text-blue-800"
+                    }`}
+                  >
+                    {activity.method}
+                  </span>
+                  <span
+                    className={`font-mono text-sm ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    {activity.endpoint}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span
+                    className={`text-xs ${
+                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    }`}
+                  >
+                    {activity.time}
+                  </span>
+                  <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-800">
+                    {activity.status}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className="mb-4">
-              <div className="flex justify-between mb-1">
-                <span
-                  className={`text-sm font-medium ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  Accuracy
-                </span>
-                <span
-                  className={`text-sm font-medium ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  87%
-                </span>
-              </div>
-              <div
-                className={`w-full rounded-full h-2 ${
-                  theme === "dark" ? "bg-gray-600" : "bg-gray-200"
-                }`}
-              >
-                <div
-                  className="bg-indigo-600 h-2 rounded-full"
-                  style={{ width: "87%" }}
-                ></div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <div className="flex justify-between mb-1">
-                <span
-                  className={`text-sm font-medium ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  User Satisfaction
-                </span>
-                <span
-                  className={`text-sm font-medium ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  95%
-                </span>
-              </div>
-              <div
-                className={`w-full rounded-full h-2 ${
-                  theme === "dark" ? "bg-gray-600" : "bg-gray-200"
-                }`}
-              >
-                <div
-                  className="bg-indigo-600 h-2 rounded-full"
-                  style={{ width: "95%" }}
-                ></div>
-              </div>
-            </div>
+            ))}
           </div>
           <button
             className={`mt-4 text-sm font-medium ${
@@ -298,8 +269,58 @@ const DashBoard = () => {
                 : "text-indigo-600 hover:text-indigo-800"
             }`}
           >
-            View detailed analytics →
+            View all logs →
           </button>
+        </div>
+      </div>
+
+      {/* API Usage Chart */}
+      <div
+        className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+          theme === "dark"
+            ? "bg-zinc-800/50 border-gray-700"
+            : "bg-white border-gray-200"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2
+            className={`text-xl font-semibold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
+            API Usage Overview
+          </h2>
+          <select
+            className={`px-3 py-2 rounded-lg border text-sm ${
+              theme === "dark"
+                ? "bg-gray-700 border-gray-600 text-white"
+                : "bg-white border-gray-300 text-gray-900"
+            }`}
+          >
+            <option>Last 7 days</option>
+            <option>Last 30 days</option>
+            <option>Last 90 days</option>
+          </select>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-indigo-600 mb-2">92%</div>
+            <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              Success Rate
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-emerald-600 mb-2">1.2s</div>
+            <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              Avg Response Time
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-purple-600 mb-2">15.6k</div>
+            <div className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+              Total Requests
+            </div>
+          </div>
         </div>
       </div>
     </div>

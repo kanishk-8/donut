@@ -47,17 +47,17 @@ const page = () => {
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
               Welcome back to{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300">
-                the future
+                your dashboard
               </span>
             </h2>
             <p className="text-xl text-indigo-200 mb-8 leading-relaxed">
-              Continue building intelligent AI agents that transform your
-              business. Your AI-powered journey awaits.
+              Continue managing your customer service agents and monitor
+              performance. Your AI-powered customer support awaits.
             </p>
             <div className="space-y-4 text-indigo-200">
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-indigo-400 rounded-full mr-3"></div>
-                <span>Access your AI agent dashboard</span>
+                <span>Access your customer service dashboard</span>
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-purple-400 rounded-full mr-3"></div>
@@ -65,7 +65,7 @@ const page = () => {
               </div>
               <div className="flex items-center">
                 <div className="w-2 h-2 bg-pink-400 rounded-full mr-3"></div>
-                <span>Scale your automation workflows</span>
+                <span>Scale your support automation</span>
               </div>
             </div>
           </div>
@@ -78,7 +78,12 @@ const page = () => {
             <div className="text-center mb-8 lg:hidden">
               <div className="flex items-center justify-center mb-4">
                 <Image src="/logo.png" width={40} height={40} alt="logo" />
-                <h1 className="ml-3 text-2xl font-bold text-white">donut</h1>
+                <div className="ml-3">
+                  <h1 className="text-2xl font-bold text-white">donut</h1>
+                  <span className="text-xs text-indigo-300">
+                    customer service ai
+                  </span>
+                </div>
               </div>
               <h2 className="text-3xl font-bold mb-2 text-white">
                 Welcome back

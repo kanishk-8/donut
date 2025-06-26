@@ -9,46 +9,51 @@ const Pricing = () => {
       name: "Starter",
       price: "Free",
       period: "",
-      description: "Perfect for trying out AI agents",
+      description: "Perfect for small businesses getting started",
       features: [
-        "1 AI agent",
-        "100 conversations/month",
-        "Basic templates",
-        "Community support",
-        "5-minute setup",
+        "1 chat agent",
+        "100 chat conversations/month",
+        "Basic FAQ templates",
+        "Email support",
+        "Website widget integration",
+        "Basic analytics",
       ],
       popular: false,
     },
     {
-      name: "Builder",
-      price: "$19",
+      name: "Professional",
+      price: "$29",
       period: "/month",
-      description: "For serious builders and early adopters",
+      description: "Complete customer service solution",
       features: [
-        "5 AI agents",
-        "2,000 conversations/month",
+        "3 chat agents",
+        "1,000 chat conversations/month",
+        "2 voice agents",
+        "100 voice minutes/month",
         "Custom workflows",
         "Priority support",
         "Advanced analytics",
-        "API access",
-        "Beta features first",
+        "CRM integrations",
+        "Multi-language support",
       ],
       popular: true,
     },
     {
-      name: "Scale",
-      price: "$49",
+      name: "Enterprise",
+      price: "$99",
       period: "/month",
-      description: "For growing startups and teams",
+      description: "For high-volume customer service teams",
       features: [
-        "Unlimited AI agents",
-        "10,000 conversations/month",
-        "Team collaboration",
-        "White-label options",
+        "Unlimited chat agents",
+        "10,000 chat conversations/month",
+        "Unlimited voice agents",
+        "1,000 voice minutes/month",
+        "White-label solution",
         "Custom integrations",
-        "Dedicated support",
-        "Early access to new features",
-        "1-on-1 onboarding",
+        "Dedicated account manager",
+        "SLA guarantees",
+        "Advanced security & compliance",
+        "Custom training & onboarding",
       ],
       popular: false,
     },
@@ -124,8 +129,31 @@ const Pricing = () => {
 
         <div className="text-center mt-12">
           <p className="text-indigo-300 mb-4">
-            All plans include a 14-day free trial
+            All plans include a 14-day free trial • Pay-as-you-scale pricing
           </p>
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
+            <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+              <h4 className="font-bold text-indigo-300 mb-2">
+                Extra Chat Conversations
+              </h4>
+              <p className="text-white text-lg">$0.05 per conversation</p>
+              <p className="text-sm text-indigo-400">Beyond monthly limit</p>
+            </div>
+            <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+              <h4 className="font-bold text-indigo-300 mb-2">
+                Extra Voice Minutes
+              </h4>
+              <p className="text-white text-lg">$0.10 per minute</p>
+              <p className="text-sm text-indigo-400">Beyond monthly limit</p>
+            </div>
+            <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+              <h4 className="font-bold text-indigo-300 mb-2">
+                Additional Agents
+              </h4>
+              <p className="text-white text-lg">$10 per agent/month</p>
+              <p className="text-sm text-indigo-400">Scale your team</p>
+            </div>
+          </div>
           <p className="text-sm text-indigo-400">
             Questions about scaling?{" "}
             <Link

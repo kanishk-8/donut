@@ -1,5 +1,6 @@
 import { Navbar } from "../components/navbar";
 import Hero from "@/components/hero";
+import ServiceShowcase from "@/components/serviceshowcase";
 import Features from "@/components/features";
 import Stats from "@/components/stats";
 import Testimonials from "@/components/testimonials";
@@ -25,6 +26,7 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <ServiceShowcase />
         <Features />
         <Stats />
         <Testimonials />

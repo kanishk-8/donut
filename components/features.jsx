@@ -15,37 +15,37 @@ const Features = () => {
       icon: Rocket,
       title: "No-Code Agent Builder",
       description:
-        "Create powerful AI agents with our intuitive drag-and-drop interface. No programming experience required.",
+        "Create powerful customer service agents with our intuitive interface. Build FAQ bots, support agents, and voice assistants in minutes.",
     },
     {
       icon: MessageCircle,
-      title: "Natural Conversations",
+      title: "Voice & Chat Support",
       description:
-        "Build agents that understand context and maintain engaging conversations with your customers.",
+        "Deploy both voice and chat agents that handle customer inquiries 24/7. Seamless handoff to human agents when needed.",
     },
     {
       icon: Settings,
       title: "Custom Workflows",
       description:
-        "Design complex automation workflows that integrate seamlessly with your existing business processes.",
+        "Design complex customer journey workflows. Route tickets, escalate issues, and integrate with your existing support systems.",
     },
     {
       icon: BarChart3,
       title: "Analytics & Insights",
       description:
-        "Track performance metrics and gain valuable insights into your agent's interactions and effectiveness.",
+        "Track customer satisfaction, response times, and agent performance. Get insights to continuously improve your service.",
     },
     {
       icon: Shield,
       title: "Enterprise Security",
       description:
-        "Bank-grade security with end-to-end encryption and compliance with industry standards.",
+        "Bank-grade security with end-to-end encryption. GDPR compliant and SOC 2 certified for handling sensitive customer data.",
     },
     {
       icon: Zap,
-      title: "Lightning Fast",
+      title: "Instant Integration",
       description:
-        "Deploy agents instantly with our optimized infrastructure and lightning-fast response times.",
+        "Embed agents into your website, app, or phone system in minutes. RESTful APIs and SDKs for seamless integration.",
     },
   ];
 
@@ -60,8 +60,8 @@ const Features = () => {
             </span>
           </h2>
           <p className="text-xl text-indigo-200 max-w-3xl mx-auto">
-            We're building the future of AI automation. Simple, powerful, and
-            designed for everyone.
+            We're building the future of customer service automation. Simple,
+            powerful, and designed for every business.
           </p>
         </div>
 

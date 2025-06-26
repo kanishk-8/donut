@@ -4,24 +4,24 @@ import React from "react";
 const Stats = () => {
   const stats = [
     {
-      number: "1K+",
-      label: "Early Adopters",
-      description: "Builders who believe in the vision",
+      number: "500+",
+      label: "Businesses Served",
+      description: "Companies trusting our customer service AI",
     },
     {
-      number: "100K+",
-      label: "AI Agents Created",
-      description: "And growing fast every day",
+      number: "1M+",
+      label: "Customer Queries Resolved",
+      description: "Successfully handled by our AI agents",
     },
     {
-      number: "Beta",
-      label: "Early Access",
-      description: "Join the exclusive beta program",
+      number: "85%",
+      label: "Resolution Rate",
+      description: "Queries solved without human intervention",
     },
     {
       number: "24/7",
-      label: "Community Support",
-      description: "Active founder & community help",
+      label: "Always Available",
+      description: "Round-the-clock customer support",
     },
   ];
 

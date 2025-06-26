@@ -4,13 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home,
-  Bot,
-  Database,
-  Settings,
-  BarChart2,
-  Users,
-  Zap,
+  Code,
   MessageSquare,
+  Phone,
+  FileText,
+  Settings,
+  BarChart3,
+  Key,
+  Palette,
+  Webhook,
+  Globe,
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
@@ -24,39 +27,44 @@ const SideBar = () => {
 
   const menuItems = [
     {
-      name: "Dashboard",
+      name: "Overview",
       icon: <Home className="w-5 h-5" />,
       path: "/authenticated/dashboard",
     },
     {
-      name: "My Agents",
-      icon: <Bot className="w-5 h-5" />,
-      path: "/authenticated/agents",
+      name: "API Keys",
+      icon: <Key className="w-5 h-5" />,
+      path: "/authenticated/api-keys",
     },
     {
-      name: "Conversations",
+      name: "Playground",
+      icon: <Code className="w-5 h-5" />,
+      path: "/authenticated/playground",
+    },
+    {
+      name: "Chat Widget",
       icon: <MessageSquare className="w-5 h-5" />,
-      path: "/authenticated/conversations",
+      path: "/authenticated/chat-widget",
     },
     {
-      name: "Knowledge Base",
-      icon: <Database className="w-5 h-5" />,
-      path: "/authenticated/knowledge",
+      name: "Voice Calls",
+      icon: <Phone className="w-5 h-5" />,
+      path: "/authenticated/voice-calls",
+    },
+    {
+      name: "Logs",
+      icon: <FileText className="w-5 h-5" />,
+      path: "/authenticated/logs",
     },
     {
       name: "Analytics",
-      icon: <BarChart2 className="w-5 h-5" />,
+      icon: <BarChart3 className="w-5 h-5" />,
       path: "/authenticated/analytics",
     },
     {
-      name: "Team",
-      icon: <Users className="w-5 h-5" />,
-      path: "/authenticated/team",
-    },
-    {
-      name: "Integrations",
-      icon: <Zap className="w-5 h-5" />,
-      path: "/authenticated/integrations",
+      name: "Webhooks",
+      icon: <Webhook className="w-5 h-5" />,
+      path: "/authenticated/webhooks",
     },
     {
       name: "Settings",
@@ -118,8 +126,15 @@ const SideBar = () => {
                 theme === "dark" ? "text-white" : "text-gray-900"
               }`}
             >
-              AgentBuilder
+              donut
             </h1>
+            <span
+              className={`ml-2 text-xs ${
+                theme === "dark" ? "text-indigo-300" : "text-indigo-600"
+              }`}
+            >
+              customer service ai
+            </span>
           </div>
           {/* Close button for mobile */}
           <button
