@@ -14,6 +14,7 @@ import {
   Webhook,
   ArrowLeft,
   FolderOpen,
+  Book,
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
@@ -41,6 +42,11 @@ const SideBar = () => {
       name: "Overview",
       icon: <Home className="w-5 h-5" />,
       path: `/authenticated/projects/${projectId}/dashboard`,
+    },
+    {
+      name: "Knowledge Base",
+      icon: <Book className="w-5 h-5" />,
+      path: `/authenticated/projects/${projectId}/knowledgebase`,
     },
     {
       name: "API Keys",
@@ -233,7 +239,7 @@ const SideBar = () => {
         )}
 
         <nav className="flex-1 overflow-y-auto px-3">
-          <ul className="space-y-1">
+          <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.name}>
                 <Link
