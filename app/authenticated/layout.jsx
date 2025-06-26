@@ -1,18 +1,26 @@
 "use client";
 import React from "react";
-import SideBar from "@/components/sidebar";
 import { useTheme } from "@/context/themecontext";
+import { usePathname } from "next/navigation";
+import ProjectNav from "@/components/projectNav";
 
 const Layout = ({ children }) => {
   const { theme } = useTheme();
+  const pathname = usePathname();
+
+  // Show ProjectNav only on profile and projects list page, not on nested project pages
+  const showProjectNav =
+    pathname === "/authenticated/profile" ||
+    pathname === "/authenticated/projects";
+
   return (
     <div
-      className={`flex h-screen ${
+      className={`${
         theme === "dark" ? "bg-black text-white" : "bg-white text-black"
       }`}
     >
-      <SideBar />
-      <div className="flex-1 overflow-y-auto">{children}</div>
+      {showProjectNav && <ProjectNav />}
+      {children}
     </div>
   );
 };

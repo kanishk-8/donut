@@ -83,12 +83,7 @@ const SignupPage = () => {
             <div className="text-center mb-8 lg:hidden">
               <div className="flex items-center justify-center mb-4">
                 <Image src="/logo.png" width={40} height={40} alt="logo" />
-                <div className="ml-3">
-                  <h1 className="text-2xl font-bold text-white">donut</h1>
-                  <span className="text-xs text-indigo-300">
-                    customer service ai
-                  </span>
-                </div>
+                <h1 className="ml-3 text-2xl font-bold text-white">donut</h1>
               </div>
               <h2 className="text-3xl font-bold mb-2 text-white">
                 Create your account

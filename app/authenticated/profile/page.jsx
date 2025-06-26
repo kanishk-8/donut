@@ -89,7 +89,7 @@ const page = () => {
         theme === "dark" ? "bg-black" : "bg-gray-50/50"
       }`}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1
@@ -104,9 +104,9 @@ const page = () => {
           </p>
         </div>
 
-        <div className="gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Profile Card */}
-          <div className="lg:col-span-1 mb-6">
+          <div className="lg:col-span-1">
             <div
               className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
                 theme === "dark"
