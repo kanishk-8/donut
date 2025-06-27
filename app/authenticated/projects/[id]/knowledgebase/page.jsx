@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/context/themecontext";
+import { useAuth } from "@/context/authcontext";
+import { account } from "@/lib/appwrite";
 import {
   Plus,
   Book,
@@ -17,6 +19,7 @@ import {
 
 const KnowledgeBasePage = () => {
   const { theme } = useTheme();
+  const { user } = useAuth();
   const [documents, setDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -38,43 +41,6 @@ const KnowledgeBasePage = () => {
     { id: "product", name: "Product Information" },
   ];
 
-  // Mock data for demonstration
-  const mockDocuments = [
-    {
-      $id: "1",
-      title: "Order Processing Time",
-      content:
-        "Orders are typically processed within 1-2 business days. During peak seasons, processing may take up to 3-5 business days. Once processed, you'll receive a confirmation email with tracking information.",
-      summary:
-        "Standard order processing takes 1-2 business days, up to 3-5 during peak times.",
-      category: "shipping",
-      createdAt: "2024-01-15T10:00:00.000Z",
-      updatedAt: "2024-01-15T10:00:00.000Z",
-    },
-    {
-      $id: "2",
-      title: "Return Policy",
-      content:
-        "We offer a 30-day return policy for all items. Items must be in original condition with tags attached. To initiate a return, contact our customer service team or use our online return portal.",
-      summary:
-        "30-day return policy for items in original condition with tags.",
-      category: "returns",
-      createdAt: "2024-01-14T09:00:00.000Z",
-      updatedAt: "2024-01-14T09:00:00.000Z",
-    },
-    {
-      $id: "3",
-      title: "Payment Methods",
-      content:
-        "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, and Google Pay. For enterprise customers, we also offer net payment terms upon approval.",
-      summary:
-        "Accept major credit cards, PayPal, Apple Pay, Google Pay, and enterprise net terms.",
-      category: "billing",
-      createdAt: "2024-01-13T14:30:00.000Z",
-      updatedAt: "2024-01-13T14:30:00.000Z",
-    },
-  ];
-
   useEffect(() => {
     loadDocuments();
   }, []);
@@ -83,21 +49,32 @@ const KnowledgeBasePage = () => {
     setIsLoading(true);
     try {
       const projectId = window.location.pathname.split("/")[3];
+
+      // Get session token for authentication
+      const session = await account.getSession("current");
+
       const response = await fetch(
-        `/api/v1/knowledge-base?projectId=${projectId}`
+        `/api/v1/knowledge-base?projectId=${projectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${session.secret}`,
+          },
+        }
       );
       const data = await response.json();
 
-      if (data.documents && data.documents.length > 0) {
-        setDocuments(data.documents);
+      if (response.ok) {
+        setDocuments(data.documents || []);
       } else {
-        // Use mock data if no documents found
-        setDocuments(mockDocuments);
+        console.error("Failed to load documents:", data.error);
+        setDocuments([]);
       }
+
+      console.log("API Response:", data); // Debug log
     } catch (error) {
       console.error("Failed to load documents:", error);
-      // Fallback to mock data
-      setDocuments(mockDocuments);
+      // Set empty array on error instead of mock data
+      setDocuments([]);
     } finally {
       setIsLoading(false);
     }
@@ -109,10 +86,16 @@ const KnowledgeBasePage = () => {
 
     try {
       const projectId = window.location.pathname.split("/")[3];
+      console.log("Creating document with projectId:", projectId); // Debug log
+
+      // Get session token for authentication
+      const session = await account.getSession("current");
+
       const response = await fetch("/api/v1/knowledge-base", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session.secret}`,
         },
         body: JSON.stringify({
           ...newDocument,
@@ -121,25 +104,21 @@ const KnowledgeBasePage = () => {
       });
 
       const data = await response.json();
+      console.log("API Response:", data); // Debug log
 
       if (data.success) {
         setDocuments([data.document, ...documents]);
         setNewDocument({ title: "", content: "", category: "general" });
         setIsCreating(false);
+        // Reload documents to ensure consistency
+        await loadDocuments();
+      } else {
+        console.error("Failed to create document:", data.error || data.details);
+        alert(`Failed to save document: ${data.error || data.details}`);
       }
     } catch (error) {
       console.error("Failed to create document:", error);
-      // Add mock document for demo
-      const mockDoc = {
-        $id: Date.now().toString(),
-        ...newDocument,
-        summary: newDocument.content.substring(0, 100) + "...",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      setDocuments([mockDoc, ...documents]);
-      setNewDocument({ title: "", content: "", category: "general" });
-      setIsCreating(false);
+      alert(`Error creating document: ${error.message}`);
     }
   };
 

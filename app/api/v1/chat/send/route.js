@@ -1,5 +1,6 @@
 import { generateChatResponse } from "../../../../../lib/gemini";
 import { databases } from "../../../../../lib/appwrite";
+import { Query } from "appwrite";
 
 export async function POST(request) {
   try {
@@ -24,11 +25,9 @@ export async function POST(request) {
     if (includeKnowledgeBase) {
       try {
         const kbResponse = await databases.listDocuments(
-          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || "default",
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
           "knowledge_base",
-          [
-            // Add query to filter by projectId when you set up the database
-          ]
+          [Query.equal("projectId", projectId)]
         );
 
         if (kbResponse.documents.length > 0) {
@@ -55,7 +54,7 @@ export async function POST(request) {
     // Store conversation (optional - requires database setup)
     try {
       await databases.createDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || "default",
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
         "conversations",
         "unique()",
         {

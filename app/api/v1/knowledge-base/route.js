@@ -1,8 +1,37 @@
-import { databases } from "../../../../lib/appwrite";
+import { databases, account } from "../../../../lib/appwrite";
 import { generateKnowledgeBaseSummary } from "../../../../lib/gemini";
+import { Query } from "appwrite";
+
+// Helper function to verify authentication
+async function verifyAuth(request) {
+  try {
+    // For server-side API routes, we need to check cookies instead of Authorization header
+    const cookies = request.headers.get("cookie");
+
+    if (!cookies) {
+      throw new Error("No session cookie found");
+    }
+
+    // Extract session cookie
+    const sessionMatch = cookies.match(/a_session_[^=]+=([^;]+)/);
+    if (!sessionMatch) {
+      throw new Error("No valid session cookie found");
+    }
+
+    // Use account.get() to verify the session
+    const user = await account.get();
+    return user;
+  } catch (error) {
+    throw new Error("Invalid authentication: " + error.message);
+  }
+}
 
 export async function GET(request) {
   try {
+    // Verify authentication
+    const user = await verifyAuth(request);
+    const userId = user.$id;
+
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get("projectId");
 
@@ -12,10 +41,11 @@ export async function GET(request) {
 
     try {
       const response = await databases.listDocuments(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || "default",
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
         "knowledge_base",
         [
-          // Add query to filter by projectId when you set up the database
+          Query.equal("projectId", projectId),
+          Query.equal("userId", userId), // Only get documents for authenticated user
         ]
       );
 
@@ -35,22 +65,28 @@ export async function GET(request) {
     console.error("Knowledge Base GET Error:", error);
     return Response.json(
       {
-        error: "Internal server error",
+        error: "Authentication required",
         message: error.message,
       },
-      { status: 500 }
+      { status: 401 }
     );
   }
 }
 
 export async function POST(request) {
   try {
+    // Verify authentication
+    const user = await verifyAuth(request);
+    const userId = user.$id;
+
     const {
       title,
       content,
       projectId,
       category = "general",
     } = await request.json();
+
+    console.log("POST Request Data:", { title, content, projectId, category }); // Debug log
 
     if (!title || !content || !projectId) {
       return Response.json(
@@ -63,14 +99,17 @@ export async function POST(request) {
     let summary = "";
     try {
       summary = await generateKnowledgeBaseSummary(content);
+      console.log("Generated summary:", summary); // Debug log
     } catch (error) {
       console.log("Summary generation failed:", error.message);
       summary = content.substring(0, 200) + "...";
     }
 
     try {
+      console.log("Attempting to create document in database..."); // Debug log
+
       const document = await databases.createDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID || "default",
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
         "knowledge_base",
         "unique()",
         {
@@ -79,34 +118,44 @@ export async function POST(request) {
           summary,
           projectId,
           category,
+          userId, // Add userId to associate document with authenticated user
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }
       );
+
+      console.log("Document created successfully:", document.$id); // Debug log
 
       return Response.json({
         success: true,
         document,
       });
     } catch (dbError) {
-      // Return mock response if database is not set up
-      return Response.json({
-        success: true,
-        document: {
-          $id: `mock_${Date.now()}`,
-          title,
-          content,
-          summary,
-          projectId,
-          category,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+      console.error("Database Error Details:", dbError); // Detailed error log
+
+      return Response.json(
+        {
+          success: false,
+          error: "Failed to save to database",
+          details: dbError.message,
         },
-        note: "Mock response - database not configured",
-      });
+        { status: 500 }
+      );
     }
   } catch (error) {
     console.error("Knowledge Base POST Error:", error);
+
+    // Check if it's an authentication error
+    if (error.message.includes("Invalid authentication")) {
+      return Response.json(
+        {
+          error: "Authentication required",
+          message: error.message,
+        },
+        { status: 401 }
+      );
+    }
+
     return Response.json(
       {
         error: "Internal server error",
