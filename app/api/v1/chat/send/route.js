@@ -4,6 +4,11 @@ import { Query } from "appwrite";
 
 export async function POST(request) {
   try {
+    // Check for required environment variables
+    if (!process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID) {
+      console.log("Appwrite database ID not configured");
+    }
+
     const {
       message,
       projectId,
@@ -22,7 +27,7 @@ export async function POST(request) {
     let knowledgeBase = "";
 
     // Fetch knowledge base if requested
-    if (includeKnowledgeBase) {
+    if (includeKnowledgeBase && process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID) {
       try {
         const kbResponse = await databases.listDocuments(
           process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
@@ -52,24 +57,26 @@ export async function POST(request) {
     );
 
     // Store conversation (optional - requires database setup)
-    try {
-      await databases.createDocument(
-        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
-        "conversations",
-        "unique()",
-        {
-          projectId,
-          userId: userId || "anonymous",
-          sessionId: sessionId || `session_${Date.now()}`,
-          userMessage: message,
-          aiResponse,
-          timestamp: new Date().toISOString(),
-          includeKnowledgeBase,
-        }
-      );
-    } catch (dbError) {
-      console.log("Database storage failed:", dbError.message);
-      // Continue without storing if database is not set up
+    if (process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID) {
+      try {
+        await databases.createDocument(
+          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+          "conversations",
+          "unique()",
+          {
+            projectId,
+            userId: userId || "anonymous",
+            sessionId: sessionId || `session_${Date.now()}`,
+            userMessage: message,
+            aiResponse,
+            timestamp: new Date().toISOString(),
+            includeKnowledgeBase,
+          }
+        );
+      } catch (dbError) {
+        console.log("Database storage failed:", dbError.message);
+        // Continue without storing if database is not set up
+      }
     }
 
     return Response.json({
