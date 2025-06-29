@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   FolderOpen,
   Book,
+  Waypoints,
 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
@@ -47,6 +48,11 @@ const SideBar = () => {
       name: "Knowledge Base",
       icon: <Book className="w-5 h-5" />,
       path: `/authenticated/projects/${projectId}/knowledgebase`,
+    },
+    {
+      name: "Workflows",
+      icon: <Waypoints className="w-5 h-5" />, // Use Flowchart icon for workflows
+      path: `/authenticated/projects/${projectId}/workflow`,
     },
     {
       name: "API Keys",
