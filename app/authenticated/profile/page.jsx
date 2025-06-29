@@ -86,7 +86,7 @@ const page = () => {
   return (
     <div
       className={`min-h-screen p-4 md:p-6 pt-20 md:pt-6 ${
-        theme === "dark" ? "bg-black" : "bg-gray-50/50"
+        theme === "dark" ? "bg-black" : "bg-white"
       }`}
     >
       <div className="w-full max-w-7xl mx-auto">
@@ -108,10 +108,10 @@ const page = () => {
           {/* Profile Card */}
           <div className="lg:col-span-1">
             <div
-              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
                 theme === "dark"
-                  ? "bg-zinc-800/50 border-gray-700"
-                  : "bg-white border-gray-200"
+                  ? "bg-black/20 border-white/10"
+                  : "bg-white/90 border-gray-200"
               }`}
             >
               <div className="text-center">
@@ -188,10 +188,10 @@ const page = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Information */}
             <div
-              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
                 theme === "dark"
-                  ? "bg-zinc-800/50 border-gray-700"
-                  : "bg-white border-gray-200"
+                  ? "bg-black/20 border-white/10"
+                  : "bg-white/90 border-gray-200"
               }`}
             >
               <div className="flex items-center justify-between mb-6">
@@ -247,18 +247,18 @@ const page = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, name: e.target.value })
                       }
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                      className={`w-full p-3 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
                         theme === "dark"
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
+                          ? "bg-black/20 border-white/10 text-white"
+                          : "bg-white/70 border-gray-200 text-gray-900"
                       }`}
                     />
                   ) : (
                     <p
-                      className={`p-3 rounded-lg ${
+                      className={`p-3 rounded-lg backdrop-blur-sm ${
                         theme === "dark"
-                          ? "bg-gray-700/50 text-gray-200"
-                          : "bg-gray-100 text-gray-900"
+                          ? "bg-white/10 text-gray-200 border border-white/20"
+                          : "bg-gray-100/70 text-gray-900 border border-gray-200"
                       }`}
                     >
                       {profileData.name}
@@ -281,18 +281,18 @@ const page = () => {
                       onChange={(e) =>
                         setTempData({ ...tempData, email: e.target.value })
                       }
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                      className={`w-full p-3 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
                         theme === "dark"
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
+                          ? "bg-black/20 border-white/10 text-white"
+                          : "bg-white/70 border-gray-200 text-gray-900"
                       }`}
                     />
                   ) : (
                     <p
-                      className={`p-3 rounded-lg flex items-center ${
+                      className={`p-3 rounded-lg flex items-center backdrop-blur-sm ${
                         theme === "dark"
-                          ? "bg-gray-700/50 text-gray-200"
-                          : "bg-gray-100 text-gray-900"
+                          ? "bg-white/10 text-gray-200 border border-white/20"
+                          : "bg-gray-100/70 text-gray-900 border border-gray-200"
                       }`}
                     >
                       <Mail
@@ -320,18 +320,18 @@ const page = () => {
                         setTempData({ ...tempData, bio: e.target.value })
                       }
                       rows={3}
-                      className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                      className={`w-full p-3 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
                         theme === "dark"
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
+                          ? "bg-black/20 border-white/10 text-white"
+                          : "bg-white/70 border-gray-200 text-gray-900"
                       }`}
                     />
                   ) : (
                     <p
-                      className={`p-3 rounded-lg ${
+                      className={`p-3 rounded-lg backdrop-blur-sm ${
                         theme === "dark"
-                          ? "bg-gray-700/50 text-gray-200"
-                          : "bg-gray-100 text-gray-900"
+                          ? "bg-white/10 text-gray-200 border border-white/20"
+                          : "bg-gray-100/70 text-gray-900 border border-gray-200"
                       }`}
                     >
                       {profileData.bio}
@@ -348,10 +348,10 @@ const page = () => {
                     Member Since
                   </label>
                   <p
-                    className={`p-3 rounded-lg flex items-center ${
+                    className={`p-3 rounded-lg flex items-center backdrop-blur-sm ${
                       theme === "dark"
-                        ? "bg-gray-700/50 text-gray-200"
-                        : "bg-gray-100 text-gray-900"
+                        ? "bg-white/10 text-gray-200 border border-white/20"
+                        : "bg-gray-100/70 text-gray-900 border border-gray-200"
                     }`}
                   >
                     <Calendar
@@ -367,10 +367,10 @@ const page = () => {
 
             {/* Account Settings */}
             <div
-              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
                 theme === "dark"
-                  ? "bg-zinc-800/50 border-gray-700"
-                  : "bg-white border-gray-200"
+                  ? "bg-black/20 border-white/10"
+                  : "bg-white/90 border-gray-200"
               }`}
             >
               <h3
@@ -384,8 +384,10 @@ const page = () => {
 
               <div className="space-y-4">
                 <div
-                  className={`flex items-center justify-between p-4 rounded-lg ${
-                    theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
+                  className={`flex items-center justify-between p-4 rounded-lg backdrop-blur-sm border transition-all duration-200 ${
+                    theme === "dark"
+                      ? "bg-white/10 border-white/20"
+                      : "bg-gray-100/70 border-gray-200"
                   }`}
                 >
                   <div>
@@ -421,8 +423,10 @@ const page = () => {
                 </div>
 
                 <div
-                  className={`flex items-center justify-between p-4 rounded-lg ${
-                    theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
+                  className={`flex items-center justify-between p-4 rounded-lg backdrop-blur-sm border transition-all duration-200 ${
+                    theme === "dark"
+                      ? "bg-white/10 border-white/20"
+                      : "bg-gray-100/70 border-gray-200"
                   }`}
                 >
                   <div>
@@ -441,7 +445,7 @@ const page = () => {
                       Add an extra layer of security
                     </p>
                   </div>
-                  <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                  <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200 hover:scale-105 shadow-lg">
                     Enable
                   </button>
                 </div>
@@ -450,10 +454,10 @@ const page = () => {
 
             {/* Theme Settings */}
             <div
-              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
                 theme === "dark"
-                  ? "bg-zinc-800/50 border-gray-700"
-                  : "bg-white border-gray-200"
+                  ? "bg-black/20 border-white/10"
+                  : "bg-white/90 border-gray-200"
               }`}
             >
               <h3
@@ -467,8 +471,10 @@ const page = () => {
 
               <div className="space-y-4">
                 <div
-                  className={`flex items-center justify-between p-4 rounded-lg ${
-                    theme === "dark" ? "bg-gray-700/50" : "bg-gray-100"
+                  className={`flex items-center justify-between p-4 rounded-lg backdrop-blur-sm border transition-all duration-200 ${
+                    theme === "dark"
+                      ? "bg-white/10 border-white/20"
+                      : "bg-gray-100/70 border-gray-200"
                   }`}
                 >
                   <div>
@@ -508,10 +514,10 @@ const page = () => {
 
             {/* Activity Tracker */}
             <div
-              className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
                 theme === "dark"
-                  ? "bg-zinc-800/50 border-gray-700"
-                  : "bg-white border-gray-200"
+                  ? "bg-black/20 border-white/10"
+                  : "bg-white/90 border-gray-200"
               }`}
             >
               <h3

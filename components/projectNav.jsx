@@ -18,7 +18,7 @@ const ProjectNav = () => {
 
   return (
     <div
-      className={`flex items-center justify-between p-2 border-b backdrop-blur-3xl ${
+      className={`flex items-center justify-between fixed top-0 left-0 w-full z-30 p-2 border-b backdrop-blur-3xl ${
         theme === "dark"
           ? "bg-black/20 border-white/10"
           : "bg-white/90 border-gray-200"

@@ -95,8 +95,8 @@ const page = () => {
 
   return (
     <div
-      className={`p-4 md:p-8 pt-20 md:pt-8 overflow-y-auto min-h-screen ${
-        theme === "dark" ? "bg-black" : "bg-gray-50/50"
+      className={`p-4 md:p-8 pt-24 md:pt-28 overflow-y-auto min-h-screen ${
+        theme === "dark" ? "bg-black" : "bg-white"
       }`}
     >
       <div className="container mx-auto max-w-7xl">
@@ -119,7 +119,7 @@ const page = () => {
           </div>
           <button
             onClick={() => setIsCreating(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-colors flex items-center justify-center gap-2 font-medium text-sm sm:text-base w-full sm:w-auto"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 font-medium text-sm sm:text-base w-full sm:w-auto shadow-lg"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="sm:hidden">New Project</span>
@@ -129,10 +129,12 @@ const page = () => {
 
         {/* Create Project Modal */}
         {isCreating && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div
-              className={`rounded-lg p-4 sm:p-6 w-full max-w-md mx-4 ${
-                theme === "dark" ? "bg-zinc-800" : "bg-white"
+              className={`rounded-xl backdrop-blur-3xl p-4 sm:p-6 w-full max-w-md mx-4 border shadow-2xl ${
+                theme === "dark"
+                  ? "bg-black/20 border-white/10"
+                  : "bg-white/90 border-gray-200"
               }`}
             >
               <h2
@@ -157,10 +159,10 @@ const page = () => {
                     onChange={(e) =>
                       setNewProject({ ...newProject, name: e.target.value })
                     }
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base ${
+                    className={`w-full px-3 py-2 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base transition-all ${
                       theme === "dark"
-                        ? "bg-gray-700 border-gray-600 text-white"
-                        : "bg-white border-gray-300 text-gray-900"
+                        ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
+                        : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
                     }`}
                     placeholder="Enter project name"
                     required
@@ -179,10 +181,10 @@ const page = () => {
                     onChange={(e) =>
                       setNewProject({ ...newProject, type: e.target.value })
                     }
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base ${
+                    className={`w-full px-3 py-2 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base transition-all ${
                       theme === "dark"
-                        ? "bg-gray-700 border-gray-600 text-white"
-                        : "bg-white border-gray-300 text-gray-900"
+                        ? "bg-black/20 border-white/10 text-white"
+                        : "bg-white/70 border-gray-200 text-gray-900"
                     }`}
                   >
                     <option value="Chatbot">Chatbot</option>
@@ -206,10 +208,10 @@ const page = () => {
                         description: e.target.value,
                       })
                     }
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base ${
+                    className={`w-full px-3 py-2 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base transition-all ${
                       theme === "dark"
-                        ? "bg-gray-700 border-gray-600 text-white"
-                        : "bg-white border-gray-300 text-gray-900"
+                        ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
+                        : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
                     }`}
                     placeholder="Enter project description"
                     rows="3"
@@ -218,7 +220,7 @@ const page = () => {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     type="submit"
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-md transition-colors text-sm sm:text-base font-medium"
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg transition-all duration-200 hover:scale-105 text-sm sm:text-base font-medium shadow-lg"
                   >
                     Create Project
                   </button>
@@ -232,10 +234,10 @@ const page = () => {
                         type: "Chatbot",
                       });
                     }}
-                    className={`flex-1 py-2.5 rounded-md transition-colors text-sm sm:text-base font-medium ${
+                    className={`flex-1 py-2.5 rounded-lg backdrop-blur-sm border transition-all text-sm sm:text-base font-medium hover:scale-105 ${
                       theme === "dark"
-                        ? "bg-gray-600 hover:bg-gray-500 text-white"
-                        : "bg-gray-300 hover:bg-gray-400 text-gray-700"
+                        ? "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        : "bg-gray-100/70 border-gray-300 text-gray-700 hover:bg-gray-200/70"
                     }`}
                   >
                     Cancel
@@ -252,10 +254,10 @@ const page = () => {
             {projects.map((project) => (
               <div
                 key={project.id}
-                className={`backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border transition-all duration-200 hover:scale-105 cursor-pointer ${
+                className={`backdrop-blur-3xl rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border transition-all duration-200 hover:scale-105 cursor-pointer ${
                   theme === "dark"
-                    ? "bg-zinc-800/50 border-gray-700"
-                    : "bg-white border-gray-200"
+                    ? "bg-black/20 border-white/10"
+                    : "bg-white/90 border-gray-200"
                 }`}
                 onClick={() => navigateToProject(project.id)}
               >
@@ -320,10 +322,10 @@ const page = () => {
           </div>
         ) : (
           <div
-            className={`text-center py-12 backdrop-blur-sm rounded-2xl shadow-lg border ${
+            className={`text-center py-12 backdrop-blur-3xl rounded-2xl shadow-lg border ${
               theme === "dark"
-                ? "bg-zinc-800/50 border-gray-700"
-                : "bg-white border-gray-200"
+                ? "bg-black/20 border-white/10"
+                : "bg-white/90 border-gray-200"
             }`}
           >
             <div className="text-gray-400 text-6xl mb-4">📁</div>
@@ -343,7 +345,7 @@ const page = () => {
             </p>
             <button
               onClick={() => setIsCreating(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2 font-medium mx-auto"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 font-medium mx-auto shadow-lg"
             >
               <Plus className="w-5 h-5" />
               Create Your First Project

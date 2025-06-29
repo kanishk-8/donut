@@ -210,7 +210,7 @@ const PlaygroundPage = () => {
   return (
     <div
       className={`p-4 md:p-8 overflow-y-auto min-h-screen ${
-        theme === "dark" ? "bg-black" : "bg-gray-50/50"
+        theme === "dark" ? "bg-black" : "bg-white"
       }`}
     >
       <div className="container mx-auto max-w-7xl">
@@ -235,10 +235,10 @@ const PlaygroundPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Request Panel */}
           <div
-            className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+            className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
               theme === "dark"
-                ? "bg-zinc-800/50 border-gray-700"
-                : "bg-white border-gray-200"
+                ? "bg-black/20 border-white/10"
+                : "bg-white/90 border-gray-200"
             }`}
           >
             <h2
@@ -264,12 +264,12 @@ const PlaygroundPage = () => {
                   <button
                     key={endpoint.id}
                     onClick={() => handleEndpointChange(endpoint.id)}
-                    className={`p-3 rounded-lg border text-left transition-all ${
+                    className={`p-3 rounded-lg border text-left transition-all duration-200 hover:scale-105 backdrop-blur-sm ${
                       selectedEndpoint === endpoint.id
                         ? "bg-indigo-600 text-white border-indigo-600"
                         : theme === "dark"
-                        ? "bg-gray-700 border-gray-600 text-white hover:bg-gray-600"
-                        : "bg-gray-50 border-gray-200 text-gray-900 hover:bg-gray-100"
+                        ? "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                        : "bg-gray-100/70 border-gray-200 text-gray-900 hover:bg-gray-200/70"
                     }`}
                   >
                     <div className="flex items-center mb-1">
@@ -295,8 +295,8 @@ const PlaygroundPage = () => {
                           selectedEndpoint === endpoint.id
                             ? "bg-white/20 text-white"
                             : theme === "dark"
-                            ? "bg-gray-600 text-gray-300"
-                            : "bg-gray-200 text-gray-600"
+                            ? "bg-white/20 text-gray-300 border border-white/30"
+                            : "bg-gray-200/70 text-gray-600 border border-gray-300"
                         }`}
                       >
                         {endpoint.method}
@@ -320,10 +320,10 @@ const PlaygroundPage = () => {
               <textarea
                 value={requestBody}
                 onChange={(e) => setRequestBody(e.target.value)}
-                className={`w-full h-64 p-3 border rounded-lg font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 ${
+                className={`w-full h-64 p-3 border rounded-lg backdrop-blur-sm font-mono text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
                   theme === "dark"
-                    ? "bg-gray-900 border-gray-600 text-gray-100"
-                    : "bg-gray-50 border-gray-300 text-gray-900"
+                    ? "bg-black/20 border-white/10 text-gray-100"
+                    : "bg-white/70 border-gray-200 text-gray-900"
                 }`}
                 placeholder="Enter request body..."
               />
@@ -333,7 +333,7 @@ const PlaygroundPage = () => {
             <button
               onClick={executeRequest}
               disabled={isLoading}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-3 rounded-lg transition-colors flex items-center justify-center font-medium"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-3 rounded-lg transition-all duration-200 hover:scale-105 flex items-center justify-center font-medium shadow-lg"
             >
               {isLoading ? (
                 <>
@@ -351,10 +351,10 @@ const PlaygroundPage = () => {
 
           {/* Response Panel */}
           <div
-            className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+            className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
               theme === "dark"
-                ? "bg-zinc-800/50 border-gray-700"
-                : "bg-white border-gray-200"
+                ? "bg-black/20 border-white/10"
+                : "bg-white/90 border-gray-200"
             }`}
           >
             <div className="flex items-center justify-between mb-4">
@@ -369,10 +369,10 @@ const PlaygroundPage = () => {
               {response && (
                 <button
                   onClick={copyResponse}
-                  className={`flex items-center px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  className={`flex items-center px-3 py-1.5 rounded-lg text-sm transition-all duration-200 hover:scale-105 backdrop-blur-sm ${
                     theme === "dark"
-                      ? "hover:bg-white/10 text-gray-300"
-                      : "hover:bg-gray-100 text-gray-600"
+                      ? "hover:bg-white/20 text-gray-300 border border-white/20"
+                      : "hover:bg-gray-100/80 text-gray-600 border border-gray-200"
                   }`}
                 >
                   <Copy className="w-4 h-4 mr-1" />
@@ -382,10 +382,10 @@ const PlaygroundPage = () => {
             </div>
 
             <div
-              className={`w-full h-96 p-3 border rounded-lg font-mono text-sm overflow-auto ${
+              className={`w-full h-96 p-3 border rounded-lg font-mono text-sm overflow-auto backdrop-blur-sm ${
                 theme === "dark"
-                  ? "bg-gray-900 border-gray-600 text-gray-100"
-                  : "bg-gray-50 border-gray-300 text-gray-900"
+                  ? "bg-black/30 border-white/20 text-gray-100"
+                  : "bg-white/70 border-gray-200 text-gray-900"
               }`}
             >
               {isLoading ? (
@@ -410,10 +410,10 @@ const PlaygroundPage = () => {
         {/* API Documentation */}
         {selectedEndpointData && (
           <div
-            className={`mt-6 backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+            className={`mt-6 backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
               theme === "dark"
-                ? "bg-zinc-800/50 border-gray-700"
-                : "bg-white border-gray-200"
+                ? "bg-black/20 border-white/10"
+                : "bg-white/90 border-gray-200"
             }`}
           >
             <h3
@@ -432,10 +432,10 @@ const PlaygroundPage = () => {
             </p>
             <div className="flex items-center text-sm">
               <span
-                className={`px-2 py-1 rounded font-mono mr-3 ${
+                className={`px-2 py-1 rounded font-mono mr-3 backdrop-blur-sm border ${
                   theme === "dark"
-                    ? "bg-gray-700 text-gray-300"
-                    : "bg-gray-200 text-gray-600"
+                    ? "bg-white/10 text-gray-300 border-white/20"
+                    : "bg-gray-100/70 text-gray-600 border-gray-200"
                 }`}
               >
                 {selectedEndpointData.method}

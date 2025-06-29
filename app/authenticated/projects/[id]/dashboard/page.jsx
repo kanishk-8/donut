@@ -15,8 +15,8 @@ const DashboardStats = ({
     <div
       className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border transition-all duration-200 hover:scale-105 ${
         theme === "dark"
-          ? "bg-zinc-800/50 border-gray-700"
-          : "bg-white border-gray-200"
+          ? "bg-black/20 border-white/10"
+          : "bg-white/90 border-gray-200"
       }`}
     >
       <div className="flex items-center mb-4">
@@ -88,7 +88,7 @@ const DashBoard = () => {
   return (
     <div
       className={`p-4 md:p-8 pt-20 md:pt-8 overflow-y-auto min-h-screen ${
-        theme === "dark" ? "bg-black" : "bg-gray-50/50"
+        theme === "dark" ? "bg-black" : "bg-white"
       }`}
     >
       <div className="mb-8">
@@ -113,10 +113,10 @@ const DashBoard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Quick Start */}
         <div
-          className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+          className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
             theme === "dark"
-              ? "bg-zinc-800/50 border-gray-700"
-              : "bg-white border-gray-200"
+              ? "bg-black/20 border-white/10"
+              : "bg-white/90 border-gray-200"
           }`}
         >
           <h2
@@ -149,10 +149,10 @@ const DashBoard = () => {
             ].map((item, index) => (
               <div
                 key={index}
-                className={`flex justify-between items-center p-4 rounded-lg border ${
+                className={`flex justify-between items-center p-4 rounded-lg border transition-all duration-200 hover:scale-105 backdrop-blur-sm ${
                   theme === "dark"
-                    ? "bg-gray-700/30 border-gray-600"
-                    : "bg-gray-50 border-gray-200"
+                    ? "bg-white/10 border-white/20"
+                    : "bg-gray-100/70 border-gray-200"
                 }`}
               >
                 <div>
@@ -171,7 +171,7 @@ const DashBoard = () => {
                     {item.description}
                   </p>
                 </div>
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+                <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200 hover:scale-105 text-sm font-medium shadow-lg">
                   {item.action}
                 </button>
               </div>
@@ -181,10 +181,10 @@ const DashBoard = () => {
 
         {/* Recent Activity */}
         <div
-          className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+          className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
             theme === "dark"
-              ? "bg-zinc-800/50 border-gray-700"
-              : "bg-white border-gray-200"
+              ? "bg-black/20 border-white/10"
+              : "bg-white/90 border-gray-200"
           }`}
         >
           <h2
@@ -223,8 +223,10 @@ const DashBoard = () => {
             ].map((activity, index) => (
               <div
                 key={index}
-                className={`flex justify-between items-center p-3 rounded-lg ${
-                  theme === "dark" ? "bg-gray-700/50" : "bg-gray-50"
+                className={`flex justify-between items-center p-3 rounded-lg backdrop-blur-sm ${
+                  theme === "dark"
+                    ? "bg-white/10 border border-white/20"
+                    : "bg-gray-100/70 border border-gray-200"
                 }`}
               >
                 <div className="flex items-center space-x-3">
@@ -274,10 +276,10 @@ const DashBoard = () => {
 
       {/* API Usage Chart */}
       <div
-        className={`backdrop-blur-sm rounded-2xl shadow-lg p-6 border ${
+        className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
           theme === "dark"
-            ? "bg-zinc-800/50 border-gray-700"
-            : "bg-white border-gray-200"
+            ? "bg-black/20 border-white/10"
+            : "bg-white/90 border-gray-200"
         }`}
       >
         <div className="flex justify-between items-center mb-6">
@@ -289,10 +291,10 @@ const DashBoard = () => {
             API Usage Overview
           </h2>
           <select
-            className={`px-3 py-2 rounded-lg border text-sm ${
+            className={`px-3 py-2 rounded-lg border backdrop-blur-sm text-sm transition-all ${
               theme === "dark"
-                ? "bg-gray-700 border-gray-600 text-white"
-                : "bg-white border-gray-300 text-gray-900"
+                ? "bg-black/20 border-white/10 text-white"
+                : "bg-white/70 border-gray-200 text-gray-900"
             }`}
           >
             <option>Last 7 days</option>
