@@ -118,7 +118,7 @@ const Pricing = () => {
                 className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-200 hover:scale-105 ${
                   plan.popular
                     ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white backdrop-blur-3xl shadow-2xl"
-                    : "bg-black/20 border border-white/10 hover:bg-black/30 hover:border-indigo-400/50 text-white backdrop-blur-3xl shadow-2xl"
+                    : "bg-black/20 border border-white/10 text-white backdrop-blur-3xl shadow-2xl"
                 }`}
               >
                 {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}

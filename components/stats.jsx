@@ -32,14 +32,14 @@ const Stats = () => {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="text-center group backdrop-blur-3xl bg-black/20 border border-white/10 rounded-2xl p-6 hover:bg-black/30 transition-all duration-300 hover:scale-105 hover:border-indigo-400/50 shadow-2xl"
+              className="text-center group backdrop-blur-3xl bg-black/20 border border-white/10 rounded-2xl p-6 transition-all duration-300 hover:scale-105 shadow-2xl"
             >
               <div className="relative mb-4">
-                <div className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300 group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
+                <div className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300 transition-all duration-300">
                   {stat.number}
                 </div>
               </div>
-              <h3 className="text-xl font-bold mb-2 group-hover:text-indigo-300 transition-colors duration-300">
+              <h3 className="text-xl font-bold mb-2 transition-colors duration-300">
                 {stat.label}
               </h3>
               <p className="text-indigo-200 text-sm">{stat.description}</p>

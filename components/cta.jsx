@@ -28,7 +28,7 @@ const CTA = () => {
               </Link>
               <Link
                 href="/demo"
-                className="px-10 py-4 bg-black/20 border-2 border-white/10 hover:bg-black/30 hover:border-indigo-400/50 rounded-full font-bold text-lg transition-all duration-200 hover:scale-105 text-center backdrop-blur-3xl shadow-2xl"
+                className="px-10 py-4 bg-black/20 border-2 border-white/10 rounded-full font-bold text-lg transition-all duration-200 hover:scale-105 text-center backdrop-blur-3xl shadow-2xl"
               >
                 Book a Demo
               </Link>

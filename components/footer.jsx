@@ -65,7 +65,7 @@ const Footer = () => {
                 <Link
                   key={social.name}
                   href={social.href}
-                  className="w-10 h-10 rounded-full bg-black/20 border border-white/10 flex items-center justify-center hover:bg-black/30 hover:border-indigo-400/50 transition-all duration-200 backdrop-blur-3xl shadow-lg"
+                  className="w-10 h-10 rounded-full bg-black/20 border border-white/10 flex items-center justify-center hover:scale-105 transition-all duration-200 backdrop-blur-3xl shadow-lg"
                 >
                   <span className="sr-only">{social.name}</span>
                   {social.icon === "twitter" && (
