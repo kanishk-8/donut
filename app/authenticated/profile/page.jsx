@@ -85,36 +85,29 @@ const page = () => {
 
   return (
     <div
-      className={`min-h-screen p-4 md:p-6 pt-20 md:pt-6 ${
+      className={`min-h-screen pt-16 md:pt-20 pb-8 ${
         theme === "dark" ? "bg-black" : "bg-white"
       }`}
     >
-      <div className="w-full max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1
-            className={`text-3xl font-bold mb-2 ${
-              theme === "dark" ? "text-white" : "text-gray-900"
-            }`}
-          >
-            Profile
-          </h1>
-          <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-            Manage your account settings and preferences
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Card */}
-          <div className="lg:col-span-1">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Profile Card - Fixed */}
+          <div className="lg:w-1/4">
             <div
-              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
+              className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border sticky top-24 ${
                 theme === "dark"
                   ? "bg-black/20 border-white/10"
                   : "bg-white/90 border-gray-200"
               }`}
             >
               <div className="text-center">
+                <h1
+                  className={`text-2xl font-bold mb-4 ${
+                    theme === "dark" ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  My Profile
+                </h1>
                 {/* Profile Picture */}
                 <div className="relative inline-block mb-4">
                   <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
@@ -184,8 +177,8 @@ const page = () => {
             </div>
           </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          {/* Main Content - Scrollable */}
+          <div className="lg:w-3/4 space-y-6">
             {/* Personal Information */}
             <div
               className={`backdrop-blur-3xl rounded-2xl shadow-lg p-6 border ${
