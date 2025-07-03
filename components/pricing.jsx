@@ -79,7 +79,7 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative p-8 rounded-2xl backdrop-blur-3xl border transition-all duration-300 shadow-2xl ${
+              className={`relative p-8 rounded-2xl backdrop-blur-3xl border transition-all duration-300 shadow-2xl hover:scale-105 ${
                 plan.popular
                   ? "bg-black/30 border-indigo-400/50 scale-105"
                   : "bg-black/20 border-white/10"
@@ -132,21 +132,21 @@ const Pricing = () => {
             All plans include a 14-day free trial • Pay-as-you-scale pricing
           </p>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
-            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg">
+            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
               <h4 className="font-bold text-indigo-300 mb-2">
                 Extra Chat Conversations
               </h4>
               <p className="text-white text-lg">$0.05 per conversation</p>
               <p className="text-sm text-indigo-400">Beyond monthly limit</p>
             </div>
-            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg">
+            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
               <h4 className="font-bold text-indigo-300 mb-2">
                 Extra Voice Minutes
               </h4>
               <p className="text-white text-lg">$0.10 per minute</p>
               <p className="text-sm text-indigo-400">Beyond monthly limit</p>
             </div>
-            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg">
+            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
               <h4 className="font-bold text-indigo-300 mb-2">
                 Additional Agents
               </h4>
