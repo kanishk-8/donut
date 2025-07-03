@@ -8,7 +8,7 @@ const CTA = () => {
       <div className="container mx-auto px-6">
         <div className="relative max-w-4xl mx-auto text-center">
           {/* Background decoration */}
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 backdrop-blur-sm border border-white/10"></div>
+          <div className="absolute inset-0 rounded-3xl bg-black/20 backdrop-blur-3xl border border-white/10 shadow-2xl"></div>
 
           <div className="relative z-10 p-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -22,13 +22,13 @@ const CTA = () => {
             <div className="flex flex-col sm:flex-row justify-center gap-6 items-center">
               <Link
                 href="/unauthenticated/signup"
-                className="px-10 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 rounded-full font-bold text-lg transition-all duration-200 hover:scale-105 text-center"
+                className="px-10 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 rounded-full font-bold text-lg transition-all duration-200 hover:scale-105 text-center backdrop-blur-3xl shadow-2xl"
               >
                 Start Free Trial
               </Link>
               <Link
                 href="/demo"
-                className="px-10 py-4 bg-transparent border-2 border-white hover:bg-white/10 rounded-full font-bold text-lg transition-all duration-200 hover:scale-105 text-center"
+                className="px-10 py-4 bg-black/20 border-2 border-white/10 hover:bg-black/30 hover:border-indigo-400/50 rounded-full font-bold text-lg transition-all duration-200 hover:scale-105 text-center backdrop-blur-3xl shadow-2xl"
               >
                 Book a Demo
               </Link>

@@ -79,10 +79,10 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative p-8 rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:scale-105 ${
+              className={`relative p-8 rounded-2xl backdrop-blur-3xl border transition-all duration-300 shadow-2xl ${
                 plan.popular
-                  ? "bg-gradient-to-b from-indigo-600/20 to-purple-600/20 border-indigo-400/50 scale-105"
-                  : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-indigo-400/50"
+                  ? "bg-black/30 border-indigo-400/50 scale-105"
+                  : "bg-black/20 border-white/10"
               }`}
             >
               {plan.popular && (
@@ -117,8 +117,8 @@ const Pricing = () => {
                 href="/unauthenticated/signup"
                 className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-200 hover:scale-105 ${
                   plan.popular
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white"
-                    : "bg-transparent border border-white hover:bg-white/10 text-white"
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white backdrop-blur-3xl shadow-2xl"
+                    : "bg-black/20 border border-white/10 hover:bg-black/30 hover:border-indigo-400/50 text-white backdrop-blur-3xl shadow-2xl"
                 }`}
               >
                 {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
@@ -132,21 +132,21 @@ const Pricing = () => {
             All plans include a 14-day free trial • Pay-as-you-scale pricing
           </p>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
-            <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg">
               <h4 className="font-bold text-indigo-300 mb-2">
                 Extra Chat Conversations
               </h4>
               <p className="text-white text-lg">$0.05 per conversation</p>
               <p className="text-sm text-indigo-400">Beyond monthly limit</p>
             </div>
-            <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg">
               <h4 className="font-bold text-indigo-300 mb-2">
                 Extra Voice Minutes
               </h4>
               <p className="text-white text-lg">$0.10 per minute</p>
               <p className="text-sm text-indigo-400">Beyond monthly limit</p>
             </div>
-            <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg">
               <h4 className="font-bold text-indigo-300 mb-2">
                 Additional Agents
               </h4>

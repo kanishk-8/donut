@@ -30,7 +30,10 @@ const Stats = () => {
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center group">
+            <div
+              key={index}
+              className="text-center group backdrop-blur-3xl bg-black/20 border border-white/10 rounded-2xl p-6 hover:bg-black/30 transition-all duration-300 hover:scale-105 hover:border-indigo-400/50 shadow-2xl"
+            >
               <div className="relative mb-4">
                 <div className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300 group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">
                   {stat.number}

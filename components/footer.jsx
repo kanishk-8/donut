@@ -43,7 +43,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative text-white border-t border-white/10">
+    <footer className="relative text-white border-t border-white/10 backdrop-blur-3xl bg-black/20">
       <div className="container mx-auto px-6 py-16">
         <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 gap-8">
           {/* Brand Section */}
@@ -65,7 +65,7 @@ const Footer = () => {
                 <Link
                   key={social.name}
                   href={social.href}
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-indigo-600 transition-colors duration-200"
+                  className="w-10 h-10 rounded-full bg-black/20 border border-white/10 flex items-center justify-center hover:bg-black/30 hover:border-indigo-400/50 transition-all duration-200 backdrop-blur-3xl shadow-lg"
                 >
                   <span className="sr-only">{social.name}</span>
                   {social.icon === "twitter" && (

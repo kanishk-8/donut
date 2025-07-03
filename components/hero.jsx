@@ -44,13 +44,13 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 items-center px-4">
             <Link
               href="/unauthenticated/signup"
-              className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 rounded-full font-bold text-base sm:text-lg transition-all duration-200 hover:scale-105 text-center text-white shadow-2xl"
+              className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 rounded-full font-bold text-base sm:text-lg transition-all duration-200 hover:scale-105 text-center text-white shadow-2xl backdrop-blur-3xl"
             >
               Get Started Free
             </Link>
             <Link
               href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-              className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-transparent border-2 border-white hover:bg-white/10 rounded-full font-bold text-base sm:text-lg transition-all duration-200 hover:scale-105 text-center backdrop-blur-sm"
+              className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-black/20 border-2 border-white/10 hover:bg-black/30 rounded-full font-bold text-base sm:text-lg transition-all duration-200 hover:scale-105 text-center backdrop-blur-3xl shadow-2xl"
             >
               Watch Demo
             </Link>
@@ -62,10 +62,10 @@ const Hero = () => {
               Join 1,000+ early adopters building the future
             </p>
             <div className="flex items-center justify-center space-x-4 sm:space-x-8 opacity-60 px-4">
-              <div className="w-16 sm:w-20 h-6 sm:h-8 bg-white/20 rounded backdrop-blur-sm"></div>
-              <div className="w-16 sm:w-20 h-6 sm:h-8 bg-white/20 rounded backdrop-blur-sm"></div>
-              <div className="w-16 sm:w-20 h-6 sm:h-8 bg-white/20 rounded backdrop-blur-sm"></div>
-              <div className="hidden xs:block w-16 sm:w-20 h-6 sm:h-8 bg-white/20 rounded backdrop-blur-sm"></div>
+              <div className="w-16 sm:w-20 h-6 sm:h-8 bg-black/20 rounded backdrop-blur-3xl border border-white/10 shadow-lg"></div>
+              <div className="w-16 sm:w-20 h-6 sm:h-8 bg-black/20 rounded backdrop-blur-3xl border border-white/10 shadow-lg"></div>
+              <div className="w-16 sm:w-20 h-6 sm:h-8 bg-black/20 rounded backdrop-blur-3xl border border-white/10 shadow-lg"></div>
+              <div className="hidden xs:block w-16 sm:w-20 h-6 sm:h-8 bg-black/20 rounded backdrop-blur-3xl border border-white/10 shadow-lg"></div>
             </div>
           </div>
         </div>

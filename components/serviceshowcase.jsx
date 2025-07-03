@@ -83,7 +83,7 @@ const ServiceShowcase = () => {
           {services.map((service, index) => (
             <div
               key={index}
-              className="group relative p-8 rounded-2xl backdrop-blur-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:border-indigo-400/50"
+              className="group relative p-8 rounded-2xl backdrop-blur-3xl bg-black/20 border border-white/10 hover:bg-black/30 transition-all duration-300 hover:scale-105 hover:border-indigo-400/50 shadow-2xl"
             >
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
@@ -126,7 +126,7 @@ const ServiceShowcase = () => {
           {integrations.map((integration, index) => (
             <div
               key={index}
-              className="group p-6 rounded-xl backdrop-blur-sm bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:border-indigo-400/50"
+              className="group p-6 rounded-xl backdrop-blur-3xl bg-black/20 border border-white/10 hover:bg-black/30 transition-all duration-300 hover:border-indigo-400/50 shadow-2xl"
             >
               <h4 className="font-bold text-lg mb-2 group-hover:text-indigo-300 transition-colors duration-300">
                 {integration.name}
