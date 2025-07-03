@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { User, Settings, LogOut } from "lucide-react";
 import { useTheme } from "@/context/themecontext";
 import { useAuth } from "@/context/authcontext";
@@ -9,11 +10,17 @@ import { useAuth } from "@/context/authcontext";
 const ProjectNav = () => {
   const { theme } = useTheme();
   const { user, logout } = useAuth();
+  const router = useRouter();
 
-  const handleLogout = () => {
-    logout();
-    // Optionally redirect to login page
-    window.location.href = "/";
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if there's an error, redirect to home
+      router.push("/");
+    }
   };
 
   return (

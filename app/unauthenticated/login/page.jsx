@@ -6,19 +6,50 @@ import { Eye, EyeOff, Bot, Mail, Lock } from "lucide-react";
 import { useAuth } from "@/context/authcontext";
 import Image from "next/image";
 
-const page = () => {
-  const { login, user } = useAuth();
-  const [userName, setUserName] = useState("");
+const LoginPage = () => {
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (userName.trim()) {
-      login(userName);
-      // Redirect to the dashboard after login
-      router.replace("/authenticated/projects");
+    setIsLoading(true);
+    setError("");
+
+    // Basic validation
+    if (!email || !password) {
+      setError("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      console.log("Attempting login...");
+      const result = await login(email, password);
+
+      if (result.success) {
+        console.log("Login successful, redirecting...");
+        // Redirect to dashboard after successful login
+        router.replace("/authenticated/projects");
+      } else {
+        console.error("Login failed:", result.error);
+        setError(result.error || "Failed to sign in");
+      }
+    } catch (err) {
+      console.error("Login exception:", err);
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,6 +119,13 @@ const page = () => {
 
             {/* Login Form */}
             <div className="backdrop-blur-xl rounded-2xl shadow-2xl p-8 border bg-black/20 border-gray-700">
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+                  <p className="text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+
               <form onSubmit={handleLogin} className="space-y-6">
                 {/* Email */}
                 <div>
@@ -100,8 +138,11 @@ const page = () => {
                     </div>
                     <input
                       type="email"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError("");
+                      }}
                       className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
                       placeholder="Enter your email"
                       required
@@ -121,7 +162,10 @@ const page = () => {
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (error) setError("");
+                      }}
                       className="w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
                       placeholder="Enter your password"
                       required
@@ -167,9 +211,10 @@ const page = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02]"
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Sign In
+                  {isLoading ? "Signing In..." : "Sign In"}
                 </button>
               </form>
 
@@ -193,4 +238,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default LoginPage;

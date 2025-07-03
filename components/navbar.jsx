@@ -1,10 +1,11 @@
 "use client";
+import { useAuth } from "@/context/authcontext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
 export const Navbar = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -40,12 +41,12 @@ export const Navbar = () => {
             <span className="text-sm">by me</span>
           </div>
         </div>
-        {loggedIn ? (
+        {user ? (
           <Link
-            href="/authenticated/dashboard"
+            href="/authenticated/projects"
             className="rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-5 p-3 hover:from-indigo-700 hover:to-pink-500 transition-all duration-200 hover:scale-105"
           >
-            Dashboard
+            Go To Projects
           </Link>
         ) : (
           <Link

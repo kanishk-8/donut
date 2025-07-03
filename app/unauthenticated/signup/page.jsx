@@ -1,30 +1,71 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Bot, Mail, Lock, User } from "lucide-react";
+import { useAuth } from "@/context/authcontext";
 import Image from "next/image";
 
 const SignupPage = () => {
+  const { signup } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const router = useRouter();
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear error when user starts typing
+    if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
-    console.log("Signup form submitted:", formData);
+    setIsLoading(true);
+    setError("");
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const result = await signup(
+        formData.email,
+        formData.password,
+        formData.name
+      );
+
+      if (result.success) {
+        // Redirect to dashboard after successful signup
+        router.replace("/authenticated/projects");
+      } else {
+        setError(result.error || "Failed to create account");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -95,6 +136,13 @@ const SignupPage = () => {
 
             {/* Signup Form */}
             <div className="backdrop-blur-xl rounded-2xl shadow-2xl p-8 border bg-black/20 border-gray-700">
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
+                  <p className="text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Full Name */}
                 <div>
@@ -233,9 +281,10 @@ const SignupPage = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02]"
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Create Account
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </button>
               </form>
 
