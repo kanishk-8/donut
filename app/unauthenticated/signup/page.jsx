@@ -282,23 +282,36 @@ const SignupPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-10 rounded-full font-medium hover:from-indigo-700 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl backdrop-blur-3xl"
                 >
                   {isLoading ? "Creating Account..." : "Create Account"}
                 </button>
               </form>
 
+              {/* Divider */}
+              <div className="relative mt-8 mb-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-600/30"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-black/20 backdrop-blur-sm px-4 text-sm text-gray-400 rounded-full">
+                    or
+                  </span>
+                </div>
+              </div>
+
               {/* Sign in link */}
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-300">
-                  Already have an account?{" "}
-                  <Link
-                    href="/unauthenticated/login"
-                    className="text-indigo-500 hover:text-indigo-400 font-medium"
-                  >
-                    Sign in
-                  </Link>
+              <div className="text-center">
+                <p className="mb-4 text-sm text-gray-300">
+                  Already have an account?
                 </p>
+                <Link
+                  href="/unauthenticated/login"
+                  replace
+                  className="w-full inline-block px-10 py-3 bg-black/20 border-2 border-white/10 rounded-full font-medium text-base transition-all duration-200 hover:scale-105 text-center backdrop-blur-3xl shadow-lg text-white"
+                >
+                  Sign in to your account
+                </Link>
               </div>
             </div>
           </div>

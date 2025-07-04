@@ -7,7 +7,7 @@ import { Plus, FolderOpen, Calendar, ArrowRight } from "lucide-react";
 const page = () => {
   const router = useRouter();
   const { theme } = useTheme();
-  const [projects, setProjects] = useState([
+  const [Agents, setAgents] = useState([
     {
       id: 1,
       name: "E-commerce Support Bot",
@@ -27,32 +27,32 @@ const page = () => {
       status: "Development",
     },
   ]);
-  const [newProject, setNewProject] = useState({
+  const [newAgent, setNewAgent] = useState({
     name: "",
     description: "",
     type: "Chatbot",
   });
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateProject = (e) => {
+  const handleCreateAgent = (e) => {
     e.preventDefault();
-    if (newProject.name.trim()) {
-      const project = {
+    if (newAgent.name.trim()) {
+      const agent = {
         id: Date.now(),
-        name: newProject.name,
-        description: newProject.description,
-        type: newProject.type,
+        name: newAgent.name,
+        description: newAgent.description,
+        type: newAgent.type,
         createdAt: new Date().toISOString().split("T")[0],
         status: "Development",
       };
-      setProjects([...projects, project]);
-      setNewProject({ name: "", description: "", type: "Chatbot" });
+      setAgents([...Agents, agent]);
+      setNewAgent({ name: "", description: "", type: "Chatbot" });
       setIsCreating(false);
     }
   };
 
-  const navigateToProject = (projectId) => {
-    router.push(`/authenticated/projects/${projectId}/dashboard`);
+  const navigateToAgent = (agentId) => {
+    router.push(`/authenticated/projects/${agentId}/dashboard`);
   };
 
   const getStatusColor = (status) => {
@@ -107,27 +107,27 @@ const page = () => {
                 theme === "dark" ? "text-white" : "text-gray-900"
               }`}
             >
-              My Projects
+              My Agents
             </h1>
             <p
               className={`text-sm sm:text-base ${
                 theme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}
             >
-              Create and manage your AI customer service projects
+              Create and manage your AI customer service Agents
             </p>
           </div>
           <button
             onClick={() => setIsCreating(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 font-medium text-sm sm:text-base w-full sm:w-auto shadow-lg"
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white px-4 sm:px-8 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 font-medium text-sm sm:text-base w-full sm:w-auto shadow-2xl backdrop-blur-3xl"
           >
             <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="sm:hidden">New Project</span>
-            <span className="hidden sm:inline">Create New Project</span>
+            <span className="sm:hidden">New Agent</span>
+            <span className="hidden sm:inline">Create New Agent</span>
           </button>
         </div>
 
-        {/* Create Project Modal */}
+        {/* Create Agent Modal */}
         {isCreating && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div
@@ -142,29 +142,29 @@ const page = () => {
                   theme === "dark" ? "text-white" : "text-gray-900"
                 }`}
               >
-                Create New Project
+                Create New Agent
               </h2>
-              <form onSubmit={handleCreateProject}>
+              <form onSubmit={handleCreateAgent}>
                 <div className="mb-4">
                   <label
                     className={`block text-sm font-medium mb-2 ${
                       theme === "dark" ? "text-gray-300" : "text-gray-700"
                     }`}
                   >
-                    Project Name *
+                    Agent Name *
                   </label>
                   <input
                     type="text"
-                    value={newProject.name}
+                    value={newAgent.name}
                     onChange={(e) =>
-                      setNewProject({ ...newProject, name: e.target.value })
+                      setNewAgent({ ...newAgent, name: e.target.value })
                     }
                     className={`w-full px-3 py-2 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base transition-all ${
                       theme === "dark"
                         ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
                         : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
                     }`}
-                    placeholder="Enter project name"
+                    placeholder="Enter agent name"
                     required
                   />
                 </div>
@@ -174,12 +174,12 @@ const page = () => {
                       theme === "dark" ? "text-gray-300" : "text-gray-700"
                     }`}
                   >
-                    Project Type
+                    Agent Type
                   </label>
                   <select
-                    value={newProject.type}
+                    value={newAgent.type}
                     onChange={(e) =>
-                      setNewProject({ ...newProject, type: e.target.value })
+                      setNewAgent({ ...newAgent, type: e.target.value })
                     }
                     className={`w-full px-3 py-2 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base transition-all ${
                       theme === "dark"
@@ -201,10 +201,10 @@ const page = () => {
                     Description
                   </label>
                   <textarea
-                    value={newProject.description}
+                    value={newAgent.description}
                     onChange={(e) =>
-                      setNewProject({
-                        ...newProject,
+                      setNewAgent({
+                        ...newAgent,
                         description: e.target.value,
                       })
                     }
@@ -213,31 +213,31 @@ const page = () => {
                         ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
                         : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
                     }`}
-                    placeholder="Enter project description"
+                    placeholder="Enter agent description"
                     rows="3"
                   />
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     type="submit"
-                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg transition-all duration-200 hover:scale-105 text-sm sm:text-base font-medium shadow-lg"
+                    className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white py-2.5 rounded-full transition-all duration-200 hover:scale-105 text-sm sm:text-base font-medium shadow-2xl backdrop-blur-3xl"
                   >
-                    Create Project
+                    Create Agent
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       setIsCreating(false);
-                      setNewProject({
+                      setNewAgent({
                         name: "",
                         description: "",
                         type: "Chatbot",
                       });
                     }}
-                    className={`flex-1 py-2.5 rounded-lg backdrop-blur-sm border transition-all text-sm sm:text-base font-medium hover:scale-105 ${
+                    className={`flex-1 py-2.5 rounded-full backdrop-blur-sm border-2 transition-all text-sm sm:text-base font-medium hover:scale-105 ${
                       theme === "dark"
-                        ? "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                        : "bg-gray-100/70 border-gray-300 text-gray-700 hover:bg-gray-200/70"
+                        ? "bg-black/20 border-white/10 text-white hover:bg-black/30"
+                        : "bg-white/70 border-gray-300 text-gray-700 hover:bg-white/90"
                     }`}
                   >
                     Cancel
@@ -248,18 +248,18 @@ const page = () => {
           </div>
         )}
 
-        {/* Projects Grid */}
-        {projects.length > 0 ? (
+        {/* Agents Grid */}
+        {Agents.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {projects.map((project) => (
+            {Agents.map((agent) => (
               <div
-                key={project.id}
+                key={agent.id}
                 className={`backdrop-blur-3xl rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border transition-all duration-200 hover:scale-105 cursor-pointer ${
                   theme === "dark"
                     ? "bg-black/20 border-white/10"
                     : "bg-white/90 border-gray-200"
                 }`}
-                onClick={() => navigateToProject(project.id)}
+                onClick={() => navigateToAgent(agent.id)}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div
@@ -270,17 +270,17 @@ const page = () => {
                   <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
                     <span
                       className={`px-2 py-1 text-xs rounded-full font-medium ${getTypeColor(
-                        project.type
+                        agent.type
                       )}`}
                     >
-                      {project.type}
+                      {agent.type}
                     </span>
                     <span
                       className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(
-                        project.status
+                        agent.status
                       )}`}
                     >
-                      {project.status}
+                      {agent.status}
                     </span>
                   </div>
                 </div>
@@ -290,7 +290,7 @@ const page = () => {
                     theme === "dark" ? "text-white" : "text-gray-900"
                   }`}
                 >
-                  {project.name}
+                  {agent.name}
                 </h3>
 
                 <p
@@ -298,7 +298,7 @@ const page = () => {
                     theme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  {project.description}
+                  {agent.description}
                 </p>
 
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
@@ -309,7 +309,7 @@ const page = () => {
                         theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }
                     >
-                      {project.createdAt}
+                      {agent.createdAt}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium text-sm">
@@ -334,21 +334,21 @@ const page = () => {
                 theme === "dark" ? "text-gray-300" : "text-gray-600"
               }`}
             >
-              No projects yet
+              No Agents yet
             </h3>
             <p
               className={`mb-4 ${
                 theme === "dark" ? "text-gray-400" : "text-gray-500"
               }`}
             >
-              Create your first AI customer service project to get started
+              Create your first AI customer service agent to get started
             </p>
             <button
               onClick={() => setIsCreating(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 font-medium mx-auto shadow-lg"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white px-8 py-3 rounded-full transition-all duration-200 hover:scale-105 flex items-center gap-2 font-medium mx-auto shadow-2xl backdrop-blur-3xl"
             >
               <Plus className="w-5 h-5" />
-              Create Your First Project
+              Create Your First Agent
             </button>
           </div>
         )}

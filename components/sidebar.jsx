@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
   Code,
@@ -25,18 +25,59 @@ const SideBar = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const projectId = pathname.split("/")[3]; // Extract project ID from URL
 
-  // Mock project data - in a real app, this would come from an API
-  const [projectData, setProjectData] = useState({
-    name: "E-commerce Support Bot",
-    type: "Chatbot",
-    status: "Active",
-  });
+  // Initialize projectData state with null
+  const [projectData, setProjectData] = useState(null);
 
   // Check if we're in a project context
   const isInProject = pathname.includes("/projects/") && projectId;
+
+  // Fetch project data when projectId changes
+  useEffect(() => {
+    const fetchProjectData = async () => {
+      if (isInProject) {
+        // In a real app, this would be an API call
+        // For now, we'll use the hardcoded data from the projects page
+        const mockAgents = [
+          {
+            id: 1,
+            name: "E-commerce Support Bot",
+            description:
+              "AI-powered customer service bot for online store with order tracking and FAQ handling",
+            createdAt: "2024-01-15",
+            type: "Chatbot",
+            status: "Active",
+          },
+          {
+            id: 2,
+            name: "Healthcare Assistant",
+            description:
+              "Voice-enabled assistant for patient appointment scheduling and basic health queries",
+            createdAt: "2024-01-20",
+            type: "Voice AI",
+            status: "Development",
+          },
+        ];
+
+        // Find the project that matches the projectId
+        const project = mockAgents.find(
+          (agent) => agent.id === parseInt(projectId)
+        );
+
+        if (project) {
+          setProjectData(project);
+        } else {
+          // If project not found, you might want to handle this case
+          console.log("Project not found");
+        }
+      }
+    };
+
+    fetchProjectData();
+  }, [projectId, isInProject]);
 
   const menuItems = [
     {
@@ -196,7 +237,7 @@ const SideBar = () => {
         )}
 
         {/* Project Header - Only show when in project context */}
-        {isInProject && (
+        {isInProject && projectData && (
           <div className="px-4 mb-6">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
