@@ -9,32 +9,19 @@ const Pricing = () => {
       name: "Starter",
       price: "Free",
       period: "",
-      description: "Perfect for small businesses getting started",
-      features: [
-        "1 chat agent",
-        "100 chat conversations/month",
-        "Basic FAQ templates",
-        "Email support",
-        "Website widget integration",
-        "Basic analytics",
-      ],
+      description: "Perfect for small businesses",
+      features: ["1 chat agent", "100 conversations/month", "Basic templates"],
       popular: false,
     },
     {
       name: "Professional",
       price: "$29",
       period: "/month",
-      description: "Complete customer service solution",
+      description: "Complete service solution",
       features: [
         "3 chat agents",
-        "1,000 chat conversations/month",
-        "2 voice agents",
-        "100 voice minutes/month",
-        "Custom workflows",
+        "1,000 conversations/month",
         "Priority support",
-        "Advanced analytics",
-        "CRM integrations",
-        "Multi-language support",
       ],
       popular: true,
     },
@@ -42,28 +29,21 @@ const Pricing = () => {
       name: "Enterprise",
       price: "$99",
       period: "/month",
-      description: "For high-volume customer service teams",
+      description: "For high-volume teams",
       features: [
-        "Unlimited chat agents",
-        "10,000 chat conversations/month",
-        "Unlimited voice agents",
-        "1,000 voice minutes/month",
-        "White-label solution",
-        "Custom integrations",
-        "Dedicated account manager",
-        "SLA guarantees",
-        "Advanced security & compliance",
-        "Custom training & onboarding",
+        "Unlimited agents",
+        "10,000 conversations/month",
+        "Dedicated support",
       ],
       popular: false,
     },
   ];
 
   return (
-    <section className="relative py-20 text-white">
+    <section className="relative py-14 pt-24 text-white">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Simple{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300">
               Pricing
@@ -79,11 +59,11 @@ const Pricing = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative p-8 rounded-2xl backdrop-blur-3xl border transition-all duration-300 shadow-2xl hover:scale-105 ${
+              className={`relative p-6 rounded-2xl backdrop-blur-3xl border transition-all duration-300 ${
                 plan.popular
-                  ? "bg-black/30 border-indigo-400/50 scale-105"
+                  ? "bg-black/30 border-indigo-400/50"
                   : "bg-black/20 border-white/10"
-              }`}
+              } hover:scale-105`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -93,9 +73,9 @@ const Pricing = () => {
                 </div>
               )}
 
-              <div className="text-center mb-8">
+              <div className="text-center mb-5">
                 <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                <div className="flex items-baseline justify-center mb-4">
+                <div className="flex items-baseline justify-center mb-2">
                   <span className="text-5xl font-bold">{plan.price}</span>
                   <span className="text-xl text-indigo-300 ml-1">
                     {plan.period}
@@ -104,7 +84,7 @@ const Pricing = () => {
                 <p className="text-indigo-200">{plan.description}</p>
               </div>
 
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-2 mb-6">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center">
                     <Check className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
@@ -127,27 +107,27 @@ const Pricing = () => {
           ))}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-10">
           <p className="text-indigo-300 mb-4">
             All plans include a 14-day free trial • Pay-as-you-scale pricing
           </p>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
-            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
-              <h4 className="font-bold text-indigo-300 mb-2">
+            <div className="text-center p-3 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
+              <h4 className="font-bold text-indigo-300 mb-1">
                 Extra Chat Conversations
               </h4>
               <p className="text-white text-lg">$0.05 per conversation</p>
               <p className="text-sm text-indigo-400">Beyond monthly limit</p>
             </div>
-            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
-              <h4 className="font-bold text-indigo-300 mb-2">
+            <div className="text-center p-3 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
+              <h4 className="font-bold text-indigo-300 mb-1">
                 Extra Voice Minutes
               </h4>
               <p className="text-white text-lg">$0.10 per minute</p>
               <p className="text-sm text-indigo-400">Beyond monthly limit</p>
             </div>
-            <div className="text-center p-4 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
-              <h4 className="font-bold text-indigo-300 mb-2">
+            <div className="text-center p-3 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
+              <h4 className="font-bold text-indigo-300 mb-1">
                 Additional Agents
               </h4>
               <p className="text-white text-lg">$10 per agent/month</p>
