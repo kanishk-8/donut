@@ -2,6 +2,7 @@
 import React from "react";
 import { useTheme } from "@/context/themecontext";
 import { usePathname } from "next/navigation";
+import { ProjectProvider } from "@/context/projectcontext";
 import ProjectNav from "@/components/dashboard/projectNav";
 
 const Layout = ({ children }) => {
@@ -14,14 +15,16 @@ const Layout = ({ children }) => {
     pathname === "/authenticated/projects";
 
   return (
-    <div
-      className={`${
-        theme === "dark" ? "bg-black text-white" : "bg-white text-black"
-      }`}
-    >
-      {showProjectNav && <ProjectNav />}
-      {children}
-    </div>
+    <ProjectProvider>
+      <div
+        className={`${
+          theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+        }`}
+      >
+        {showProjectNav && <ProjectNav />}
+        {children}
+      </div>
+    </ProjectProvider>
   );
 };
 

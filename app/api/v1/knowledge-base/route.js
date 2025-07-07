@@ -1,6 +1,6 @@
 import { databases, account } from "../../../../lib/appwrite";
 import { generateKnowledgeBaseSummary } from "../../../../lib/gemini";
-import { Query } from "appwrite";
+// import { Query } from "appwrite";
 
 // Helper function to verify authentication
 async function verifyAuth(request) {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/context/themecontext";
 import { useAuth } from "@/context/authcontext";
-import { account } from "@/lib/appwrite";
+// import { account } from "@/lib/appwrite";
 import {
   Plus,
   Book,

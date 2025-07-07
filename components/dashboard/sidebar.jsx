@@ -20,64 +20,26 @@ import {
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
 import { useTheme } from "@/context/themecontext";
+import { useProject } from "@/context/projectcontext";
 
 const SideBar = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
+  const { fetchProject, currentProject } = useProject();
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const projectId = pathname.split("/")[3]; // Extract project ID from URL
-
-  // Initialize projectData state with null
-  const [projectData, setProjectData] = useState(null);
 
   // Check if we're in a project context
   const isInProject = pathname.includes("/projects/") && projectId;
 
   // Fetch project data when projectId changes
   useEffect(() => {
-    const fetchProjectData = async () => {
-      if (isInProject) {
-        // In a real app, this would be an API call
-        // For now, we'll use the hardcoded data from the projects page
-        const mockAgents = [
-          {
-            id: 1,
-            name: "E-commerce Support Bot",
-            description:
-              "AI-powered customer service bot for online store with order tracking and FAQ handling",
-            createdAt: "2024-01-15",
-            type: "Chatbot",
-            status: "Active",
-          },
-          {
-            id: 2,
-            name: "Healthcare Assistant",
-            description:
-              "Voice-enabled assistant for patient appointment scheduling and basic health queries",
-            createdAt: "2024-01-20",
-            type: "Voice AI",
-            status: "Development",
-          },
-        ];
-
-        // Find the project that matches the projectId
-        const project = mockAgents.find(
-          (agent) => agent.id === parseInt(projectId)
-        );
-
-        if (project) {
-          setProjectData(project);
-        } else {
-          // If project not found, you might want to handle this case
-          console.log("Project not found");
-        }
-      }
-    };
-
-    fetchProjectData();
-  }, [projectId, isInProject]);
+    if (isInProject && projectId) {
+      fetchProject(projectId);
+    }
+  }, [projectId, isInProject, fetchProject]);
 
   const menuItems = [
     {
@@ -92,7 +54,7 @@ const SideBar = () => {
     },
     {
       name: "Workflows",
-      icon: <Waypoints className="w-5 h-5" />, // Use Flowchart icon for workflows
+      icon: <Waypoints className="w-5 h-5" />,
       path: `/authenticated/projects/${projectId}/workflow`,
     },
     {
@@ -237,7 +199,7 @@ const SideBar = () => {
         )}
 
         {/* Project Header - Only show when in project context */}
-        {isInProject && projectData && (
+        {isInProject && currentProject && (
           <div className="px-4 mb-6">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
@@ -248,7 +210,7 @@ const SideBar = () => {
                   theme === "dark" ? "text-white" : "text-gray-900"
                 }`}
               >
-                {projectData.name}
+                {currentProject.name}
               </h2>
             </div>
             <div className="flex gap-1.5 ml-8">
@@ -259,7 +221,7 @@ const SideBar = () => {
                     : "bg-blue-100 text-blue-700"
                 }`}
               >
-                {projectData.type}
+                {currentProject.type}
               </span>
               <span
                 className={`px-1.5 py-0.5 text-xs rounded ${
@@ -268,7 +230,7 @@ const SideBar = () => {
                     : "bg-green-100 text-green-700"
                 }`}
               >
-                {projectData.status}
+                {currentProject.status}
               </span>
             </div>
           </div>
@@ -325,16 +287,24 @@ const SideBar = () => {
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:scale-105"
               }`}
             >
-              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center justify-center">
-                <span className="text-xs font-semibold text-white">
-                  {user?.name
-                    ? user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()
-                    : "U"}
-                </span>
+              <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center justify-center overflow-hidden">
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-xs font-semibold text-white">
+                    {user?.name
+                      ? user.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "U"}
+                  </span>
+                )}
               </div>
               <div className="ml-2 md:ml-3 min-w-0 flex-1">
                 <p

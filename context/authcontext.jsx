@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
-import { account, ID } from "@/lib/appwrite";
+import { supabase } from "@/lib/supabase/client";
 
 const AuthContext = createContext();
 
@@ -11,23 +11,69 @@ export const AuthProvider = ({ children }) => {
   // Check for existing session on component mount
   useEffect(() => {
     checkUser();
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        const userInfo = {
+          id: session.user.id,
+          email: session.user.email,
+          name:
+            session.user.user_metadata?.name ||
+            session.user.user_metadata?.full_name ||
+            session.user.email?.split("@")[0] ||
+            "User",
+          bio: "AI enthusiast and agent builder",
+          joinDate: new Date(session.user.created_at).toLocaleDateString(
+            "en-US",
+            {
+              month: "long",
+              year: "numeric",
+            }
+          ),
+          plan: "Pro Plan",
+          avatar: session.user.user_metadata?.avatar_url || null,
+        };
+        setUser(userInfo);
+        localStorage.setItem("donut_user", JSON.stringify(userInfo));
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+        localStorage.removeItem("donut_user");
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const checkUser = async () => {
     try {
-      const session = await account.get();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         const userInfo = {
-          $id: session.$id,
-          email: session.email,
-          name: session.name || session.email?.split("@")[0] || "User",
+          id: session.user.id,
+          email: session.user.email,
+          name:
+            session.user.user_metadata?.name ||
+            session.user.user_metadata?.full_name ||
+            session.user.email?.split("@")[0] ||
+            "User",
           bio: "AI enthusiast and agent builder",
-          joinDate: new Date(session.$createdAt).toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric",
-          }),
+          joinDate: new Date(session.user.created_at).toLocaleDateString(
+            "en-US",
+            {
+              month: "long",
+              year: "numeric",
+            }
+          ),
           plan: "Pro Plan",
-          avatar: null,
+          avatar: session.user.user_metadata?.avatar_url || null,
         };
         setUser(userInfo);
         localStorage.setItem("donut_user", JSON.stringify(userInfo));
@@ -45,46 +91,75 @@ export const AuthProvider = ({ children }) => {
       console.log("Attempting signup with:", {
         email,
         name,
-        endpoint: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
       });
 
-      // Create account
-      const response = await account.create(ID.unique(), email, password, name);
-      console.log("Account created:", response);
+      // Create account with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+            full_name: name,
+            display_name: name,
+          },
+          emailRedirectTo: `${window.location.origin}/unauthenticated/login?verified=true`,
+        },
+      });
 
-      // Auto-login after signup using the correct v1.4+ method
-      const session = await account.createEmailPasswordSession(email, password);
-      console.log("Session created:", session);
+      if (error) {
+        console.error("Signup error:", error);
+        throw error;
+      }
 
-      // Get user data and update state
-      const userData = await account.get();
-      console.log("User data:", userData);
+      console.log("Account created:", data);
 
-      const userInfo = {
-        $id: userData.$id,
-        email: userData.email,
-        name: userData.name || name,
-        bio: "AI enthusiast and agent builder",
-        joinDate: new Date().toLocaleDateString("en-US", {
-          month: "long",
-          year: "numeric",
-        }),
-        plan: "Pro Plan",
-        avatar: null,
-      };
+      // Check if email confirmation is required
+      if (data.user && !data.session) {
+        // Email confirmation required
+        return {
+          success: true,
+          user: data.user,
+          needsConfirmation: true,
+          message:
+            "Please check your email and click the confirmation link to complete your registration.",
+        };
+      }
 
-      setUser(userInfo);
-      localStorage.setItem("donut_user", JSON.stringify(userInfo));
+      // If user is immediately confirmed (auto-confirm enabled)
+      if (data.user && data.session) {
+        const userInfo = {
+          id: data.user.id,
+          email: data.user.email,
+          name:
+            data.user.user_metadata?.name ||
+            data.user.user_metadata?.full_name ||
+            name,
+          bio: "AI enthusiast and agent builder",
+          joinDate: new Date().toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          }),
+          plan: "Pro Plan",
+          avatar: data.user.user_metadata?.avatar_url || null,
+        };
 
-      return { success: true, user: userInfo };
+        setUser(userInfo);
+        localStorage.setItem("donut_user", JSON.stringify(userInfo));
+        return { success: true, user: userInfo, needsConfirmation: false };
+      }
+
+      return { success: true, user: data.user, needsConfirmation: true };
     } catch (error) {
       console.error("Signup error:", error);
       let errorMessage = "Failed to create account";
 
-      if (error.code === 409) {
+      if (error.message?.includes("already registered")) {
         errorMessage = "An account with this email already exists";
-      } else if (error.code === 400) {
-        errorMessage = "Invalid email or password format";
+      } else if (error.message?.includes("Invalid email")) {
+        errorMessage = "Invalid email format";
+      } else if (error.message?.includes("Password")) {
+        errorMessage = "Password should be at least 6 characters";
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -97,28 +172,36 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log("Attempting login with:", {
         email,
-        endpoint: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
       });
 
-      // Create session using the correct v1.4+ method
-      const session = await account.createEmailPasswordSession(email, password);
-      console.log("Session created:", session);
+      // Sign in with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-      // Get user data
-      const userData = await account.get();
-      console.log("User data:", userData);
+      if (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
+
+      console.log("Login successful:", data);
 
       const userInfo = {
-        $id: userData.$id,
-        email: userData.email,
-        name: userData.name || userData.email?.split("@")[0] || "User",
+        id: data.user.id,
+        email: data.user.email,
+        name:
+          data.user.user_metadata?.name ||
+          data.user.user_metadata?.full_name ||
+          data.user.email?.split("@")[0] ||
+          "User",
         bio: "AI enthusiast and agent builder",
-        joinDate: new Date(userData.$createdAt).toLocaleDateString("en-US", {
+        joinDate: new Date(data.user.created_at).toLocaleDateString("en-US", {
           month: "long",
           year: "numeric",
         }),
         plan: "Pro Plan",
-        avatar: null,
+        avatar: data.user.user_metadata?.avatar_url || null,
       };
 
       setUser(userInfo);
@@ -129,9 +212,9 @@ export const AuthProvider = ({ children }) => {
       console.error("Login error:", error);
       let errorMessage = "Failed to sign in";
 
-      if (error.code === 401) {
+      if (error.message?.includes("Invalid login credentials")) {
         errorMessage = "Invalid email or password";
-      } else if (error.code === 429) {
+      } else if (error.message?.includes("too many requests")) {
         errorMessage = "Too many attempts. Please try again later";
       } else if (error.message) {
         errorMessage = error.message;
@@ -144,18 +227,42 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       console.log("Attempting logout...");
-      // Delete the current session
-      await account.deleteSessions();
+
+      // Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Supabase logout error:", error);
+        // Don't throw here, still clear local state
+      }
+
       console.log("Logout successful");
 
+      // Clear state and localStorage
       setUser(null);
       localStorage.removeItem("donut_user");
+
+      // Clear all Supabase auth tokens from localStorage
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("sb-") && key.includes("auth")) {
+          localStorage.removeItem(key);
+        }
+      });
+
       return { success: true };
     } catch (error) {
       console.error("Logout error:", error);
       // Even if there's an error, clear local state
       setUser(null);
       localStorage.removeItem("donut_user");
+
+      // Clear auth tokens
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("sb-") && key.includes("auth")) {
+          localStorage.removeItem(key);
+        }
+      });
+
       return { success: true }; // Return success to allow redirect
     }
   };

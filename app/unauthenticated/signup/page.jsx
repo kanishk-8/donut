@@ -12,6 +12,7 @@ const SignupPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -56,8 +57,17 @@ const SignupPage = () => {
       );
 
       if (result.success) {
-        // Redirect to dashboard after successful signup
-        router.replace("/authenticated/projects");
+        if (result.needsConfirmation) {
+          // Show success message for email confirmation
+          setSuccessMessage(
+            result.message ||
+              "Please check your email and click the confirmation link to complete your registration."
+          );
+          setError("");
+        } else {
+          // Redirect to dashboard after successful signup
+          router.replace("/authenticated/projects");
+        }
       } else {
         setError(result.error || "Failed to create account");
       }
@@ -136,6 +146,13 @@ const SignupPage = () => {
 
             {/* Signup Form */}
             <div className="backdrop-blur-xl rounded-2xl shadow-2xl p-8 border bg-black/20 border-gray-700">
+              {/* Success Message */}
+              {successMessage && (
+                <div className="mb-6 p-4 bg-green-500/20 border border-green-500/50 rounded-lg">
+                  <p className="text-green-400 text-sm">{successMessage}</p>
+                </div>
+              )}
+
               {/* Error Message */}
               {error && (
                 <div className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg">

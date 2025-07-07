@@ -11,6 +11,7 @@ import {
   Edit2,
   Save,
   X,
+  Loader2,
 } from "lucide-react";
 import { useTheme } from "@/context/themecontext";
 
@@ -24,8 +25,10 @@ const page = () => {
     bio: "Customer service AI developer",
     joinDate: "January 2024",
     plan: "Professional Plan",
+    avatar: null,
   });
   const [tempData, setTempData] = useState(profileData);
+  const [uploading, setUploading] = useState(false);
 
   // Handle hydration
   useEffect(() => {
@@ -41,6 +44,7 @@ const page = () => {
         bio: user.bio || "Customer service AI developer",
         joinDate: user.joinDate || "January 2024",
         plan: user.plan || "Professional Plan",
+        avatar: user.avatar || null,
       };
       setProfileData(updatedData);
       setTempData(updatedData);
@@ -63,8 +67,40 @@ const page = () => {
     setIsEditing(false);
   };
 
-  const handlePhotoUpload = () => {
-    alert("uploadfile");
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File size must be less than 5MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // Convert file to base64 for storage in localStorage
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64String = e.target.result;
+        const updatedData = { ...profileData, avatar: base64String };
+        setProfileData(updatedData);
+        setTempData(updatedData);
+        updateUser(updatedData);
+        setUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      alert("Failed to upload photo");
+      setUploading(false);
+    }
   };
 
   const { theme, toggleTheme } = useTheme();
@@ -110,19 +146,41 @@ const page = () => {
                 </h1>
                 {/* Profile Picture */}
                 <div className="relative inline-block mb-4">
-                  <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                    {profileData.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
-                  </div>
-                  <button
-                    onClick={() => handlePhotoUpload()}
-                    className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors"
+                  {profileData.avatar ? (
+                    <img
+                      src={profileData.avatar}
+                      alt="Profile"
+                      className="w-24 h-24 rounded-full object-cover border-2 border-indigo-500"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                      {profileData.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </div>
+                  )}
+                  <label
+                    htmlFor="photo-upload"
+                    className={`absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors cursor-pointer ${
+                      uploading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   >
-                    <Camera className="w-4 h-4" />
-                  </button>
+                    {uploading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Camera className="w-4 h-4" />
+                    )}
+                  </label>
+                  <input
+                    id="photo-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
                 </div>
 
                 {/* Profile Info */}
@@ -267,35 +325,27 @@ const page = () => {
                   >
                     Email Address
                   </label>
-                  {isEditing ? (
-                    <input
-                      type="email"
-                      value={tempData.email}
-                      onChange={(e) =>
-                        setTempData({ ...tempData, email: e.target.value })
-                      }
-                      className={`w-full p-3 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
-                        theme === "dark"
-                          ? "bg-black/20 border-white/10 text-white"
-                          : "bg-white/70 border-gray-200 text-gray-900"
+                  <div
+                    className={`p-3 rounded-lg flex items-center backdrop-blur-sm ${
+                      theme === "dark"
+                        ? "bg-white/10 text-gray-200 border border-white/20"
+                        : "bg-gray-100/70 text-gray-900 border border-gray-200"
+                    }`}
+                  >
+                    <Mail
+                      className={`w-4 h-4 mr-2 ${
+                        theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }`}
                     />
-                  ) : (
-                    <p
-                      className={`p-3 rounded-lg flex items-center backdrop-blur-sm ${
-                        theme === "dark"
-                          ? "bg-white/10 text-gray-200 border border-white/20"
-                          : "bg-gray-100/70 text-gray-900 border border-gray-200"
+                    {profileData.email}
+                    <span
+                      className={`ml-auto text-xs ${
+                        theme === "dark" ? "text-gray-500" : "text-gray-400"
                       }`}
                     >
-                      <Mail
-                        className={`w-4 h-4 mr-2 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      />
-                      {profileData.email}
-                    </p>
-                  )}
+                      Not editable
+                    </span>
+                  </div>
                 </div>
 
                 <div className="md:col-span-2">

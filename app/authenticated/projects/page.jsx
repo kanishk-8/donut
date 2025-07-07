@@ -2,52 +2,49 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/context/themecontext";
-import { Plus, FolderOpen, Calendar, ArrowRight } from "lucide-react";
+import { useProject } from "@/context/projectcontext";
+import { Plus, FolderOpen, Calendar, ArrowRight, Loader2 } from "lucide-react";
 
 const page = () => {
   const router = useRouter();
   const { theme } = useTheme();
-  const [Agents, setAgents] = useState([
-    {
-      id: 1,
-      name: "E-commerce Support Bot",
-      description:
-        "AI-powered customer service bot for online store with order tracking and FAQ handling",
-      createdAt: "2024-01-15",
-      type: "Chatbot",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Healthcare Assistant",
-      description:
-        "Voice-enabled assistant for patient appointment scheduling and basic health queries",
-      createdAt: "2024-01-20",
-      type: "Voice AI",
-      status: "Development",
-    },
-  ]);
+  const {
+    projects: Agents,
+    loading,
+    error,
+    createProject,
+    fetchProjects,
+  } = useProject();
+
   const [newAgent, setNewAgent] = useState({
     name: "",
     description: "",
     type: "Chatbot",
   });
   const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
 
-  const handleCreateAgent = (e) => {
+  const handleCreateAgent = async (e) => {
     e.preventDefault();
-    if (newAgent.name.trim()) {
-      const agent = {
-        id: Date.now(),
+    if (!newAgent.name.trim()) return;
+
+    try {
+      setCreateError("");
+      const result = await createProject({
         name: newAgent.name,
         description: newAgent.description,
         type: newAgent.type,
-        createdAt: new Date().toISOString().split("T")[0],
-        status: "Development",
-      };
-      setAgents([...Agents, agent]);
-      setNewAgent({ name: "", description: "", type: "Chatbot" });
-      setIsCreating(false);
+      });
+
+      if (result.success) {
+        setNewAgent({ name: "", description: "", type: "Chatbot" });
+        setIsCreating(false);
+      } else {
+        setCreateError(result.error || "Failed to create project");
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      setCreateError("Failed to create project");
     }
   };
 
@@ -144,6 +141,11 @@ const page = () => {
               >
                 Create New Agent
               </h2>
+              {createError && (
+                <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 text-sm">
+                  {createError}
+                </div>
+              )}
               <form onSubmit={handleCreateAgent}>
                 <div className="mb-4">
                   <label
@@ -228,6 +230,7 @@ const page = () => {
                     type="button"
                     onClick={() => {
                       setIsCreating(false);
+                      setCreateError("");
                       setNewAgent({
                         name: "",
                         description: "",
@@ -249,7 +252,47 @@ const page = () => {
         )}
 
         {/* Agents Grid */}
-        {Agents.length > 0 ? (
+        {loading ? (
+          <div
+            className={`text-center py-12 backdrop-blur-3xl rounded-2xl shadow-lg border ${
+              theme === "dark"
+                ? "bg-black/20 border-white/10"
+                : "bg-white/90 border-gray-200"
+            }`}
+          >
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-indigo-600" />
+            <p
+              className={`${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              Loading your agents...
+            </p>
+          </div>
+        ) : error ? (
+          <div
+            className={`text-center py-12 backdrop-blur-3xl rounded-2xl shadow-lg border ${
+              theme === "dark"
+                ? "bg-black/20 border-white/10"
+                : "bg-white/90 border-gray-200"
+            }`}
+          >
+            <div className="text-red-400 text-6xl mb-4">⚠️</div>
+            <h3
+              className={`text-xl font-medium mb-2 ${
+                theme === "dark" ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              {error}
+            </h3>
+            <button
+              onClick={fetchProjects}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white px-6 py-2 rounded-full transition-all duration-200 hover:scale-105 text-sm font-medium mx-auto"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : Agents.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {Agents.map((agent) => (
               <div
@@ -309,7 +352,7 @@ const page = () => {
                         theme === "dark" ? "text-gray-400" : "text-gray-500"
                       }
                     >
-                      {agent.createdAt}
+                      {new Date(agent.created_at).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium text-sm">
