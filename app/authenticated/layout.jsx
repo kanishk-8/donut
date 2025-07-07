@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
   // Redirect non-authenticated users
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/unauthenticated/login");
+      router.push("/");
     }
   }, [user, loading, router]);
 
