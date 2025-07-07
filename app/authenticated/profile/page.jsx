@@ -1,5 +1,5 @@
 "use client";
-import ActivityTracker from "@/components/activitytracker";
+import ActivityTracker from "@/components/dashboard/activitytracker";
 import { useAuth } from "@/context/authcontext";
 import React, { useState, useEffect } from "react";
 import {

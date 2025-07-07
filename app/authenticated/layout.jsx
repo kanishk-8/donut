@@ -2,7 +2,7 @@
 import React from "react";
 import { useTheme } from "@/context/themecontext";
 import { usePathname } from "next/navigation";
-import ProjectNav from "@/components/projectNav";
+import ProjectNav from "@/components/dashboard/projectNav";
 
 const Layout = ({ children }) => {
   const { theme } = useTheme();

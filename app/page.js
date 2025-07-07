@@ -1,12 +1,12 @@
-import { Navbar } from "../components/navbar";
-import Hero from "@/components/hero";
-import ServiceShowcase from "@/components/serviceshowcase";
-import Features from "@/components/features";
-import Stats from "@/components/stats";
-import Testimonials from "@/components/testimonials";
-import Pricing from "@/components/pricing";
-import CTA from "@/components/cta";
-import Footer from "@/components/footer";
+import { Navbar } from "../components/landingpage/navbar";
+import Hero from "@/components/landingpage/hero";
+import ServiceShowcase from "@/components/landingpage/serviceshowcase";
+import Features from "@/components/landingpage/features";
+import Stats from "@/components/landingpage/stats";
+import Testimonials from "@/components/landingpage/testimonials";
+import Pricing from "@/components/landingpage/pricing";
+import CTA from "@/components/landingpage/cta";
+import Footer from "@/components/landingpage/footer";
 
 export default function Home() {
   return (

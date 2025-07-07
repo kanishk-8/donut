@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SideBar from "@/components/sidebar";
+import SideBar from "@/components/dashboard/sidebar";
 import { useTheme } from "@/context/themecontext";
 
 const Layout = ({ children }) => {
