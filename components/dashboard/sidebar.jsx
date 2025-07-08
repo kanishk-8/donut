@@ -73,24 +73,9 @@ const SideBar = () => {
       path: `/authenticated/projects/${projectId}/chat-widget`,
     },
     {
-      name: "Voice Calls",
-      icon: <Phone className="w-5 h-5" />,
-      path: `/authenticated/projects/${projectId}/voice-calls`,
-    },
-    {
       name: "Logs",
       icon: <FileText className="w-5 h-5" />,
       path: `/authenticated/projects/${projectId}/logs`,
-    },
-    {
-      name: "Analytics",
-      icon: <BarChart3 className="w-5 h-5" />,
-      path: `/authenticated/projects/${projectId}/analytics`,
-    },
-    {
-      name: "Webhooks",
-      icon: <Webhook className="w-5 h-5" />,
-      path: `/authenticated/projects/${projectId}/webhooks`,
     },
     {
       name: "Settings",
@@ -248,7 +233,7 @@ const SideBar = () => {
         )}
 
         <nav className="flex-1 overflow-y-auto px-3">
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {menuItems.map((item) => (
               <li key={item.name}>
                 <Link

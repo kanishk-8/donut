@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { useTheme } from "@/context/themecontext";
+import { useAuth } from "@/context/authcontext";
+import { useProject } from "@/context/projectcontext";
 import {
   Play,
   Copy,
@@ -10,18 +13,23 @@ import {
   FileText,
   CheckCircle,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 
 const PlaygroundPage = () => {
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const { currentProject, fetchProject } = useProject();
+  const params = useParams();
+  const projectId = params.id;
   const [selectedEndpoint, setSelectedEndpoint] = useState("chat");
   const [requestBody, setRequestBody] = useState(`{
   "message": "Hello, I need help with my order",
-  "userId": "user_123",
-  "sessionId": "session_456"
+  "includeKnowledgeBase": true
 }`);
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const endpoints = [
     {
@@ -54,10 +62,16 @@ const PlaygroundPage = () => {
     },
   ];
 
+  // Load project data when component mounts
+  useEffect(() => {
+    if (projectId && user?.id) {
+      fetchProject(projectId);
+    }
+  }, [projectId, user?.id, fetchProject]);
+
   const exampleBodies = {
     chat: `{
   "message": "Hello, I need help with my order",
-  "userId": "user_123",
   "sessionId": "session_456",
   "includeKnowledgeBase": true
 }`,
@@ -89,17 +103,33 @@ const PlaygroundPage = () => {
     setSelectedEndpoint(endpointId);
     setRequestBody(exampleBodies[endpointId]);
     setResponse("");
+    setError("");
   };
 
   const executeRequest = async () => {
     setIsLoading(true);
     setResponse("");
+    setError("");
 
     try {
-      const projectId = window.location.pathname.split("/")[3];
-
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
       if (selectedEndpoint === "chat") {
-        const requestData = JSON.parse(requestBody);
+        let requestData;
+
+        try {
+          requestData = JSON.parse(requestBody);
+        } catch (parseError) {
+          throw new Error("Invalid JSON in request body");
+        }
+
+        console.log(
+          "Making request with user:",
+          user?.id,
+          "projectId:",
+          projectId
+        );
 
         const response = await fetch("/api/v1/chat/send", {
           method: "POST",
@@ -114,6 +144,8 @@ const PlaygroundPage = () => {
 
         const data = await response.json();
 
+        console.log("Response status:", response.status, "Data:", data);
+
         if (response.ok) {
           setResponse(
             JSON.stringify(
@@ -124,6 +156,9 @@ const PlaygroundPage = () => {
                   sessionId: data.sessionId,
                   timestamp: data.timestamp,
                   knowledgeBaseUsed: data.knowledgeBaseUsed,
+                  documentsReferenced: data.documentsReferenced,
+                  authenticatedUser: data.authenticatedUser,
+                  mode: data.mode,
                 },
               },
               null,
@@ -131,27 +166,27 @@ const PlaygroundPage = () => {
             )
           );
         } else {
-          setResponse(
-            JSON.stringify(
-              {
-                success: false,
-                error: data.error || "Request failed",
-              },
-              null,
-              2
-            )
-          );
+          throw new Error(data.error || "Request failed");
         }
       } else {
         // Mock responses for other endpoints
+        let requestData;
+
+        try {
+          requestData = JSON.parse(requestBody);
+        } catch (parseError) {
+          throw new Error("Invalid JSON in request body");
+        }
+
         const mockResponses = {
           voice: {
             success: true,
             data: {
               callId: "call_" + Date.now(),
               status: "initiated",
-              phoneNumber: JSON.parse(requestBody).phone_number,
+              phoneNumber: requestData.phone_number,
               estimatedDuration: "3-5 minutes",
+              language: requestData.language || "en-US",
             },
           },
           ticket: {
@@ -159,8 +194,9 @@ const PlaygroundPage = () => {
             data: {
               ticketId: "ticket_" + Date.now(),
               status: "created",
-              priority: JSON.parse(requestBody).priority || "medium",
+              priority: requestData.priority || "medium",
               assignedTo: "AI Agent",
+              title: requestData.title,
             },
           },
           logs: {
@@ -169,14 +205,22 @@ const PlaygroundPage = () => {
               conversations: [
                 {
                   id: "conv_123",
-                  sessionId: "session_456",
+                  sessionId: requestData.sessionId || "session_456",
                   timestamp: new Date().toISOString(),
-                  messages: 5,
+                  messages: Math.floor(Math.random() * 20) + 1,
+                  resolved: Math.random() > 0.3,
+                },
+                {
+                  id: "conv_124",
+                  sessionId: "session_789",
+                  timestamp: new Date(Date.now() - 86400000).toISOString(),
+                  messages: Math.floor(Math.random() * 15) + 1,
                   resolved: true,
                 },
               ],
-              total: 1,
+              total: 2,
               hasMore: false,
+              limit: requestData.limit || 50,
             },
           },
         };
@@ -186,11 +230,14 @@ const PlaygroundPage = () => {
         setResponse(JSON.stringify(mockResponses[selectedEndpoint], null, 2));
       }
     } catch (error) {
+      console.error("Request error:", error);
+      setError(error.message);
       setResponse(
         JSON.stringify(
           {
             success: false,
             error: error.message,
+            timestamp: new Date().toISOString(),
           },
           null,
           2
@@ -221,7 +268,7 @@ const PlaygroundPage = () => {
               theme === "dark" ? "text-white" : "text-gray-900"
             }`}
           >
-            API Playground
+            API Playground - {currentProject?.name || "Loading..."}
           </h1>
           <p
             className={`text-sm sm:text-base ${
@@ -231,6 +278,29 @@ const PlaygroundPage = () => {
             Test your AI customer service APIs with real-time responses
           </p>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div
+            className={`mb-6 p-4 rounded-lg border ${
+              theme === "dark"
+                ? "bg-red-900/20 border-red-500/30 text-red-400"
+                : "bg-red-50 border-red-200 text-red-700"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5" />
+              <span className="font-medium">Error</span>
+            </div>
+            <p className="mt-1 text-sm">{error}</p>
+            <button
+              onClick={() => setError("")}
+              className="mt-2 text-sm underline hover:no-underline"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Request Panel */}
