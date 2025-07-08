@@ -40,13 +40,6 @@ const PlaygroundPage = () => {
       description: "Send a message to the AI customer service agent",
     },
     {
-      id: "voice",
-      name: "Start Voice Call",
-      method: "POST",
-      path: "/v1/voice/call",
-      description: "Initiate a voice call with the AI agent",
-    },
-    {
       id: "ticket",
       name: "Create Ticket",
       method: "POST",
@@ -59,6 +52,14 @@ const PlaygroundPage = () => {
       method: "GET",
       path: "/v1/logs/conversations",
       description: "Retrieve conversation history",
+    },
+    {
+      id: "context",
+      name: "Get Relevant Context",
+      method: "POST",
+      path: "/v1/chat/context",
+      description:
+        "Retrieve relevant context chunks from the knowledge base (vector DB) for a message",
     },
   ];
 
@@ -75,14 +76,6 @@ const PlaygroundPage = () => {
   "sessionId": "session_456",
   "includeKnowledgeBase": true
 }`,
-    voice: `{
-  "phone_number": "+1234567890",
-  "language": "en-US",
-  "voice_type": "neural",
-  "context": {
-    "customer_id": "cust_789"
-  }
-}`,
     ticket: `{
   "title": "Unable to complete checkout",
   "description": "Customer experiencing issues with payment processing",
@@ -96,6 +89,11 @@ const PlaygroundPage = () => {
   "offset": 0,
   "date_from": "2024-01-01",
   "date_to": "2024-01-31"
+}`,
+    context: `{
+  "message": "Hello, I need help with my order",
+  "sessionId": "session_456",
+  "includeKnowledgeBase": true
 }`,
   };
 
@@ -115,7 +113,7 @@ const PlaygroundPage = () => {
       if (!user) {
         throw new Error("User not authenticated");
       }
-      if (selectedEndpoint === "chat") {
+      if (selectedEndpoint === "chat" || selectedEndpoint === "context") {
         let requestData;
 
         try {
@@ -124,14 +122,12 @@ const PlaygroundPage = () => {
           throw new Error("Invalid JSON in request body");
         }
 
-        console.log(
-          "Making request with user:",
-          user?.id,
-          "projectId:",
-          projectId
-        );
+        const apiPath =
+          selectedEndpoint === "chat"
+            ? "/api/v1/chat/send"
+            : "/api/v1/chat/context";
 
-        const response = await fetch("/api/v1/chat/send", {
+        const response = await fetch(apiPath, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -144,27 +140,8 @@ const PlaygroundPage = () => {
 
         const data = await response.json();
 
-        console.log("Response status:", response.status, "Data:", data);
-
         if (response.ok) {
-          setResponse(
-            JSON.stringify(
-              {
-                success: true,
-                data: {
-                  response: data.response,
-                  sessionId: data.sessionId,
-                  timestamp: data.timestamp,
-                  knowledgeBaseUsed: data.knowledgeBaseUsed,
-                  documentsReferenced: data.documentsReferenced,
-                  authenticatedUser: data.authenticatedUser,
-                  mode: data.mode,
-                },
-              },
-              null,
-              2
-            )
-          );
+          setResponse(JSON.stringify(data, null, 2));
         } else {
           throw new Error(data.error || "Request failed");
         }

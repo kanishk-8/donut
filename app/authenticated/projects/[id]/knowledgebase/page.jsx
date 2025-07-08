@@ -21,6 +21,7 @@ import {
   Database,
 } from "lucide-react";
 import { documentService } from "@/lib/supabase/documents";
+import { embeddingService } from "@/lib/services/embedding";
 import { useAuth } from "@/context/authcontext";
 import { useProject } from "@/context/projectcontext";
 
@@ -42,6 +43,9 @@ const KnowledgeBasePage = () => {
   const [uploadProgress, setUploadProgress] = useState({});
   const [showPreview, setShowPreview] = useState(null);
   const [error, setError] = useState("");
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [textContent, setTextContent] = useState("");
+  const [documentName, setDocumentName] = useState("");
 
   // File types configuration
   const supportedTypes = {
@@ -102,78 +106,74 @@ const KnowledgeBasePage = () => {
   };
 
   const handleUpload = async () => {
-    if (selectedFiles.length === 0) return;
+    if (selectedFiles.length === 0 && !textContent.trim()) return;
 
     setUploading(true);
     setError("");
 
     try {
+      // Handle text input
+      if (textContent.trim()) {
+        const documentData = {
+          project_id: projectId,
+          user_id: user.id,
+          name: documentName || "Text Document",
+          original_name: documentName || "Text Document",
+          file_type: "txt",
+          status: "processing",
+        };
+
+        const result = await documentService.createDocumentFromText(
+          documentData,
+          textContent
+        );
+
+        if (result.success) {
+          setDocuments((prev) => [result.document, ...prev]);
+          setTextContent("");
+          setDocumentName("");
+          setShowTextInput(false);
+        } else {
+          throw new Error(result.error);
+        }
+      }
+
+      // Handle file uploads
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
         const fileId = `${Date.now()}-${i}`;
 
-        // Initialize progress
-        setUploadProgress((prev) => ({ ...prev, [fileId]: 0 }));
-
         try {
-          // Upload file to storage
           setUploadProgress((prev) => ({ ...prev, [fileId]: 25 }));
 
-          const uploadResult = await documentService.uploadFile(
-            file,
-            user.id,
-            projectId
+          // Extract text from file
+          const extractedText = await embeddingService.extractTextFromFile(
+            file
           );
-
-          if (!uploadResult.success) {
-            throw new Error(uploadResult.error);
-          }
 
           setUploadProgress((prev) => ({ ...prev, [fileId]: 50 }));
 
-          // Create document record
+          // Create document with text content
           const documentData = {
             project_id: projectId,
             user_id: user.id,
-            name: uploadResult.fileName,
+            name: file.name,
             original_name: file.name,
-            file_path: uploadResult.filePath,
             file_type: file.name.split(".").pop().toLowerCase(),
-            file_size: file.size,
-            mime_type: file.type,
             status: "processing",
           };
 
-          const createResult = await documentService.createDocument(
-            documentData
+          const result = await documentService.createDocumentFromText(
+            documentData,
+            extractedText
           );
 
-          if (!createResult.success) {
-            throw new Error(createResult.error);
+          if (!result.success) {
+            throw new Error(result.error);
           }
 
-          setUploadProgress((prev) => ({ ...prev, [fileId]: 75 }));
-
-          // Add to documents list
-          setDocuments((prev) => [createResult.document, ...prev]);
-
-          // Start processing (in background)
-          documentService
-            .processDocument(createResult.document.id)
-            .then((processResult) => {
-              if (processResult.success) {
-                // Update the document in the list
-                setDocuments((prev) =>
-                  prev.map((doc) =>
-                    doc.id === createResult.document.id
-                      ? { ...doc, ...processResult.document }
-                      : doc
-                  )
-                );
-              }
-            });
-
           setUploadProgress((prev) => ({ ...prev, [fileId]: 100 }));
+          setDocuments((prev) => [result.document, ...prev]);
         } catch (fileError) {
           console.error(`Upload error for ${file.name}:`, fileError);
           setError(`Failed to upload ${file.name}: ${fileError.message}`);
@@ -209,24 +209,9 @@ const KnowledgeBasePage = () => {
   };
 
   const handleDownload = async (doc) => {
-    try {
-      const result = await documentService.getDownloadUrl(doc.file_path);
-
-      if (result.success) {
-        // Create a temporary link and click it to download
-        const link = document.createElement("a");
-        link.href = result.url;
-        link.download = doc.original_name || doc.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        setError(result.error || "Failed to download document");
-      }
-    } catch (error) {
-      console.error("Download error:", error);
-      setError("Failed to download document");
-    }
+    setError(
+      "Downloads not available - documents are stored as vector embeddings only"
+    );
   };
 
   const formatFileSize = (bytes) => {
@@ -267,10 +252,6 @@ const KnowledgeBasePage = () => {
     return matchesSearch && matchesType;
   });
 
-  const totalSize = documents.reduce(
-    (acc, doc) => acc + (doc.file_size || 0),
-    0
-  );
   const processedCount = documents.filter(
     (doc) => doc.status === "processed"
   ).length;
@@ -396,14 +377,16 @@ const KnowledgeBasePage = () => {
                     theme === "dark" ? "text-white" : "text-gray-900"
                   }`}
                 >
-                  {formatFileSize(totalSize)}
+                  {documents
+                    .reduce((acc, doc) => acc + (doc.words || 0), 0)
+                    .toLocaleString()}
                 </p>
                 <p
                   className={`text-sm ${
                     theme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Total Size
+                  Total Words
                 </p>
               </div>
             </div>
@@ -425,7 +408,8 @@ const KnowledgeBasePage = () => {
                   }`}
                 >
                   {documents
-                    .reduce((acc, doc) => acc + (doc.words || 0), 0)
+                    .filter((doc) => doc.chunks_count)
+                    .reduce((acc, doc) => acc + (doc.chunks_count || 0), 0)
                     .toLocaleString()}
                 </p>
                 <p
@@ -433,7 +417,7 @@ const KnowledgeBasePage = () => {
                     theme === "dark" ? "text-gray-400" : "text-gray-600"
                   }`}
                 >
-                  Total Words
+                  Vector Chunks
                 </p>
               </div>
             </div>
@@ -453,175 +437,274 @@ const KnowledgeBasePage = () => {
               theme === "dark" ? "text-white" : "text-gray-900"
             }`}
           >
-            Upload Documents
+            Add Knowledge Base Content
           </h2>
 
-          {/* Drag and Drop Area */}
-          <div
-            className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
-              dragActive
-                ? "border-indigo-500 bg-indigo-50/50"
-                : theme === "dark"
-                ? "border-white/20 hover:border-white/30"
-                : "border-gray-300 hover:border-gray-400"
-            }`}
-            onDragEnter={(e) => {
-              e.preventDefault();
-              setDragActive(true);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setDragActive(false);
-            }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-          >
-            <Upload
-              className={`w-12 h-12 mx-auto mb-4 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
-            />
-            <h3
-              className={`text-lg font-medium mb-2 ${
-                theme === "dark" ? "text-white" : "text-gray-900"
+          {/* Toggle between file upload and text input */}
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setShowTextInput(false)}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                !showTextInput
+                  ? "bg-indigo-600 text-white"
+                  : theme === "dark"
+                  ? "bg-white/10 text-gray-300 hover:bg-white/20"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Drop files here or click to browse
-            </h3>
-            <p
-              className={`text-sm mb-4 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              Upload Files
+            </button>
+            <button
+              onClick={() => setShowTextInput(true)}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                showTextInput
+                  ? "bg-indigo-600 text-white"
+                  : theme === "dark"
+                  ? "bg-white/10 text-gray-300 hover:bg-white/20"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Supported formats: PDF, DOC, DOCX, TXT, MD, CSV, JSON
-            </p>
-            <input
-              type="file"
-              multiple
-              accept=".pdf,.doc,.docx,.txt,.md,.csv,.json"
-              onChange={(e) => handleFileSelect(e.target.files)}
-              className="hidden"
-              id="file-upload"
-            />
-            <label
-              htmlFor="file-upload"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 inline-flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Browse Files
-            </label>
+              Add Text Directly
+            </button>
           </div>
 
-          {/* Selected Files */}
-          {selectedFiles.length > 0 && (
-            <div className="mt-6">
-              <h3
-                className={`text-lg font-medium mb-4 ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                Selected Files ({selectedFiles.length})
-              </h3>
-              <div className="space-y-2 mb-4">
-                {selectedFiles.map((file, index) => {
-                  const extension = file.name.split(".").pop().toLowerCase();
-                  const FileIcon = supportedTypes[extension]?.icon || File;
-                  const fileId = Date.now() + index;
-                  const progress = uploadProgress[fileId] || 0;
-
-                  return (
-                    <div
-                      key={index}
-                      className={`flex items-center justify-between p-3 rounded-lg border ${
-                        theme === "dark"
-                          ? "bg-white/5 border-white/10"
-                          : "bg-gray-50 border-gray-200"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <FileIcon
-                          className={`w-5 h-5 ${
-                            supportedTypes[extension]?.color || "text-gray-500"
-                          }`}
-                        />
-                        <div>
-                          <p
-                            className={`font-medium ${
-                              theme === "dark" ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {file.name}
-                          </p>
-                          <p
-                            className={`text-sm ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            }`}
-                          >
-                            {formatFileSize(file.size)}
-                          </p>
-                        </div>
-                      </div>
-                      {uploading && progress > 0 && (
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
-                            <div
-                              className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
-                              style={{ width: `${progress}%` }}
-                            ></div>
-                          </div>
-                          <span
-                            className={`text-sm ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            }`}
-                          >
-                            {progress}%
-                          </span>
-                        </div>
-                      )}
-                      {!uploading && (
-                        <button
-                          onClick={() =>
-                            setSelectedFiles((prev) =>
-                              prev.filter((_, i) => i !== index)
-                            )
-                          }
-                          className={`p-1 rounded hover:bg-red-500/20 transition-colors ${
-                            theme === "dark" ? "text-red-400" : "text-red-600"
-                          }`}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
+          {showTextInput ? (
+            /* Text Input Section */
+            <div className="space-y-4">
+              <div>
+                <label
+                  className={`block text-sm font-medium mb-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  Document Name
+                </label>
+                <input
+                  type="text"
+                  value={documentName}
+                  onChange={(e) => setDocumentName(e.target.value)}
+                  placeholder="Enter document name..."
+                  className={`w-full p-3 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
+                    theme === "dark"
+                      ? "bg-black/20 border-white/10 text-gray-100"
+                      : "bg-white/70 border-gray-200 text-gray-900"
+                  }`}
+                />
+              </div>
+              <div>
+                <label
+                  className={`block text-sm font-medium mb-2 ${
+                    theme === "dark" ? "text-gray-300" : "text-gray-700"
+                  }`}
+                >
+                  Content
+                </label>
+                <textarea
+                  value={textContent}
+                  onChange={(e) => setTextContent(e.target.value)}
+                  placeholder="Paste or type your content here..."
+                  rows={10}
+                  className={`w-full p-3 border rounded-lg backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all ${
+                    theme === "dark"
+                      ? "bg-black/20 border-white/10 text-gray-100"
+                      : "bg-white/70 border-gray-200 text-gray-900"
+                  }`}
+                />
               </div>
               <button
                 onClick={handleUpload}
-                disabled={uploading}
+                disabled={uploading || !textContent.trim()}
                 className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-6 py-2 rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2"
               >
                 {uploading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Uploading...
+                    Processing...
                   </>
                 ) : (
                   <>
-                    <Upload className="w-4 h-4" />
-                    Upload Files
+                    <Plus className="w-4 h-4" />
+                    Add to Knowledge Base
                   </>
                 )}
               </button>
             </div>
+          ) : (
+            <div>
+              {/* Drag and Drop Area */}
+              <div
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
+                  dragActive
+                    ? "border-indigo-500 bg-indigo-50/50"
+                    : theme === "dark"
+                    ? "border-white/20 hover:border-white/30"
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setDragActive(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setDragActive(false);
+                }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+              >
+                <Upload
+                  className={`w-12 h-12 mx-auto mb-4 ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-500"
+                  }`}
+                />
+                <h3
+                  className={`text-lg font-medium mb-2 ${
+                    theme === "dark" ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  Drop files here or click to browse
+                </h3>
+                <p
+                  className={`text-sm mb-4 ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Supported formats: PDF, DOC, DOCX, TXT, MD, CSV, JSON
+                </p>
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx,.txt,.md,.csv,.json"
+                  onChange={(e) => handleFileSelect(e.target.files)}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 inline-flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Browse Files
+                </label>
+              </div>
+
+              {/* Selected Files */}
+              {selectedFiles.length > 0 && (
+                <div className="mt-6">
+                  <h3
+                    className={`text-lg font-medium mb-4 ${
+                      theme === "dark" ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    Selected Files ({selectedFiles.length})
+                  </h3>
+                  <div className="space-y-2 mb-4">
+                    {selectedFiles.map((file, index) => {
+                      const extension = file.name
+                        .split(".")
+                        .pop()
+                        .toLowerCase();
+                      const FileIcon = supportedTypes[extension]?.icon || File;
+                      const fileId = Date.now() + index;
+                      const progress = uploadProgress[fileId] || 0;
+
+                      return (
+                        <div
+                          key={index}
+                          className={`flex items-center justify-between p-3 rounded-lg border ${
+                            theme === "dark"
+                              ? "bg-white/5 border-white/10"
+                              : "bg-gray-50 border-gray-200"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <FileIcon
+                              className={`w-5 h-5 ${
+                                supportedTypes[extension]?.color ||
+                                "text-gray-500"
+                              }`}
+                            />
+                            <div>
+                              <p
+                                className={`font-medium ${
+                                  theme === "dark"
+                                    ? "text-white"
+                                    : "text-gray-900"
+                                }`}
+                              >
+                                {file.name}
+                              </p>
+                              <p
+                                className={`text-sm ${
+                                  theme === "dark"
+                                    ? "text-gray-400"
+                                    : "text-gray-600"
+                                }`}
+                              >
+                                {formatFileSize(file.size)}
+                              </p>
+                            </div>
+                          </div>
+                          {uploading && progress > 0 && (
+                            <div className="flex items-center gap-2">
+                              <div className="w-20 bg-gray-200 rounded-full h-2">
+                                <div
+                                  className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${progress}%` }}
+                                ></div>
+                              </div>
+                              <span
+                                className={`text-sm ${
+                                  theme === "dark"
+                                    ? "text-gray-400"
+                                    : "text-gray-600"
+                                }`}
+                              >
+                                {progress}%
+                              </span>
+                            </div>
+                          )}
+                          {!uploading && (
+                            <button
+                              onClick={() =>
+                                setSelectedFiles((prev) =>
+                                  prev.filter((_, i) => i !== index)
+                                )
+                              }
+                              className={`p-1 rounded hover:bg-red-500/20 transition-colors ${
+                                theme === "dark"
+                                  ? "text-red-400"
+                                  : "text-red-600"
+                              }`}
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={handleUpload}
+                    disabled={uploading}
+                    className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white px-6 py-2 rounded-lg transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                  >
+                    {uploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4" />
+                        Upload Files
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
-
-        {/* Search and Filter */}
         <div
           className={`backdrop-blur-3xl rounded-2xl p-6 border mb-8 ${
             theme === "dark"
@@ -716,7 +799,7 @@ const KnowledgeBasePage = () => {
                         theme === "dark" ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
-                      Size
+                      Chunks
                     </th>
                     <th
                       className={`text-left p-4 font-medium ${
@@ -803,7 +886,7 @@ const KnowledgeBasePage = () => {
                             theme === "dark" ? "text-gray-300" : "text-gray-700"
                           }`}
                         >
-                          {formatFileSize(doc.file_size || 0)}
+                          {doc.chunks_count || 0} chunks
                         </td>
                         <td className="p-4">
                           <span

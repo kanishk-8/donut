@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { documentService } from "@/lib/supabase/documents";
 import { embeddingService } from "@/lib/services/embedding";
 import { createServerSupabase } from "@/lib/supabase/server";
-import { generateChatResponse } from "@/lib/gemini";
 
 export async function POST(request) {
   try {
@@ -252,40 +251,27 @@ export async function POST(request) {
     }
 
     // Generate AI response with context
+    const aiResponse = generateAIResponse(message, relevantContext);
     const conversationId = sessionId || `session_${Date.now()}`;
-    const knowledgeBaseContent =
-      relevantContext.length > 0
-        ? relevantContext
-            .map((ctx) => `${ctx.text} (from ${ctx.document})`)
-            .join("\n\n")
-        : "";
-
-    const aiResponse = await generateChatResponse(
-      message,
-      { projectId, sessionId: conversationId },
-      knowledgeBaseContent
-    );
 
     return NextResponse.json({
       success: true,
-      data: {
-        response: aiResponse,
-        sessionId: conversationId,
-        timestamp: new Date().toISOString(),
-        knowledgeBaseUsed: relevantContext.length > 0,
-        contextsFound: relevantContext.length,
-        authenticatedUser: !!user,
-        mode: user ? "authenticated" : "demo",
-        contextSources: relevantContext.map((ctx) => ({
-          document: ctx.document,
-          similarity: ctx.similarity,
-        })),
-        debugInfo: {
-          projectId,
-          userFound: !!user,
-          includeKnowledgeBase,
-          hasRelevantContext: relevantContext.length > 0,
-        },
+      response: aiResponse,
+      sessionId: conversationId,
+      timestamp: new Date().toISOString(),
+      knowledgeBaseUsed: relevantContext.length > 0,
+      contextsFound: relevantContext.length,
+      authenticatedUser: !!user,
+      mode: user ? "authenticated" : "demo",
+      contextSources: relevantContext.map((ctx) => ({
+        document: ctx.document,
+        similarity: ctx.similarity,
+      })),
+      debugInfo: {
+        projectId,
+        userFound: !!user,
+        includeKnowledgeBase,
+        hasRelevantContext: relevantContext.length > 0,
       },
     });
   } catch (error) {
@@ -295,4 +281,32 @@ export async function POST(request) {
       { status: 500 }
     );
   }
+}
+
+function generateAIResponse(message, contexts) {
+  const responses = [
+    "Thank you for your message. Based on the information in our knowledge base, I can help you with that.",
+    "I understand your question. Let me provide you with relevant information from our documentation.",
+    "Based on our available resources, here's what I can tell you about your inquiry.",
+    "I've found some relevant information in our knowledge base that should help answer your question.",
+    "Thank you for reaching out. I can assist you with this based on our documentation.",
+  ];
+
+  const baseResponse = responses[Math.floor(Math.random() * responses.length)];
+
+  if (contexts.length > 0) {
+    const relevantInfo = contexts
+      .slice(0, 3) // Use top 3 most relevant contexts
+      .map(
+        (ctx) =>
+          `"${ctx.text.substring(0, 200)}..." (from ${
+            ctx.document
+          }, similarity: ${(ctx.similarity * 100).toFixed(1)}%)`
+      )
+      .join("\n\n");
+
+    return `${baseResponse}\n\nBased on your question: "${message}"\n\nHere's relevant information from your knowledge base:\n\n${relevantInfo}\n\nThis information should help answer your query. Is there anything specific you'd like me to clarify?`;
+  }
+
+  return `${baseResponse}\n\nRegarding your question: "${message}", I'll provide a helpful response.\n\n💡 **To enable knowledge base search**: Please add documents to your knowledge base by going to the Knowledge Base section and uploading content. Once you have processed documents, I'll be able to search through them to provide more specific and relevant answers based on your uploaded content.`;
 }
