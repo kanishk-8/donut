@@ -19,7 +19,7 @@ const Hero = () => {
             height={600}
             src="/donut.avif"
             alt="background donut"
-            className="w-64 sm:w-80 md:w-[28rem] lg:w-[32rem] xl:w-[36rem] h-auto opacity-20 sm:opacity-30 animate-spin"
+            className="w-64 sm:w-80 md:w-[28rem] lg:w-[32rem] xl:w-[36rem] h-auto opacity-50 sm:opacity-60 animate-spin"
             style={{ animation: "spin 30s linear infinite" }}
             priority
           />

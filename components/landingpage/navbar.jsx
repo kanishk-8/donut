@@ -46,7 +46,7 @@ export const Navbar = () => {
             href="/authenticated/projects"
             className="rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-5 p-3 hover:from-indigo-700 hover:to-pink-500 transition-all duration-200 hover:scale-105"
           >
-            Go To Projects
+            Go To Dashboard
           </Link>
         ) : (
           <Link
