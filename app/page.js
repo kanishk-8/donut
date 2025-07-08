@@ -7,6 +7,7 @@ import Testimonials from "@/components/landingpage/testimonials";
 import Pricing from "@/components/landingpage/pricing";
 import CTA from "@/components/landingpage/cta";
 import Footer from "@/components/landingpage/footer";
+import VideoShowcase from "@/components/landingpage/videoshowcase";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <VideoShowcase />
         <ServiceShowcase />
         <Features />
         <Stats />

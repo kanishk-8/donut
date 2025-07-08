@@ -6,34 +6,41 @@ import { Check } from "lucide-react";
 const Pricing = () => {
   const plans = [
     {
-      name: "Starter",
+      name: "Community",
       price: "Free",
-      period: "",
-      description: "Perfect for small businesses",
-      features: ["1 chat agent", "100 conversations/month", "Basic templates"],
+      period: " Forever",
+      description: "Perfect for individuals & open source projects",
+      features: [
+        "Unlimited local agents",
+        "Community support",
+        "Access to templates",
+        "Self-hosted deployment",
+      ],
       popular: false,
     },
     {
-      name: "Professional",
-      price: "$29",
+      name: "Cloud",
+      price: "$19",
       period: "/month",
-      description: "Complete service solution",
+      description: "Hosted solution for teams",
       features: [
-        "3 chat agents",
-        "1,000 conversations/month",
+        "Everything in Community",
+        "Cloud deployment",
         "Priority support",
+        "Advanced analytics",
       ],
       popular: true,
     },
     {
       name: "Enterprise",
-      price: "$99",
-      period: "/month",
-      description: "For high-volume teams",
+      price: "Custom",
+      period: "",
+      description: "For large organizations",
       features: [
-        "Unlimited agents",
-        "10,000 conversations/month",
+        "Everything in Cloud",
+        "Custom integrations",
         "Dedicated support",
+        "SLA guarantees",
       ],
       popular: false,
     },
@@ -50,88 +57,84 @@ const Pricing = () => {
             </span>
           </h2>
           <p className="text-xl text-indigo-200 max-w-3xl mx-auto">
-            Choose the perfect plan for your business. Start free and scale as
-            you grow.
+            Start building for free. Scale with cloud hosting when you're ready.
+            Always open-source, always yours.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan, index) => (
-            <div
-              key={index}
-              className={`relative p-6 rounded-2xl backdrop-blur-3xl border transition-all duration-300 ${
-                plan.popular
-                  ? "bg-black/30 border-indigo-400/50"
-                  : "bg-black/20 border-white/10"
-              } hover:scale-105`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-
-              <div className="text-center mb-5">
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                <div className="flex items-baseline justify-center mb-2">
-                  <span className="text-5xl font-bold">{plan.price}</span>
-                  <span className="text-xl text-indigo-300 ml-1">
-                    {plan.period}
-                  </span>
-                </div>
-                <p className="text-indigo-200">{plan.description}</p>
-              </div>
-
-              <ul className="space-y-2 mb-6">
-                {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center">
-                    <Check className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
-                    <span className="text-indigo-200">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href="/unauthenticated/signup"
-                className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-200 hover:scale-105 ${
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-10">
+            {plans.map((plan, index) => (
+              <div
+                key={index}
+                className={`relative p-6 rounded-2xl backdrop-blur-3xl border transition-all duration-300 ${
                   plan.popular
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white backdrop-blur-3xl shadow-2xl"
-                    : "bg-black/20 border border-white/10 text-white backdrop-blur-3xl shadow-2xl"
-                }`}
+                    ? "bg-black/30 border-indigo-400/50"
+                    : "bg-black/20 border-white/10"
+                } hover:scale-105`}
               >
-                {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
-              </Link>
-            </div>
-          ))}
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold">
+                      Most Popular
+                    </span>
+                  </div>
+                )}
+
+                <div className="text-center mb-5">
+                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-5xl font-bold">{plan.price}</span>
+                    <span className="text-xl text-indigo-300 ml-1">
+                      {plan.period}
+                    </span>
+                  </div>
+                  <p className="text-indigo-200">{plan.description}</p>
+                </div>
+
+                <ul className="space-y-2 mb-6">
+                  {plan.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-center">
+                      <Check className="w-5 h-5 text-green-400 mr-3 flex-shrink-0" />
+                      <span className="text-indigo-200">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/unauthenticated/signup"
+                  className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-200 hover:scale-105 ${
+                    plan.popular
+                      ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white backdrop-blur-3xl shadow-2xl"
+                      : "bg-black/20 border border-white/10 text-white backdrop-blur-3xl shadow-2xl"
+                  }`}
+                >
+                  {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="text-center mt-10">
           <p className="text-indigo-300 mb-4">
-            All plans include a 14-day free trial • Pay-as-you-scale pricing
+            Community Edition is free forever • Cloud hosting available when you
+            need it
           </p>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-6">
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-6">
             <div className="text-center p-3 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
               <h4 className="font-bold text-indigo-300 mb-1">
-                Extra Chat Conversations
+                Self-Hosted Deployment
               </h4>
-              <p className="text-white text-lg">$0.05 per conversation</p>
-              <p className="text-sm text-indigo-400">Beyond monthly limit</p>
+              <p className="text-white text-lg">Always Free</p>
+              <p className="text-sm text-indigo-400">
+                Your infrastructure, your control
+              </p>
             </div>
             <div className="text-center p-3 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
-              <h4 className="font-bold text-indigo-300 mb-1">
-                Extra Voice Minutes
-              </h4>
-              <p className="text-white text-lg">$0.10 per minute</p>
-              <p className="text-sm text-indigo-400">Beyond monthly limit</p>
-            </div>
-            <div className="text-center p-3 bg-black/20 rounded-lg border border-white/10 backdrop-blur-3xl shadow-lg transition-all duration-300 hover:scale-105">
-              <h4 className="font-bold text-indigo-300 mb-1">
-                Additional Agents
-              </h4>
-              <p className="text-white text-lg">$10 per agent/month</p>
-              <p className="text-sm text-indigo-400">Scale your team</p>
+              <h4 className="font-bold text-indigo-300 mb-1">Cloud Usage</h4>
+              <p className="text-white text-lg">Pay as you scale</p>
+              <p className="text-sm text-indigo-400">No minimum commitments</p>
             </div>
           </div>
           <p className="text-sm text-indigo-400">

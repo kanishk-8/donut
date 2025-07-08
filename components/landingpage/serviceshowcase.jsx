@@ -13,38 +13,38 @@ const ServiceShowcase = () => {
   const services = [
     {
       icon: MessageSquare,
-      title: "Intelligent Chat Agents",
+      title: "Conversational AI Agents",
       description:
-        "Deploy AI-powered chat agents that understand context, handle complex queries, and provide instant responses to your customers.",
+        "Build intelligent chatbots and virtual assistants that understand context, maintain conversations, and learn from interactions.",
       features: [
         "Natural language processing",
         "Context awareness",
         "Multi-language support",
-        "Seamless handoffs",
+        "Learning capabilities",
       ],
     },
     {
       icon: Phone,
-      title: "Voice Support Agents",
+      title: "Voice AI Agents",
       description:
-        "Integrate AI voice agents into your phone systems for 24/7 customer support that sounds natural and professional.",
+        "Create voice-powered assistants for phone systems, smart devices, and applications with natural speech synthesis.",
       features: [
         "Natural voice synthesis",
         "Real-time processing",
-        "Call routing",
+        "Voice recognition",
         "Emotion detection",
       ],
     },
     {
       icon: Clock,
-      title: "24/7 Availability",
+      title: "Task Automation Agents",
       description:
-        "Never miss a customer inquiry. Our AI agents work around the clock to provide instant support when your customers need it most.",
+        "Deploy AI agents that handle workflows, data processing, and repetitive tasks across your organization automatically.",
       features: [
-        "Always online",
-        "Instant responses",
-        "Global timezone support",
-        "Holiday coverage",
+        "Workflow automation",
+        "Data processing",
+        "API integrations",
+        "Scheduled tasks",
       ],
     },
   ];
@@ -52,13 +52,25 @@ const ServiceShowcase = () => {
   const integrations = [
     {
       name: "Website Widget",
-      description: "Embed chat directly into your site",
+      description: "Embed agents directly into your site",
     },
     { name: "Mobile Apps", description: "Native SDK for iOS and Android" },
-    { name: "Phone Systems", description: "Integrate with existing PBX" },
-    { name: "Help Desk", description: "Connect to Zendesk, Intercom, etc." },
-    { name: "CRM", description: "Sync with Salesforce, HubSpot" },
-    { name: "E-commerce", description: "Shopify, WooCommerce support" },
+    {
+      name: "APIs & Webhooks",
+      description: "RESTful APIs for custom integrations",
+    },
+    {
+      name: "Slack & Discord",
+      description: "Deploy agents in team communication tools",
+    },
+    {
+      name: "CRM Systems",
+      description: "Sync with Salesforce, HubSpot, and more",
+    },
+    {
+      name: "E-commerce",
+      description: "Shopify, WooCommerce, and custom stores",
+    },
   ];
 
   return (
@@ -67,44 +79,47 @@ const ServiceShowcase = () => {
         {/* Service Types */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Complete{" "}
+            Build Any{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-300">
-              Customer Service
+              AI Agent
             </span>{" "}
-            Solution
+            You Imagine
           </h2>
           <p className="text-xl text-indigo-200 max-w-3xl mx-auto">
-            From chat to voice, we provide all the tools you need to deliver
-            exceptional customer experiences.
+            From customer service to personal assistants, our open-source
+            platform provides all the tools you need to create intelligent AI
+            agents.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-20">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="group relative p-8 rounded-2xl backdrop-blur-3xl bg-black/20 border border-white/10 transition-all duration-300 hover:scale-105 shadow-2xl"
-            >
-              <div className="relative z-10">
-                <service.icon className="w-12 h-12 text-indigo-400 mb-4" />
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                <p className="text-indigo-200 leading-relaxed mb-4">
-                  {service.description}
-                </p>
-                <ul className="space-y-2">
-                  {service.features.map((feature, idx) => (
-                    <li
-                      key={idx}
-                      className="flex items-center text-sm text-indigo-300"
-                    >
-                      <Zap className="w-4 h-4 mr-2 text-green-400" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-20">
+            {services.map((service, index) => (
+              <div
+                key={index}
+                className="group relative p-8 rounded-2xl backdrop-blur-3xl bg-black/20 border border-white/10 transition-all duration-300 hover:scale-105 shadow-2xl"
+              >
+                <div className="relative z-10">
+                  <service.icon className="w-12 h-12 text-indigo-400 mb-4" />
+                  <h3 className="text-xl font-bold mb-3">{service.title}</h3>
+                  <p className="text-indigo-200 leading-relaxed mb-4">
+                    {service.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {service.features.map((feature, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-center text-sm text-indigo-300"
+                      >
+                        <Zap className="w-4 h-4 mr-2 text-green-400" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Integration Section */}
@@ -121,18 +136,20 @@ const ServiceShowcase = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {integrations.map((integration, index) => (
-            <div
-              key={index}
-              className="group p-6 rounded-xl backdrop-blur-3xl bg-black/20 border border-white/10 transition-all duration-300 hover:scale-105 shadow-2xl"
-            >
-              <h4 className="font-bold text-lg mb-2">{integration.name}</h4>
-              <p className="text-indigo-200 text-sm">
-                {integration.description}
-              </p>
-            </div>
-          ))}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+            {integrations.map((integration, index) => (
+              <div
+                key={index}
+                className="group p-6 rounded-xl backdrop-blur-3xl bg-black/20 border border-white/10 transition-all duration-300 hover:scale-105 shadow-2xl"
+              >
+                <h4 className="font-bold text-lg mb-2">{integration.name}</h4>
+                <p className="text-indigo-200 text-sm">
+                  {integration.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -7,31 +7,31 @@ const Footer = () => {
   const footerLinks = {
     Product: [
       { name: "Features", href: "#features" },
-      { name: "Pricing", href: "#pricing" },
       { name: "Templates", href: "/templates" },
       { name: "Integrations", href: "/integrations" },
-      { name: "API", href: "/api" },
+      { name: "API Docs", href: "/docs/api" },
+      { name: "Roadmap", href: "/roadmap" },
     ],
-    Company: [
-      { name: "About", href: "/about" },
+    Community: [
+      { name: "GitHub", href: "https://github.com/your-username/donut" },
+      { name: "Discord", href: "/discord" },
+      { name: "Discussions", href: "/community" },
+      { name: "Contributors", href: "/contributors" },
       { name: "Blog", href: "/blog" },
-      { name: "Careers", href: "/careers" },
-      { name: "Press", href: "/press" },
-      { name: "Partners", href: "/partners" },
     ],
     Resources: [
       { name: "Documentation", href: "/docs" },
-      { name: "Help Center", href: "/help" },
-      { name: "Community", href: "/community" },
       { name: "Tutorials", href: "/tutorials" },
-      { name: "Webinars", href: "/webinars" },
+      { name: "Examples", href: "/examples" },
+      { name: "Self-hosting", href: "/docs/self-hosting" },
+      { name: "Migration Guide", href: "/docs/migration" },
     ],
     Legal: [
+      { name: "License", href: "/license" },
       { name: "Privacy Policy", href: "/privacy" },
       { name: "Terms of Service", href: "/terms" },
-      { name: "Cookie Policy", href: "/cookies" },
+      { name: "Code of Conduct", href: "/code-of-conduct" },
       { name: "Security", href: "/security" },
-      { name: "Compliance", href: "/compliance" },
     ],
   };
 

@@ -15,37 +15,37 @@ const Features = () => {
       icon: Rocket,
       title: "No-Code Agent Builder",
       description:
-        "Create powerful customer service agents with our intuitive interface. Build FAQ bots, support agents, and voice assistants in minutes.",
+        "Create powerful AI agents with our intuitive visual interface. Build chatbots, voice assistants, and automation agents in minutes.",
     },
     {
       icon: MessageCircle,
-      title: "Voice & Chat Support",
+      title: "Multi-Modal Support",
       description:
-        "Deploy both voice and chat agents that handle customer inquiries 24/7. Seamless handoff to human agents when needed.",
+        "Deploy both voice and chat agents that can handle text, speech, images, and documents across multiple channels.",
     },
     {
       icon: Settings,
-      title: "Custom Workflows",
+      title: "Open Source & Extensible",
       description:
-        "Design complex customer journey workflows. Route tickets, escalate issues, and integrate with your existing support systems.",
+        "Full access to source code. Customize, extend, and contribute to the platform. No vendor lock-in, ever.",
     },
     {
       icon: BarChart3,
       title: "Analytics & Insights",
       description:
-        "Track customer satisfaction, response times, and agent performance. Get insights to continuously improve your service.",
+        "Track agent performance, user interactions, and system metrics. Get insights to continuously improve your agents.",
     },
     {
       icon: Shield,
-      title: "Enterprise Security",
+      title: "Privacy-First Design",
       description:
-        "Bank-grade security with end-to-end encryption. GDPR compliant and SOC 2 certified for handling sensitive customer data.",
+        "Self-host your agents or use our cloud. End-to-end encryption and GDPR compliance for handling sensitive data.",
     },
     {
       icon: Zap,
-      title: "Instant Integration",
+      title: "Community Driven",
       description:
-        "Embed agents into your website, app, or phone system in minutes. RESTful APIs and SDKs for seamless integration.",
+        "Share agents, templates, and integrations with the community. Learn from others and contribute your innovations.",
     },
   ];
 
@@ -60,26 +60,28 @@ const Features = () => {
             </span>
           </h2>
           <p className="text-xl text-indigo-200 max-w-3xl mx-auto">
-            We're building the future of customer service automation. Simple,
-            powerful, and designed for every business.
+            The first truly open-source platform for building AI agents. Simple,
+            powerful, and designed for the community.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="group relative p-8 rounded-2xl backdrop-blur-3xl bg-black/20 border border-white/10 transition-all duration-300 hover:scale-105 shadow-2xl"
-            >
-              <div className="relative z-10">
-                <feature.icon className="w-12 h-12 text-indigo-400 mb-4 transition-colors duration-300" />
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-indigo-200 leading-relaxed">
-                  {feature.description}
-                </p>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="group relative p-8 rounded-2xl backdrop-blur-3xl bg-black/20 border border-white/10 transition-all duration-300 hover:scale-105 shadow-2xl"
+              >
+                <div className="relative z-10">
+                  <feature.icon className="w-12 h-12 text-indigo-400 mb-4 transition-colors duration-300" />
+                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                  <p className="text-indigo-200 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
