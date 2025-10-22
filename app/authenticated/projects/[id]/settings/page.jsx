@@ -93,8 +93,8 @@ const SettingsPage = () => {
               status: "verified",
               verifiedAt: new Date().toISOString().split("T")[0],
             }
-          : d
-      )
+          : d,
+      ),
     );
   };
 
@@ -136,8 +136,8 @@ const SettingsPage = () => {
                 activeTab === tab.id
                   ? "bg-indigo-600 text-white"
                   : theme === "dark"
-                  ? "text-gray-400 hover:text-white hover:bg-gray-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                    ? "text-gray-400 hover:text-white hover:bg-gray-700"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               }`}
             >
               <tab.icon className="w-4 h-4 mr-2" />
