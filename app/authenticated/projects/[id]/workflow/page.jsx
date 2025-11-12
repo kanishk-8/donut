@@ -10,613 +10,31 @@ import {
   MiniMap,
   Background,
   Panel,
-  Handle,
-  Position,
   ReactFlowProvider,
 } from "@xyflow/react";
+import { Save, Download, Play, Sidebar, Brain, Server } from "lucide-react";
+
+import { nodeTypes } from "@/components/project/workflow/nodes";
+import NodesSidebar from "@/components/project/workflow/panels/NodesSidebar";
+import ConfigPanel from "@/components/project/workflow/panels/ConfigPanel";
 import {
-  MessageSquare,
-  Phone,
-  Bot,
-  Database,
-  Zap,
-  Filter,
-  Play,
-  Save,
-  Download,
-  Settings,
-  Code,
-  Edit3,
-  Trash2,
-  Copy,
-  Link,
-  Globe,
-  Key,
-  Calendar,
-  Sidebar,
-} from "lucide-react";
+  validateConnection,
+  validateWorkflow,
+} from "@/utils/workflow/connectionValidation";
+import {
+  initialNodes,
+  initialEdges,
+  defaultEdgeOptions,
+  connectionLineStyle,
+  defaultViewport,
+  flowSettings,
+  createNode,
+  exportWorkflow,
+  generateNodeId,
+  cloneNode,
+} from "@/utils/workflow/workflowData";
 
 import "@xyflow/react/dist/style.css";
-
-// Custom node types with proper theming
-const nodeTypes = {
-  chatNode: React.memo(function ChatNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-indigo-500 bg-black/20 border-indigo-500/50"
-              : "ring-2 ring-indigo-500 bg-white/90 border-indigo-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <MessageSquare className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Chat Input
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-500"
-        />
-      </div>
-    );
-  }),
-
-  voiceNode: React.memo(function VoiceNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-purple-500 bg-black/20 border-purple-500/50"
-              : "ring-2 ring-purple-500 bg-white/90 border-purple-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center">
-              <Phone className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Voice Input
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500"
-        />
-      </div>
-    );
-  }),
-
-  aiNode: React.memo(function AiNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-emerald-500 bg-black/20 border-emerald-500/50"
-              : "ring-2 ring-emerald-500 bg-white/90 border-emerald-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                AI Agent
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-500"
-        />
-      </div>
-    );
-  }),
-
-  dataNode: React.memo(function DataNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-blue-500 bg-black/20 border-blue-500/50"
-              : "ring-2 ring-blue-500 bg-white/90 border-blue-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-              <Database className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Database
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-500"
-        />
-      </div>
-    );
-  }),
-
-  triggerNode: React.memo(function TriggerNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-indigo-500 bg-black/20 border-indigo-500/50"
-              : "ring-2 ring-indigo-500 bg-white/90 border-indigo-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Trigger
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-indigo-500"
-        />
-      </div>
-    );
-  }),
-
-  conditionNode: React.memo(function ConditionNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-purple-500 bg-black/20 border-purple-500/50"
-              : "ring-2 ring-purple-500 bg-white/90 border-purple-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center">
-              <Filter className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Condition
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500"
-        />
-        <Handle
-          type="source"
-          position={Position.Right}
-          id="true"
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500"
-        />
-        <Handle
-          type="source"
-          position={Position.Left}
-          id="false"
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500"
-        />
-      </div>
-    );
-  }),
-
-  codeNode: React.memo(function CodeNode({ data, selected }) {
-    const { theme } = useTheme();
-    return (
-      <div
-        className={`group relative backdrop-blur-3xl rounded-2xl shadow-lg transition-all duration-200 min-w-[180px] hover:scale-105 border ${
-          selected
-            ? theme === "dark"
-              ? "ring-2 ring-emerald-500 bg-black/20 border-emerald-500/50"
-              : "ring-2 ring-emerald-500 bg-white/90 border-emerald-500/50"
-            : theme === "dark"
-              ? "bg-black/20 border-white/10"
-              : "bg-white/90 border-gray-200"
-        }`}
-      >
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-500"
-        />
-
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center">
-              <Code className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1">
-              <h3
-                className={`font-medium text-sm ${
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                }`}
-              >
-                {data.label}
-              </h3>
-              <p
-                className={`text-xs ${
-                  theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
-                Code
-              </p>
-            </div>
-          </div>
-
-          {data.description && (
-            <p
-              className={`text-xs mt-2 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              {data.description}
-            </p>
-          )}
-        </div>
-
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="w-3 h-3 bg-gray-400 border-2 border-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-500"
-        />
-      </div>
-    );
-  }),
-};
-
-const initialNodes = [
-  {
-    id: "1",
-    type: "triggerNode",
-    position: { x: 100, y: 100 },
-    data: {
-      label: "Start",
-      description: "When a customer sends a message",
-    },
-  },
-  {
-    id: "2",
-    type: "aiNode",
-    position: { x: 100, y: 250 },
-    data: {
-      label: "AI Agent",
-      description: "Process customer message with AI",
-    },
-  },
-  {
-    id: "3",
-    type: "chatNode",
-    position: { x: 100, y: 400 },
-    data: {
-      label: "Send Response",
-      description: "Reply to customer",
-    },
-  },
-];
-
-const initialEdges = [
-  {
-    id: "e1-2",
-    source: "1",
-    target: "2",
-    type: "smoothstep",
-    style: { stroke: "#6b7280", strokeWidth: 2 },
-  },
-  {
-    id: "e2-3",
-    source: "2",
-    target: "3",
-    type: "smoothstep",
-    style: { stroke: "#6b7280", strokeWidth: 2 },
-  },
-];
-
-const nodeCategories = [
-  {
-    category: "Triggers",
-    nodes: [
-      {
-        type: "triggerNode",
-        label: "Manual Trigger",
-        icon: Zap,
-        description: "Manually trigger workflow",
-      },
-      {
-        type: "chatNode",
-        label: "Chat Webhook",
-        icon: MessageSquare,
-        description: "Receive chat messages",
-      },
-      {
-        type: "voiceNode",
-        label: "Voice Webhook",
-        icon: Phone,
-        description: "Receive voice calls",
-      },
-    ],
-  },
-  {
-    category: "Actions",
-    nodes: [
-      {
-        type: "aiNode",
-        label: "AI Agent",
-        icon: Bot,
-        description: "Process with AI",
-      },
-      {
-        type: "codeNode",
-        label: "Code",
-        icon: Code,
-        description: "Execute custom code",
-      },
-      {
-        type: "dataNode",
-        label: "Database",
-        icon: Database,
-        description: "Query database",
-      },
-    ],
-  },
-  {
-    category: "Logic",
-    nodes: [
-      {
-        type: "conditionNode",
-        label: "IF",
-        icon: Filter,
-        description: "Conditional logic",
-      },
-    ],
-  },
-  {
-    category: "Communication",
-    nodes: [
-      {
-        type: "chatNode",
-        label: "Send Message",
-        icon: MessageSquare,
-        description: "Send chat message",
-      },
-      {
-        type: "voiceNode",
-        label: "Make Call",
-        icon: Phone,
-        description: "Make voice call",
-      },
-    ],
-  },
-];
 
 function WorkflowPage() {
   const { theme } = useTheme();
@@ -626,10 +44,25 @@ function WorkflowPage() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("nodes");
+  const [workflowType, setWorkflowType] = useState("agent"); // 'agent' or 'backend'
   const reactFlowWrapper = useRef(null);
 
   const onConnect = useCallback(
-    (params) =>
+    (params) => {
+      // Find the source and target nodes
+      const sourceNode = nodes.find((node) => node.id === params.source);
+      const targetNode = nodes.find((node) => node.id === params.target);
+
+      if (sourceNode && targetNode) {
+        // Validate the connection
+        const validation = validateConnection(sourceNode, targetNode, edges);
+
+        if (!validation.isValid) {
+          alert(validation.message);
+          return;
+        }
+      }
+
       setEdges((eds) =>
         addEdge(
           {
@@ -639,8 +72,9 @@ function WorkflowPage() {
           },
           eds,
         ),
-      ),
-    [setEdges],
+      );
+    },
+    [nodes, edges, setEdges],
   );
 
   const onDragOver = useCallback((event) => {
@@ -656,6 +90,7 @@ function WorkflowPage() {
       const label = event.dataTransfer.getData("application/label");
       const description = event.dataTransfer.getData("application/description");
 
+      // Check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
         return;
       }
@@ -669,12 +104,7 @@ function WorkflowPage() {
         y: event.clientY - reactFlowBounds.top - 100,
       };
 
-      const newNode = {
-        id: `${nodeId}`,
-        type,
-        position,
-        data: { label, description },
-      };
+      const newNode = createNode(nodeId, type, position, label, description);
 
       setNodes((nds) => nds.concat(newNode));
       setNodeId((id) => id + 1);
@@ -690,24 +120,41 @@ function WorkflowPage() {
   }, []);
 
   const handleSave = useCallback(() => {
-    const flowData = { nodes, edges };
-    console.log("Saving workflow:", flowData);
-  }, [nodes, edges]);
+    const workflowData = exportWorkflow(nodes, edges, {
+      name: `${workflowType === "agent" ? "Agent" : "Backend"} Workflow`,
+      type: workflowType,
+    });
+    console.log("Saving workflow:", workflowData);
+
+    // Here you would typically save to your backend
+    localStorage.setItem("workflow", JSON.stringify(workflowData));
+    alert("Workflow saved successfully!");
+  }, [nodes, edges, workflowType]);
 
   const handleExport = useCallback(() => {
-    const flowData = { nodes, edges };
-    const dataStr = JSON.stringify(flowData, null, 2);
+    const workflowData = exportWorkflow(nodes, edges, {
+      name: `${workflowType === "agent" ? "Agent" : "Backend"} Workflow`,
+      type: workflowType,
+    });
+    const dataStr = JSON.stringify(workflowData, null, 2);
     const dataUri =
       "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
-    const exportFileDefaultName = "workflow.json";
+    const exportFileDefaultName = `${workflowType}-workflow.json`;
     const linkElement = document.createElement("a");
     linkElement.setAttribute("href", dataUri);
     linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
-  }, [nodes, edges]);
+  }, [nodes, edges, workflowType]);
 
   const handleTestFlow = useCallback(() => {
-    console.log("Testing workflow with nodes:", nodes, "and edges:", edges);
+    const validation = validateWorkflow(nodes, edges);
+
+    if (validation.isValid) {
+      alert("✅ Workflow validation passed! Ready to test.");
+      console.log("Testing workflow with nodes:", nodes, "and edges:", edges);
+    } else {
+      alert(`❌ Workflow validation failed:\n${validation.errors.join("\n")}`);
+    }
   }, [nodes, edges]);
 
   const onNodeClick = useCallback((event, node) => {
@@ -739,23 +186,12 @@ function WorkflowPage() {
 
   const handleDuplicateNode = useCallback(() => {
     if (selectedNode) {
-      const newNode = {
-        ...selectedNode,
-        id: `${nodeId}`,
-        position: {
-          x: selectedNode.position.x + 50,
-          y: selectedNode.position.y + 50,
-        },
-        data: {
-          ...selectedNode.data,
-          label: `${selectedNode.data.label} Copy`,
-        },
-      };
+      const newNode = cloneNode(selectedNode, nodes);
       setNodes((nds) => nds.concat(newNode));
       setNodeId((id) => id + 1);
       setActiveTab("nodes");
     }
-  }, [selectedNode, nodeId, setNodes]);
+  }, [selectedNode, nodes, setNodes]);
 
   const handleUpdateNodeData = useCallback(
     (field, value) => {
@@ -779,111 +215,11 @@ function WorkflowPage() {
     [selectedNode, setNodes],
   );
 
-  const getNodeTypeConfig = (nodeType) => {
-    const configs = {
-      triggerNode: {
-        title: "Trigger Configuration",
-        fields: [
-          { key: "webhookUrl", label: "Webhook URL", type: "text", icon: Link },
-          {
-            key: "method",
-            label: "HTTP Method",
-            type: "select",
-            options: ["POST", "GET", "PUT"],
-            icon: Globe,
-          },
-        ],
-      },
-      chatNode: {
-        title: "Chat Configuration",
-        fields: [
-          {
-            key: "message",
-            label: "Message Template",
-            type: "textarea",
-            icon: MessageSquare,
-          },
-          { key: "channelId", label: "Channel ID", type: "text", icon: Key },
-        ],
-      },
-      voiceNode: {
-        title: "Voice Configuration",
-        fields: [
-          {
-            key: "phoneNumber",
-            label: "Phone Number",
-            type: "text",
-            icon: Phone,
-          },
-          {
-            key: "script",
-            label: "Voice Script",
-            type: "textarea",
-            icon: MessageSquare,
-          },
-        ],
-      },
-      aiNode: {
-        title: "AI Agent Configuration",
-        fields: [
-          {
-            key: "model",
-            label: "AI Model",
-            type: "select",
-            options: ["GPT-4", "GPT-3.5", "Claude"],
-            icon: Bot,
-          },
-          {
-            key: "prompt",
-            label: "System Prompt",
-            type: "textarea",
-            icon: Edit3,
-          },
-        ],
-      },
-      dataNode: {
-        title: "Database Configuration",
-        fields: [
-          {
-            key: "query",
-            label: "SQL Query",
-            type: "textarea",
-            icon: Database,
-          },
-          {
-            key: "timeout",
-            label: "Timeout (ms)",
-            type: "number",
-            icon: Calendar,
-          },
-        ],
-      },
-      conditionNode: {
-        title: "Condition Configuration",
-        fields: [
-          {
-            key: "condition",
-            label: "Condition Logic",
-            type: "textarea",
-            icon: Filter,
-          },
-        ],
-      },
-      codeNode: {
-        title: "Code Configuration",
-        fields: [
-          {
-            key: "language",
-            label: "Language",
-            type: "select",
-            options: ["JavaScript", "Python", "Go"],
-            icon: Code,
-          },
-          { key: "code", label: "Code", type: "textarea", icon: Edit3 },
-        ],
-      },
-    };
-    return configs[nodeType] || { title: "Node Configuration", fields: [] };
+  const switchWorkflowType = (type) => {
+    setWorkflowType(type);
+    // Don't clear nodes when switching types to allow mixed workflows
+    setSelectedNode(null);
+    setActiveTab("nodes");
   };
 
   return (
@@ -926,17 +262,14 @@ function WorkflowPage() {
                 backgroundColor: theme === "dark" ? "#030712" : "#f9fafb",
               }}
               fitView
-              snapToGrid={true}
-              snapGrid={[20, 20]}
-              defaultViewport={{ x: 0, y: 0, zoom: 1 }}
-              minZoom={0.1}
-              maxZoom={2}
-              attributionPosition="bottom-left"
-              connectionLineStyle={{ stroke: "#6b7280", strokeWidth: 2 }}
-              defaultEdgeOptions={{
-                type: "smoothstep",
-                style: { stroke: "#6b7280", strokeWidth: 2 },
-              }}
+              snapToGrid={flowSettings.snapToGrid}
+              snapGrid={flowSettings.snapGrid}
+              defaultViewport={defaultViewport}
+              minZoom={flowSettings.minZoom}
+              maxZoom={flowSettings.maxZoom}
+              attributionPosition={flowSettings.attributionPosition}
+              connectionLineStyle={connectionLineStyle}
+              defaultEdgeOptions={defaultEdgeOptions}
             >
               <Controls
                 className={`${
@@ -981,7 +314,10 @@ function WorkflowPage() {
                         theme === "dark" ? "text-white" : "text-gray-900"
                       }`}
                     >
-                      Workflow Active
+                      {workflowType === "agent"
+                        ? "Agent Builder"
+                        : "Backend Builder"}{" "}
+                      Active
                     </span>
                   </div>
                 </div>
@@ -1008,7 +344,7 @@ function WorkflowPage() {
                       theme === "dark" ? "text-white" : "text-gray-900"
                     }`}
                   >
-                    Workflow Tools
+                    Workflow Builder
                   </h2>
                   <button
                     onClick={() => setSidebarCollapsed(true)}
@@ -1022,8 +358,42 @@ function WorkflowPage() {
                   </button>
                 </div>
 
+                {/* Workflow Type Toggle */}
+                <div className="mb-4">
+                  <div
+                    className={`flex p-1 rounded-xl ${theme === "dark" ? "bg-black/20" : "bg-gray-100"}`}
+                  >
+                    <button
+                      onClick={() => switchWorkflowType("agent")}
+                      className={`flex-1 px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg flex items-center justify-center gap-2 ${
+                        workflowType === "agent"
+                          ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
+                          : theme === "dark"
+                            ? "text-indigo-200 hover:text-white hover:bg-white/10"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                      }`}
+                    >
+                      <Brain className="w-4 h-4" />
+                      Agent Builder
+                    </button>
+                    <button
+                      onClick={() => switchWorkflowType("backend")}
+                      className={`flex-1 px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg flex items-center justify-center gap-2 ${
+                        workflowType === "backend"
+                          ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
+                          : theme === "dark"
+                            ? "text-indigo-200 hover:text-white hover:bg-white/10"
+                            : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+                      }`}
+                    >
+                      <Server className="w-4 h-4" />
+                      Backend Builder
+                    </button>
+                  </div>
+                </div>
+
                 {/* Toolbar Actions */}
-                <div className="grid grid-cols-3 gap-2 mb-4">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={handleSave}
                     className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-200 hover:scale-105 ${
@@ -1057,7 +427,9 @@ function WorkflowPage() {
               </div>
 
               {/* Tab Navigation */}
-              <div className="p-4">
+              <div
+                className={`p-4 border-t ${theme === "dark" ? "border-white/10" : "border-gray-200"}`}
+              >
                 <div
                   className={`flex p-1 rounded-xl ${theme === "dark" ? "bg-black/20" : "bg-gray-100"}`}
                 >
@@ -1090,342 +462,21 @@ function WorkflowPage() {
               </div>
 
               {/* Tab Content */}
-              <div className="flex-1 overflow-y-auto">
-                {activeTab === "nodes" && (
-                  <div className="p-6">
-                    {nodeCategories.map((category) => (
-                      <div key={category.category} className="mb-8">
-                        <h3
-                          className={`text-xs font-medium uppercase tracking-wider mb-4 ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-500"
-                          }`}
-                        >
-                          {category.category}
-                        </h3>
-                        <div className="space-y-2">
-                          {category.nodes.map((node) => (
-                            <div
-                              key={node.type + node.label}
-                              className={`flex items-start gap-3 p-3 rounded-xl cursor-grab transition-all duration-200 hover:scale-105 ${
-                                theme === "dark"
-                                  ? "text-white hover:bg-white/10"
-                                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                              }`}
-                              draggable
-                              onDragStart={(event) =>
-                                onDragStart(
-                                  event,
-                                  node.type,
-                                  node.label,
-                                  node.description,
-                                )
-                              }
-                            >
-                              <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                                <node.icon className="w-5 h-5 text-white" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <h4
-                                  className={`font-medium text-sm ${
-                                    theme === "dark"
-                                      ? "text-white"
-                                      : "text-gray-900"
-                                  }`}
-                                >
-                                  {node.label}
-                                </h4>
-                                <p
-                                  className={`text-xs mt-1 ${
-                                    theme === "dark"
-                                      ? "text-gray-400"
-                                      : "text-gray-500"
-                                  }`}
-                                >
-                                  {node.description}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {activeTab === "config" && selectedNode && (
-                  <div className="p-6 space-y-6">
-                    {/* Node Header */}
-                    <div
-                      className={`flex items-center gap-3 p-4 rounded-xl border backdrop-blur-sm ${
-                        theme === "dark"
-                          ? "bg-black/20 border-white/10"
-                          : "bg-white/70 border-gray-200"
-                      }`}
-                    >
-                      <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center">
-                        {selectedNode.type === "chatNode" && (
-                          <MessageSquare className="w-6 h-6 text-white" />
-                        )}
-                        {selectedNode.type === "voiceNode" && (
-                          <Phone className="w-6 h-6 text-white" />
-                        )}
-                        {selectedNode.type === "aiNode" && (
-                          <Bot className="w-6 h-6 text-white" />
-                        )}
-                        {selectedNode.type === "dataNode" && (
-                          <Database className="w-6 h-6 text-white" />
-                        )}
-                        {selectedNode.type === "triggerNode" && (
-                          <Zap className="w-6 h-6 text-white" />
-                        )}
-                        {selectedNode.type === "conditionNode" && (
-                          <Filter className="w-6 h-6 text-white" />
-                        )}
-                        {selectedNode.type === "codeNode" && (
-                          <Code className="w-6 h-6 text-white" />
-                        )}
-                      </div>
-                      <div>
-                        <h3
-                          className={`font-semibold ${
-                            theme === "dark" ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {selectedNode.data.label}
-                        </h3>
-                        <p
-                          className={`text-sm ${
-                            theme === "dark" ? "text-gray-400" : "text-gray-600"
-                          }`}
-                        >
-                          {getNodeTypeConfig(selectedNode.type).title}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div>
-                      <h4
-                        className={`text-sm font-medium mb-3 ${
-                          theme === "dark" ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        Quick Actions
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={handleDuplicateNode}
-                          className={`flex items-center gap-2 p-2 rounded-xl transition-all text-sm hover:scale-105 ${
-                            theme === "dark"
-                              ? "text-white hover:bg-white/10"
-                              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                          }`}
-                        >
-                          <Copy className="w-4 h-4" />
-                          Duplicate
-                        </button>
-                        <button
-                          onClick={handleDeleteNode}
-                          className="flex items-center gap-2 p-2 rounded-xl transition-all text-sm bg-red-500 hover:bg-red-600 text-white hover:scale-105 shadow-lg"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Configuration */}
-                    <div>
-                      <h4
-                        className={`text-sm font-medium mb-4 ${
-                          theme === "dark" ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        Configuration
-                      </h4>
-                      <div className="space-y-4">
-                        {/* Node Label */}
-                        <div>
-                          <label
-                            className={`block text-xs font-medium mb-2 ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            }`}
-                          >
-                            Node Label
-                          </label>
-                          <input
-                            type="text"
-                            value={selectedNode.data.label || ""}
-                            onChange={(e) =>
-                              handleUpdateNodeData("label", e.target.value)
-                            }
-                            className={`w-full px-3 py-2 rounded-lg border text-sm transition-colors focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 backdrop-blur-sm ${
-                              theme === "dark"
-                                ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
-                                : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
-                            }`}
-                            placeholder="Enter node label..."
-                          />
-                        </div>
-
-                        {/* Node Description */}
-                        <div>
-                          <label
-                            className={`block text-xs font-medium mb-2 ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            }`}
-                          >
-                            Description
-                          </label>
-                          <textarea
-                            value={selectedNode.data.description || ""}
-                            onChange={(e) =>
-                              handleUpdateNodeData(
-                                "description",
-                                e.target.value,
-                              )
-                            }
-                            className={`w-full px-3 py-2 rounded-lg border text-sm transition-colors resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 backdrop-blur-sm ${
-                              theme === "dark"
-                                ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
-                                : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
-                            }`}
-                            rows={2}
-                            placeholder="Enter node description..."
-                          />
-                        </div>
-
-                        {/* Node-specific Fields */}
-                        {getNodeTypeConfig(selectedNode.type).fields.map(
-                          (field) => (
-                            <div key={field.key}>
-                              <label
-                                className={`flex items-center gap-2 text-xs font-medium mb-2 ${
-                                  theme === "dark"
-                                    ? "text-gray-400"
-                                    : "text-gray-600"
-                                }`}
-                              >
-                                <field.icon className="w-3 h-3" />
-                                {field.label}
-                              </label>
-                              {field.type === "text" && (
-                                <input
-                                  type="text"
-                                  value={selectedNode.data[field.key] || ""}
-                                  onChange={(e) =>
-                                    handleUpdateNodeData(
-                                      field.key,
-                                      e.target.value,
-                                    )
-                                  }
-                                  className={`w-full px-3 py-2 rounded-lg border text-sm transition-colors focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 backdrop-blur-sm ${
-                                    theme === "dark"
-                                      ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
-                                      : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
-                                  }`}
-                                  placeholder={`Enter ${field.label.toLowerCase()}...`}
-                                />
-                              )}
-                              {field.type === "textarea" && (
-                                <textarea
-                                  value={selectedNode.data[field.key] || ""}
-                                  onChange={(e) =>
-                                    handleUpdateNodeData(
-                                      field.key,
-                                      e.target.value,
-                                    )
-                                  }
-                                  className={`w-full px-3 py-2 rounded-lg border text-sm transition-colors resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 backdrop-blur-sm ${
-                                    theme === "dark"
-                                      ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
-                                      : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
-                                  }`}
-                                  rows={3}
-                                  placeholder={`Enter ${field.label.toLowerCase()}...`}
-                                />
-                              )}
-                              {field.type === "select" && (
-                                <select
-                                  value={selectedNode.data[field.key] || ""}
-                                  onChange={(e) =>
-                                    handleUpdateNodeData(
-                                      field.key,
-                                      e.target.value,
-                                    )
-                                  }
-                                  className={`w-full px-3 py-2 rounded-lg border text-sm transition-colors focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 backdrop-blur-sm ${
-                                    theme === "dark"
-                                      ? "bg-black/20 border-white/10 text-white"
-                                      : "bg-white/70 border-gray-200 text-gray-900"
-                                  }`}
-                                >
-                                  <option value="">Select {field.label}</option>
-                                  {field.options?.map((option) => (
-                                    <option key={option} value={option}>
-                                      {option}
-                                    </option>
-                                  ))}
-                                </select>
-                              )}
-                              {field.type === "number" && (
-                                <input
-                                  type="number"
-                                  value={selectedNode.data[field.key] || ""}
-                                  onChange={(e) =>
-                                    handleUpdateNodeData(
-                                      field.key,
-                                      e.target.value,
-                                    )
-                                  }
-                                  className={`w-full px-3 py-2 rounded-lg border text-sm transition-colors focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 backdrop-blur-sm ${
-                                    theme === "dark"
-                                      ? "bg-black/20 border-white/10 text-white placeholder-gray-400"
-                                      : "bg-white/70 border-gray-200 text-gray-900 placeholder-gray-500"
-                                  }`}
-                                  placeholder={`Enter ${field.label.toLowerCase()}...`}
-                                />
-                              )}
-                            </div>
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "config" && !selectedNode && (
-                  <div className="p-6 text-center">
-                    <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                        theme === "dark" ? "bg-gray-800" : "bg-gray-100"
-                      }`}
-                    >
-                      <Settings
-                        className={`w-8 h-8 ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-400"
-                        }`}
-                      />
-                    </div>
-                    <h3
-                      className={`text-lg font-medium mb-2 ${
-                        theme === "dark" ? "text-white" : "text-gray-900"
-                      }`}
-                    >
-                      No Node Selected
-                    </h3>
-                    <p
-                      className={`text-sm ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    >
-                      Click on a node to configure its settings
-                    </p>
-                  </div>
+              <div className="flex-1 flex flex-col overflow-hidden">
+                {activeTab === "nodes" ? (
+                  <NodesSidebar
+                    workflowType={workflowType}
+                    onDragStart={onDragStart}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                  />
+                ) : (
+                  <ConfigPanel
+                    selectedNode={selectedNode}
+                    onUpdateNodeData={handleUpdateNodeData}
+                    onDeleteNode={handleDeleteNode}
+                    onDuplicateNode={handleDuplicateNode}
+                  />
                 )}
               </div>
             </div>
