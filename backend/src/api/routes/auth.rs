@@ -3,7 +3,7 @@ use axum::{
     routing::{get, post},
 };
 
-use crate::core::states::AppState;
+use crate::core::models::AppState;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
