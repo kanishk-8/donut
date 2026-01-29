@@ -184,7 +184,10 @@ const SignupPage = () => {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {/* Full Name */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">
+                                    <label
+                                        htmlFor="name"
+                                        className="block text-sm font-medium mb-2 text-gray-300"
+                                    >
                                         Full Name
                                     </label>
                                     <div className="relative">
@@ -192,6 +195,7 @@ const SignupPage = () => {
                                             <User className="w-5 h-5 text-gray-400" />
                                         </div>
                                         <input
+                                            id="name"
                                             type="text"
                                             name="name"
                                             value={formData.name}
@@ -205,7 +209,10 @@ const SignupPage = () => {
 
                                 {/* Email */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">
+                                    <label
+                                        htmlFor="email"
+                                        className="block text-sm font-medium mb-2 text-gray-300"
+                                    >
                                         Email Address
                                     </label>
                                     <div className="relative">
@@ -213,6 +220,7 @@ const SignupPage = () => {
                                             <Mail className="w-5 h-5 text-gray-400" />
                                         </div>
                                         <input
+                                            id="email"
                                             type="email"
                                             name="email"
                                             value={formData.email}
@@ -226,7 +234,10 @@ const SignupPage = () => {
 
                                 {/* Password */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">
+                                    <label
+                                        htmlFor="password"
+                                        className="block text-sm font-medium mb-2 text-gray-300"
+                                    >
                                         Password
                                     </label>
                                     <div className="relative">
@@ -234,6 +245,7 @@ const SignupPage = () => {
                                             <Lock className="w-5 h-5 text-gray-400" />
                                         </div>
                                         <input
+                                            id="password"
                                             type={
                                                 showPassword
                                                     ? "text"
@@ -252,6 +264,11 @@ const SignupPage = () => {
                                                 setShowPassword(!showPassword)
                                             }
                                             className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                            aria-label={
+                                                showPassword
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
                                         >
                                             {showPassword ? (
                                                 <EyeOff className="w-5 h-5 text-gray-400" />
@@ -264,7 +281,10 @@ const SignupPage = () => {
 
                                 {/* Confirm Password */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">
+                                    <label
+                                        htmlFor="confirmPassword"
+                                        className="block text-sm font-medium mb-2 text-gray-300"
+                                    >
                                         Confirm Password
                                     </label>
                                     <div className="relative">
@@ -272,6 +292,7 @@ const SignupPage = () => {
                                             <Lock className="w-5 h-5 text-gray-400" />
                                         </div>
                                         <input
+                                            id="confirmPassword"
                                             type={
                                                 showConfirmPassword
                                                     ? "text"
@@ -292,6 +313,11 @@ const SignupPage = () => {
                                                 )
                                             }
                                             className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                            aria-label={
+                                                showConfirmPassword
+                                                    ? "Hide confirm password"
+                                                    : "Show confirm password"
+                                            }
                                         >
                                             {showConfirmPassword ? (
                                                 <EyeOff className="w-5 h-5 text-gray-400" />

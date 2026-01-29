@@ -1,9 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import { useRouter } from "next/navigation";
-import { User, Settings, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useTheme } from "@/context/themecontext";
 import { useAuth } from "@/context/authcontext";
 
@@ -53,58 +52,64 @@ const ProjectNav = () => {
 
             {/* User Profile Section */}
             <div className="flex items-center gap-3">
-                <Link href="/profile">
-                    <div
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer hover:scale-105 ${
-                            theme === "dark"
-                                ? "bg-white/10 border border-white/10 hover:bg-white/20"
-                                : "bg-gray-100 border border-gray-200 hover:bg-gray-200"
-                        }`}
-                    >
-                        <div className="w-8 h-8 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full flex items-center justify-center overflow-hidden">
-                            {user?.avatar ? (
-                                <img
-                                    src={user.avatar}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <span className="text-xs font-semibold text-white">
-                                    {user?.name
-                                        ? user.name
-                                              .split(" ")
-                                              .map((n) => n[0])
-                                              .join("")
-                                              .toUpperCase()
-                                        : "U"}
-                                </span>
-                            )}
-                        </div>
-                        <div className="hidden sm:block">
-                            <p
-                                className={`text-sm font-medium ${
-                                    theme === "dark"
-                                        ? "text-white"
-                                        : "text-gray-900"
-                                }`}
-                            >
-                                {user?.name || "John Doe"}
-                            </p>
-                            <p
-                                className={`text-xs ${
-                                    theme === "dark"
-                                        ? "text-gray-400"
-                                        : "text-gray-500"
-                                }`}
-                            >
-                                {user?.email || "john@example.com"}
-                            </p>
-                        </div>
+                <Link
+                    href="/profile"
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                        theme === "dark"
+                            ? "bg-white/10 border border-white/10 hover:bg-white/20"
+                            : "bg-gray-100 border border-gray-200 hover:bg-gray-200"
+                    }`}
+                >
+                    <div className="w-8 h-8 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full flex items-center justify-center overflow-hidden">
+                        {user?.avatar ? (
+                            <Image
+                                src={user.avatar}
+                                alt={
+                                    user?.name
+                                        ? `${user.name} profile`
+                                        : `${user?.email || "User"} profile`
+                                }
+                                width={32}
+                                height={32}
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <span className="text-xs font-semibold text-white">
+                                {user?.name
+                                    ? user.name
+                                          .split(" ")
+                                          .map((n) => n[0])
+                                          .join("")
+                                          .toUpperCase()
+                                    : "U"}
+                            </span>
+                        )}
+                    </div>
+                    <div className="hidden sm:block">
+                        <p
+                            className={`text-sm font-medium ${
+                                theme === "dark"
+                                    ? "text-white"
+                                    : "text-gray-900"
+                            }`}
+                        >
+                            {user?.name || "John Doe"}
+                        </p>
+                        <p
+                            className={`text-xs ${
+                                theme === "dark"
+                                    ? "text-gray-400"
+                                    : "text-gray-500"
+                            }`}
+                        >
+                            {user?.email || "john@example.com"}
+                        </p>
                     </div>
                 </Link>
 
                 {/* Profile Actions */}
                 <button
+                    type="button"
                     onClick={handleLogout}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 text-sm font-medium ${
                         theme === "dark"

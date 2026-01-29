@@ -44,7 +44,7 @@ const Hero = () => {
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 items-center px-4">
                         <Link
-                            href="/unauthenticated/signup"
+                            href="/signup"
                             className="w-full sm:w-auto px-8 sm:px-10 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 rounded-full font-bold text-base sm:text-lg transition-all duration-200 hover:scale-105 text-center text-white shadow-2xl backdrop-blur-3xl"
                         >
                             Start Building Free

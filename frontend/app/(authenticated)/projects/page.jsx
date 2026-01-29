@@ -119,6 +119,7 @@ const page = () => {
                         </p>
                     </div>
                     <button
+                        type="button"
                         onClick={() => setIsCreating(true)}
                         className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white px-4 sm:px-8 py-2.5 sm:py-3 rounded-full transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2 font-medium text-sm sm:text-base w-full sm:w-auto shadow-2xl backdrop-blur-3xl"
                     >
@@ -157,6 +158,7 @@ const page = () => {
                             <form onSubmit={handleCreateAgent}>
                                 <div className="mb-4">
                                     <label
+                                        htmlFor="agent-name"
                                         className={`block text-sm font-medium mb-2 ${
                                             theme === "dark"
                                                 ? "text-gray-300"
@@ -166,6 +168,7 @@ const page = () => {
                                         Agent Name *
                                     </label>
                                     <input
+                                        id="agent-name"
                                         type="text"
                                         value={newAgent.name}
                                         onChange={(e) =>
@@ -185,6 +188,7 @@ const page = () => {
                                 </div>
                                 <div className="mb-4">
                                     <label
+                                        htmlFor="agent-type"
                                         className={`block text-sm font-medium mb-2 ${
                                             theme === "dark"
                                                 ? "text-gray-300"
@@ -194,6 +198,7 @@ const page = () => {
                                         Agent Type
                                     </label>
                                     <select
+                                        id="agent-type"
                                         value={newAgent.type}
                                         onChange={(e) =>
                                             setNewAgent({
@@ -218,6 +223,7 @@ const page = () => {
                                 </div>
                                 <div className="mb-6">
                                     <label
+                                        htmlFor="agent-description"
                                         className={`block text-sm font-medium mb-2 ${
                                             theme === "dark"
                                                 ? "text-gray-300"
@@ -227,6 +233,7 @@ const page = () => {
                                         Description
                                     </label>
                                     <textarea
+                                        id="agent-description"
                                         value={newAgent.description}
                                         onChange={(e) =>
                                             setNewAgent({
@@ -314,6 +321,7 @@ const page = () => {
                             {error}
                         </h3>
                         <button
+                            type="button"
                             onClick={fetchProjects}
                             className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white px-6 py-2 rounded-full transition-all duration-200 hover:scale-105 text-sm font-medium mx-auto"
                         >
@@ -323,14 +331,16 @@ const page = () => {
                 ) : Agents.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {Agents.map((agent) => (
-                            <div
+                            <button
                                 key={agent.id}
-                                className={`backdrop-blur-3xl rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border transition-all duration-200 hover:scale-105 cursor-pointer ${
+                                type="button"
+                                onClick={() => navigateToAgent(agent.id)}
+                                aria-label={`Open dashboard for ${agent.name}`}
+                                className={`backdrop-blur-3xl rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 border transition-all duration-200 hover:scale-105 focus:outline-none text-left ${
                                     theme === "dark"
                                         ? "bg-black/20 border-white/10"
                                         : "bg-white/90 border-gray-200"
                                 }`}
-                                onClick={() => navigateToAgent(agent.id)}
                             >
                                 <div className="flex items-start justify-between mb-4">
                                     <div
@@ -396,7 +406,7 @@ const page = () => {
                                         <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                                     </div>
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 ) : (
@@ -428,6 +438,7 @@ const page = () => {
                             started
                         </p>
                         <button
+                            type="button"
                             onClick={() => setIsCreating(true)}
                             className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-pink-500 text-white px-8 py-3 rounded-full transition-all duration-200 hover:scale-105 flex items-center gap-2 font-medium mx-auto shadow-2xl backdrop-blur-3xl"
                         >

@@ -150,7 +150,10 @@ const LoginPage = () => {
                             <form onSubmit={handleLogin} className="space-y-6">
                                 {/* Email */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">
+                                    <label
+                                        htmlFor="login-email"
+                                        className="block text-sm font-medium mb-2 text-gray-300"
+                                    >
                                         Email Address
                                     </label>
                                     <div className="relative">
@@ -158,6 +161,7 @@ const LoginPage = () => {
                                             <Mail className="w-5 h-5 text-gray-400" />
                                         </div>
                                         <input
+                                            id="login-email"
                                             type="email"
                                             value={email}
                                             onChange={(e) => {
@@ -167,13 +171,17 @@ const LoginPage = () => {
                                             className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
                                             placeholder="Enter your email"
                                             required
+                                            aria-label="Email address"
                                         />
                                     </div>
                                 </div>
 
                                 {/* Password */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 text-gray-300">
+                                    <label
+                                        htmlFor="login-password"
+                                        className="block text-sm font-medium mb-2 text-gray-300"
+                                    >
                                         Password
                                     </label>
                                     <div className="relative">
@@ -181,6 +189,7 @@ const LoginPage = () => {
                                             <Lock className="w-5 h-5 text-gray-400" />
                                         </div>
                                         <input
+                                            id="login-password"
                                             type={
                                                 showPassword
                                                     ? "text"
@@ -194,13 +203,19 @@ const LoginPage = () => {
                                             className="w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
                                             placeholder="Enter your password"
                                             required
+                                            aria-label="Password"
                                         />
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 setShowPassword(!showPassword)
                                             }
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                            aria-label={
+                                                showPassword
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
                                         >
                                             {showPassword ? (
                                                 <EyeOff className="w-5 h-5 text-gray-400" />

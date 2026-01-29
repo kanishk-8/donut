@@ -1,5 +1,11 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    useCallback,
+} from "react";
 import { supabase } from "@/lib/supabase/client";
 
 const AuthContext = createContext();
@@ -7,6 +13,42 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const checkUser = useCallback(async () => {
+        try {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            if (session) {
+                const userInfo = {
+                    id: session.user.id,
+                    email: session.user.email,
+                    name:
+                        session.user.user_metadata?.name ||
+                        session.user.user_metadata?.full_name ||
+                        session.user.email?.split("@")[0] ||
+                        "User",
+                    bio: "AI enthusiast and agent builder",
+                    joinDate: new Date(
+                        session.user.created_at,
+                    ).toLocaleDateString("en-US", {
+                        month: "long",
+                        year: "numeric",
+                    }),
+                    plan: "Pro Plan",
+                    avatar: session.user.user_metadata?.avatar_url || null,
+                };
+                setUser(userInfo);
+                localStorage.setItem("donut_user", JSON.stringify(userInfo));
+            }
+        } catch (err) {
+            // Log the error for debugging and remove stored user info
+            console.error("checkUser error:", err);
+            localStorage.removeItem("donut_user");
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     // Check for existing session on component mount
     useEffect(() => {
@@ -47,42 +89,7 @@ export const AuthProvider = ({ children }) => {
         return () => {
             subscription?.unsubscribe();
         };
-    }, []);
-
-    const checkUser = async () => {
-        try {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
-                const userInfo = {
-                    id: session.user.id,
-                    email: session.user.email,
-                    name:
-                        session.user.user_metadata?.name ||
-                        session.user.user_metadata?.full_name ||
-                        session.user.email?.split("@")[0] ||
-                        "User",
-                    bio: "AI enthusiast and agent builder",
-                    joinDate: new Date(
-                        session.user.created_at,
-                    ).toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                    }),
-                    plan: "Pro Plan",
-                    avatar: session.user.user_metadata?.avatar_url || null,
-                };
-                setUser(userInfo);
-                localStorage.setItem("donut_user", JSON.stringify(userInfo));
-            }
-        } catch (error) {
-            // User is not logged in
-            localStorage.removeItem("donut_user");
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [checkUser]);
 
     const signup = async (email, password, name) => {
         try {

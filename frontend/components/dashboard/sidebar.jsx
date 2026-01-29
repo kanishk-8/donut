@@ -54,26 +54,6 @@ const SideBar = () => {
             path: `/projects/${projectId}/workflow`,
         },
         {
-            name: "API Keys",
-            icon: <Key className="w-5 h-5" />,
-            path: `/projects/${projectId}/api-keys`,
-        },
-        {
-            name: "Playground",
-            icon: <Code className="w-5 h-5" />,
-            path: `/projects/${projectId}/playground`,
-        },
-        {
-            name: "Chat Widget",
-            icon: <MessageSquare className="w-5 h-5" />,
-            path: `/projects/${projectId}/chat-widget`,
-        },
-        {
-            name: "Logs",
-            icon: <FileText className="w-5 h-5" />,
-            path: `/projects/${projectId}/logs`,
-        },
-        {
             name: "Settings",
             icon: <Settings className="w-5 h-5" />,
             path: `/projects/${projectId}/settings`,
@@ -95,7 +75,7 @@ const SideBar = () => {
             >
                 <Image
                     src="/logo.png"
-                    alt="logo"
+                    alt="Donut logo"
                     width={40}
                     height={40}
                     className="rounded-full"
@@ -103,10 +83,12 @@ const SideBar = () => {
             </button>
             {/* Overlay for mobile */}
             {open && (
-                <div
+                <button
+                    type="button"
                     className="fixed inset-0 bg-black/40 z-30 md:hidden"
                     onClick={() => setOpen(false)}
-                ></div>
+                    aria-label="Close sidebar"
+                ></button>
             )}
             {/* Sidebar */}
             <div
@@ -123,7 +105,7 @@ const SideBar = () => {
                         <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center">
                             <Image
                                 src="/logo.png"
-                                alt="logo"
+                                alt="Donut logo"
                                 width={32}
                                 height={32}
                                 className="rounded-full md:w-10 md:h-10"
@@ -280,9 +262,15 @@ const SideBar = () => {
                         >
                             <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center justify-center overflow-hidden">
                                 {user?.avatar ? (
-                                    <img
+                                    <Image
                                         src={user.avatar}
-                                        alt="Profile"
+                                        alt={
+                                            user?.name
+                                                ? `${user.name} profile`
+                                                : "User profile"
+                                        }
+                                        width={32}
+                                        height={32}
                                         className="w-full h-full object-cover"
                                     />
                                 ) : (
