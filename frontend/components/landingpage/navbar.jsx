@@ -62,7 +62,7 @@ export const Navbar = () => {
                 </div>
                 {user ? (
                     <Link
-                        href="/authenticated/projects"
+                        href="/projects"
                         className={`rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-700 hover:to-pink-500 transition-all duration-300 hover:scale-105 ${
                             scrolled
                                 ? "px-5 py-3 text-base"
@@ -73,7 +73,7 @@ export const Navbar = () => {
                     </Link>
                 ) : (
                     <Link
-                        href={"/unauthenticated/login"}
+                        href={"/login"}
                         className={`rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:from-indigo-700 hover:to-pink-500 transition-all duration-300 hover:scale-105 ${
                             scrolled
                                 ? "px-5 py-3 text-base"
