@@ -1,65 +1,34 @@
-use std::env;
-
 use argon2::{
     Argon2,
-    password_hash::{
-        Error, PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng,
-    },
+    password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
 use chrono::{Duration, Utc};
-use jsonwebtoken::{EncodingKey, Header, encode};
-use serde::{Deserialize, Serialize};
+use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct Claims {
-    user_id: String,
-    user_name: String,
-    email: String,
-    role: String,
-    exp: i64,
-    iat: i64,
-}
+use crate::core::{
+    errors::AppError,
+    models::{AppState, Claims, UserData},
+};
 
-pub struct UserData {
-    user_id: String,
-    user_name: String,
-    email: String,
-}
-
-pub enum VerificationError {
-    InvalidHashFormat,
-    InvalidPassword,
-}
-impl From<Error> for VerificationError {
-    fn from(_: Error) -> Self {
-        VerificationError::InvalidPassword
-    }
-}
-
-fn get_jwt_secret() -> Vec<u8> {
-    env::var("JWT_SECRET")
-        .expect("jwt secret must be set")
-        .into_bytes()
-}
-
-pub fn password_hash(pass: &str) -> Result<String, VerificationError> {
+pub fn password_hash(pass: &str) -> Result<String, AppError> {
     let salt = SaltString::generate(&mut OsRng);
 
     let argon2 = Argon2::default();
 
-    Ok(argon2.hash_password(pass.as_bytes(), &salt)?.to_string())
+    argon2
+        .hash_password(pass.as_bytes(), &salt)
+        .map(|hash| hash.to_string())
+        .map_err(|_| AppError::InternalError)
 }
 
-pub fn password_verify(pass: &str, stored_pass: &str) -> Result<(), VerificationError> {
-    let parsed_hash =
-        PasswordHash::new(stored_pass).map_err(|_| VerificationError::InvalidHashFormat)?;
+pub fn password_verify(pass: &str, stored_pass: &str) -> Result<(), AppError> {
+    let parsed_hash = PasswordHash::new(stored_pass).map_err(|_| AppError::InvalidCredentials)?;
     Argon2::default()
         .verify_password(pass.as_bytes(), &parsed_hash)
-        .map_err(|_| VerificationError::InvalidPassword)
+        .map_err(|_| AppError::InvalidCredentials)
 }
 
-pub fn generate_token(user: UserData) -> String {
-    let jwt_secret = get_jwt_secret();
+pub fn generate_token(user: UserData, state: &AppState) -> Result<String, AppError> {
     let now = Utc::now();
 
     let claims = Claims {
@@ -74,28 +43,37 @@ pub fn generate_token(user: UserData) -> String {
     encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(&jwt_secret),
+        &EncodingKey::from_secret(&state.jwt_secret),
     )
-    .unwrap()
+    .map_err(|e| AppError::TokenGenerationFailed(e.to_string()))
 }
 
-pub fn generate_refresh_token(user: UserData) -> String {
-    let jwt_secret = get_jwt_secret();
-    let now = Utc::now();
+// Add this struct for token verification results
+pub struct TokenData {
+    pub user_id: String,
+    pub user_name: String,
+    pub email: String,
+    pub role: String,
+}
 
-    let claims = Claims {
-        user_id: user.user_id,
-        user_name: user.user_name,
-        email: user.email,
-        role: String::from("user"),
-        exp: (now + Duration::hours(24)).timestamp(),
-        iat: now.timestamp(),
-    };
+pub fn verify_token(token: &str, state: &AppState) -> Result<TokenData, AppError> {
+    let jwt_secret = &state.jwt_secret;
 
-    encode(
-        &Header::default(),
-        &claims,
-        &EncodingKey::from_secret(&jwt_secret),
+    let token_data = decode::<Claims>(
+        token,
+        &DecodingKey::from_secret(jwt_secret),
+        &Validation::default(),
     )
-    .unwrap()
+    .map_err(|e| match e.kind() {
+        jsonwebtoken::errors::ErrorKind::ExpiredSignature => AppError::InvalidToken,
+        jsonwebtoken::errors::ErrorKind::InvalidToken => AppError::InvalidToken,
+        _ => AppError::InvalidToken,
+    })?;
+
+    Ok(TokenData {
+        user_id: token_data.claims.user_id,
+        user_name: token_data.claims.user_name,
+        email: token_data.claims.email,
+        role: token_data.claims.role,
+    })
 }

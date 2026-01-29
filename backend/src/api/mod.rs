@@ -7,14 +7,14 @@ use axum::{
     routing::get,
 };
 
-use crate::core::states::{AppState, state};
+use crate::core::models::AppState;
 
-pub fn routes() -> Router {
+pub fn routes(state: AppState) -> Router {
     Router::new()
         .route("/", get(|| async { "hellow" }))
         .route("/name/{name}", get(get_name))
         .merge(routes::auth::routes())
-        .with_state(state())
+        .with_state(state)
 }
 
 pub async fn get_name(State(app_state): State<AppState>, Path(name): Path<String>) -> String {

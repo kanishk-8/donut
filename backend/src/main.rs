@@ -1,12 +1,16 @@
+use crate::core::states::state;
+
 mod api;
 mod core;
 #[tokio::main]
 async fn main() {
-    const PORT: u16 = 8000;
-    println!("Starting server on port {}", PORT);
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", PORT))
+    dotenv::dotenv().ok();
+    let state = state().expect("Failed to initialize application: invalid configuration");
+    let port = state.port;
+    println!("Starting server on port {}", port);
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", port))
         .await
         .unwrap();
-    println!("The server is running at port: {PORT}");
-    axum::serve(listener, api::routes()).await.unwrap();
+    println!("The server is running at port: {port}");
+    axum::serve(listener, api::routes(state)).await.unwrap();
 }
