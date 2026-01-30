@@ -7,7 +7,7 @@ use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode}
 
 use crate::core::{
     errors::AppError,
-    models::{AppState, Claims, UserData},
+    models::{AppState, Claims, TokenData, UserData},
 };
 
 pub fn password_hash(pass: &str) -> Result<String, AppError> {
@@ -48,20 +48,10 @@ pub fn generate_token(user: UserData, state: &AppState) -> Result<String, AppErr
     .map_err(|e| AppError::TokenGenerationFailed(e.to_string()))
 }
 
-// Add this struct for token verification results
-pub struct TokenData {
-    pub user_id: String,
-    pub user_name: String,
-    pub email: String,
-    pub role: String,
-}
-
 pub fn verify_token(token: &str, state: &AppState) -> Result<TokenData, AppError> {
-    let jwt_secret = &state.jwt_secret;
-
     let token_data = decode::<Claims>(
         token,
-        &DecodingKey::from_secret(jwt_secret),
+        &DecodingKey::from_secret(&state.jwt_secret),
         &Validation::default(),
     )
     .map_err(|e| match e.kind() {

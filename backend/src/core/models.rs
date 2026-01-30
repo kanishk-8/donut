@@ -20,3 +20,10 @@ pub struct UserData {
     pub user_name: String,
     pub email: String,
 }
+
+pub struct TokenData {
+    pub user_id: String,
+    pub user_name: String,
+    pub email: String,
+    pub role: String,
+}
