@@ -1,11 +1,11 @@
-use crate::core::states::state;
+use crate::core::models::AppState;
 
 mod api;
 mod core;
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-    let state = state().expect("Failed to initialize application: invalid configuration");
+    let state = AppState::new().expect("Failed to initialize the config");
     let port = state.port;
     println!("Starting server on port {}", port);
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", port))

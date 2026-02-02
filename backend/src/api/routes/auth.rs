@@ -3,23 +3,14 @@ use axum::{
     routing::{get, post},
 };
 
-use crate::core::models::AppState;
-
+use crate::{
+    api::handlers::auth::{auth_check, login, logout, sign_up},
+    core::models::AppState,
+};
 pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/auth-check", get(auth_check))
         .route("/login", post(login))
         .route("/sign-up", post(sign_up))
-}
-
-pub async fn auth_check() -> &'static str {
-    "auth"
-}
-
-pub async fn login() -> &'static str {
-    "login"
-}
-
-pub async fn sign_up() -> &'static str {
-    "signup"
+        .route("/logout", post(logout))
 }
