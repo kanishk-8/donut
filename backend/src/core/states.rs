@@ -1,9 +1,11 @@
 use std::env;
 
+use sqlx::postgres::PgPoolOptions;
+
 use crate::core::{errors::AppError, models::AppState};
 
 impl AppState {
-    pub fn new() -> Result<AppState, AppError> {
+    pub async fn new() -> Result<AppState, AppError> {
         let jwt_secret = env::var("JWT_SECRET")
             .map_err(|_| AppError::MissingConfig("JWT_SECRET must be set".to_string()))?;
 
@@ -17,12 +19,20 @@ impl AppState {
         let port: u16 = port_str.parse().map_err(|_| {
             AppError::InvalidConfig("PORT must be a valid unsigned integer".to_string())
         })?;
+        let db_url = env::var("DATABASE_URL")
+            .map_err(|_| AppError::MissingConfig("DATABASE_URL must be set".to_string()))?;
+
+        let pg_pool = PgPoolOptions::new()
+            .connect(&db_url)
+            .await
+            .map_err(|e| AppError::DatabaseError(e.to_string()))?;
 
         Ok(Self {
             app_name: "Donut".to_string(),
             secure: false,
             jwt_secret: jwt_secret.into_bytes(),
             port,
+            pg_pool,
         })
     }
 }

@@ -10,8 +10,8 @@ pub fn generate_token(user: &User, state: &AppState) -> Result<String, AppError>
     let now = Utc::now();
 
     let claims = Claims {
-        user_id: user.user_id.clone(),
-        user_name: user.user_name.clone(),
+        id: user.id.clone(),
+        username: user.username.clone(),
         email: user.email.clone(),
         role: UserRole::PlatformUser,
         exp: (now + Duration::minutes(15)).timestamp(),
@@ -39,8 +39,8 @@ pub fn verify_token(token: &str, state: &AppState) -> Result<TokenResponse, AppE
     })?;
 
     Ok(TokenResponse {
-        user_id: token_data.claims.user_id,
-        user_name: token_data.claims.user_name,
+        id: token_data.claims.id,
+        username: token_data.claims.username,
         email: token_data.claims.email,
         role: token_data.claims.role,
     })

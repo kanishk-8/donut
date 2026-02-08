@@ -1,3 +1,0 @@
-fn middleware() {
-    println!("hello");
-}

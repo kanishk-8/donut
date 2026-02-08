@@ -12,6 +12,12 @@ pub enum AppError {
     #[error("Invalid credentials")]
     InvalidCredentials,
 
+    #[error("Email already exists")]
+    EmailAlreadyExists,
+
+    #[error("Email not found")]
+    EmailNotFound,
+
     #[error("Token generation failed: {0}")]
     TokenGenerationFailed(String),
 
@@ -51,6 +57,8 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
             AppError::InvalidCredentials => (StatusCode::UNAUTHORIZED, "Invalid credentials"),
+            AppError::EmailAlreadyExists => (StatusCode::CONFLICT, "Email already exists"),
+            AppError::EmailNotFound => (StatusCode::NOT_FOUND, "Email not found"),
             AppError::InvalidToken => (StatusCode::UNAUTHORIZED, "Invalid token"),
             AppError::TokenGenerationFailed(_) => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Token generation failed")
