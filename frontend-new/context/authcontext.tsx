@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     body: JSON.stringify({
                         email,
                         password,
-                        name,
+                        username: name,
                     }),
                 },
             );

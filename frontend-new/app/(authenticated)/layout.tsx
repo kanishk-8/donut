@@ -37,7 +37,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     }
 
     // Show ProjectNav only on profile and projects list page, not on nested project pages
-    const showProjectNav = pathname === "/profile" || pathname === "/projects";
+    const showProjectNav = pathname === "/profile" || pathname === "/project";
 
     return (
         <ProjectProvider>

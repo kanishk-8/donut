@@ -16,6 +16,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/context/authcontext";
 
 const SignupPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +32,7 @@ const SignupPage = () => {
     });
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const router = useRouter();
+    const { signup } = useAuth();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -69,20 +71,23 @@ const SignupPage = () => {
 
         // Dummy signup logic
         try {
-            console.log("Creating account...", formData);
-
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-
-            // Dummy success - always succeeds
-            setSuccessMessage(
-                "Account created successfully! Redirecting to your workspace...",
+            const result = await signup(
+                formData.email,
+                formData.password,
+                formData.name,
             );
 
-            // Redirect after 2 seconds
-            setTimeout(() => {
-                router.push("/project");
-            }, 2000);
+            if (result.success) {
+                setSuccessMessage(
+                    "Account created succesfully. Redirecting to your workspace...",
+                );
+                setTimeout(() => {
+                    router.push("/project");
+                }, 1500);
+            } else {
+                setError(result.error || "Failed to create you account");
+                setIsLoading(false);
+            }
         } catch (err) {
             console.error("Signup exception:", err);
             setError("An unexpected error occurred");

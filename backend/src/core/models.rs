@@ -71,3 +71,9 @@ pub struct TokenResponse {
     pub email: String,
     pub role: UserRole,
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct AuthResponse {
+    pub token: String,
+    pub user: User,
+}

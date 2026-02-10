@@ -13,6 +13,11 @@ export const Navbar = () => {
     const user = null; // Replace with actual user state from context or authentication logic
     const { theme, setTheme } = useTheme();
     const [scrolled, setScrolled] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -71,7 +76,9 @@ export const Navbar = () => {
                             setTheme(theme === "light" ? "dark" : "light")
                         }
                     >
-                        {theme === "light" ? (
+                        {!mounted ? (
+                            <div className="w-6 h-6" />
+                        ) : theme === "light" ? (
                             <HugeiconsIcon
                                 icon={Moon02Icon}
                                 color="currentColor"

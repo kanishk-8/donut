@@ -8,15 +8,15 @@
 export const API_CONFIG = {
     // Backend base URL - defaults to localhost:8080
     // Override with NEXT_PUBLIC_BACKEND_URL environment variable
-    BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080",
+    BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000",
 
     // API endpoints
     ENDPOINTS: {
         // Auth endpoints
         AUTH: {
-            LOGIN: "/auth/login",
-            SIGNUP: "/auth/signup",
-            LOGOUT: "/auth/logout",
+            LOGIN: "/login",
+            SIGNUP: "/sign-up",
+            LOGOUT: "/logout",
             ME: "/auth/me",
         },
         // Project endpoints
@@ -41,7 +41,10 @@ export const getApiUrl = (endpoint: string): string => {
  * Helper to get auth headers
  */
 export const getAuthHeaders = (): HeadersInit => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("donut_token") : null;
+    const token =
+        typeof window !== "undefined"
+            ? localStorage.getItem("donut_token")
+            : null;
 
     return {
         "Content-Type": "application/json",

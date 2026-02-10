@@ -40,33 +40,34 @@ const ProjectNav = () => {
 
             {/* User Profile Section */}
             <div className="flex items-center gap-3">
-                <Button asChild variant="outline" className="gap-2">
-                    <Link href="/profile">
-                        <Avatar className="w-8 h-8">
-                            <AvatarImage
-                                src={user?.avatar}
-                                alt={user?.name || user?.email || "User"}
-                            />
-                            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                                {user?.name
-                                    ? user.name
-                                          .split(" ")
-                                          .map((n) => n[0])
-                                          .join("")
-                                          .toUpperCase()
-                                    : "U"}
-                            </AvatarFallback>
-                        </Avatar>
-                        <div className="hidden sm:block text-left">
-                            <p className="text-sm font-medium">
-                                {user?.name || "John Doe"}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                {user?.email || "john@example.com"}
-                            </p>
-                        </div>
-                    </Link>
-                </Button>
+                <Link
+                    href="/profile"
+                    className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 transition-all"
+                >
+                    <Avatar className="w-8 h-8">
+                        <AvatarImage
+                            src={user?.avatar}
+                            alt={user?.name || user?.email || "User"}
+                        />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                            {user?.name
+                                ? user.name
+                                      .split(" ")
+                                      .map((n) => n[0])
+                                      .join("")
+                                      .toUpperCase()
+                                : "U"}
+                        </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden sm:block text-left">
+                        <p className="text-sm font-medium">
+                            {user?.name || "John Doe"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                            {user?.email || "john@example.com"}
+                        </p>
+                    </div>
+                </Link>
 
                 {/* Profile Actions */}
                 <Button

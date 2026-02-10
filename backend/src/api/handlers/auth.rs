@@ -9,7 +9,7 @@ use crate::{
             jwt::generate_token,
         },
         errors::AppError,
-        models::{AppState, LoginRequest, SignUpRequest, UpdatePasswordRequest, User},
+        models::{AppState, AuthResponse, LoginRequest, SignUpRequest, UpdatePasswordRequest},
     },
     db::users::{
         create_user, email_exists, find_by_email, get_password_hash, update_password_byid,
@@ -24,7 +24,7 @@ pub async fn login(
     jar: CookieJar,
     State(state): State<AppState>,
     Json(request): Json<LoginRequest>,
-) -> Result<(CookieJar, Json<User>), AppError> {
+) -> Result<(CookieJar, Json<AuthResponse>), AppError> {
     let email = &request.email;
     let password = &request.password;
     let pool = &state.pg_pool;
@@ -40,17 +40,21 @@ pub async fn login(
     password_verify(password, password_hash.as_str()).map_err(|_| AppError::InvalidCredentials)?;
 
     let token = generate_token(&user, &state)?;
+    let response = AuthResponse {
+        token: token.clone(),
+        user,
+    };
     let cookie = create_session_cookie(token, &state);
     let jar = jar.add(cookie);
 
-    Ok((jar, Json(user)))
+    Ok((jar, Json(response)))
 }
 
 pub async fn sign_up(
     jar: CookieJar,
     State(state): State<AppState>,
     Json(request): Json<SignUpRequest>,
-) -> Result<(CookieJar, Json<User>), AppError> {
+) -> Result<(CookieJar, Json<AuthResponse>), AppError> {
     let username = &request.username;
     let email = &request.email;
     let password = &request.password;
@@ -63,12 +67,16 @@ pub async fn sign_up(
     let password_hash = password_hash(password)?;
 
     let user = create_user(pool, username, email, password_hash.as_str()).await?;
-
     let token = generate_token(&user, &state)?;
+
+    let response = AuthResponse {
+        token: token.clone(),
+        user,
+    };
     let cookie = create_session_cookie(token, &state);
     let jar = jar.add(cookie);
 
-    Ok((jar, Json(user)))
+    Ok((jar, Json(response)))
 }
 
 pub async fn logout(jar: CookieJar) -> CookieJar {

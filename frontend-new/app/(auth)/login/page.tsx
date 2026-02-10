@@ -16,6 +16,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/context/authcontext";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
+    const { login } = useAuth();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,24 +45,18 @@ const LoginPage = () => {
             return;
         }
 
-        // Dummy login logic
         try {
-            console.log("Attempting dummy login...");
+            const result = await login(email, password);
 
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            // Dummy validation - accept any email with password "password"
-            if (password === "password") {
-                console.log("Login successful, redirecting...");
+            if (result.success) {
                 router.push("/project");
             } else {
-                setError("Invalid credentials. Try password: 'password'");
+                setError(result.error || "Failed to sign in");
+                setIsLoading(false);
             }
         } catch (err) {
             console.error("Login exception:", err);
             setError("An unexpected error occurred");
-        } finally {
             setIsLoading(false);
         }
     };
