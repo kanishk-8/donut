@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             // Verify token with backend
             const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.AUTH.ME),
+                getApiUrl(API_CONFIG.ENDPOINTS.USER.ME),
                 {
                     method: "GET",
                     credentials: "include",

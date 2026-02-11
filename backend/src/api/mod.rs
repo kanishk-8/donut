@@ -1,16 +1,16 @@
 pub mod handlers;
-pub mod middleware;
+pub mod middlewares;
 pub mod routes;
 
 use axum::{
     Router,
-    extract::{Path, State},
     http::{HeaderValue, Method, header::CONTENT_TYPE},
+    middleware,
     routing::get,
 };
 use tower_http::cors::CorsLayer;
 
-use crate::core::models::AppState;
+use crate::{api::middlewares::auth_middleware::auth_middleware, core::models::AppState};
 
 pub fn routes(state: AppState) -> Router {
     let cors = CorsLayer::new()
@@ -19,13 +19,15 @@ pub fn routes(state: AppState) -> Router {
         .allow_headers([CONTENT_TYPE])
         .allow_credentials(true);
     Router::new()
-        .route("/", get(|| async { "hellow" }))
-        .route("/name/{name}", get(get_name))
-        .merge(routes::auth::routes())
+        .route("/", get(|| async { "server is running..." }))
+        .nest("/api/auth", routes::auth::routes())
+        .nest(
+            "/api/user",
+            routes::user::routes().route_layer(middleware::from_fn_with_state(
+                state.clone(),
+                auth_middleware,
+            )),
+        )
         .layer(cors)
         .with_state(state)
-}
-
-pub async fn get_name(State(app_state): State<AppState>, Path(name): Path<String>) -> String {
-    format!("hello, {} from app: {}", name, app_state.app_name)
 }

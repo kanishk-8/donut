@@ -12,6 +12,9 @@ pub enum AppError {
     #[error("Invalid credentials")]
     InvalidCredentials,
 
+    #[error("Unauthorized")]
+    Unauthorized,
+
     #[error("Email already exists")]
     EmailAlreadyExists,
 
@@ -57,6 +60,7 @@ impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
             AppError::InvalidCredentials => (StatusCode::UNAUTHORIZED, "Invalid credentials"),
+            AppError::Unauthorized => (StatusCode::UNAUTHORIZED, "Unauthorized"),
             AppError::EmailAlreadyExists => (StatusCode::CONFLICT, "Email already exists"),
             AppError::EmailNotFound => (StatusCode::NOT_FOUND, "Email not found"),
             AppError::InvalidToken => (StatusCode::UNAUTHORIZED, "Invalid token"),

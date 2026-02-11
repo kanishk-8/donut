@@ -8,7 +8,7 @@ import {
     type ReactNode,
 } from "react";
 import { useAuth } from "@/context/authcontext";
-import { API_CONFIG, getApiUrl, getAuthHeaders } from "@/lib/api-config";
+import { API_CONFIG, getApiUrl } from "@/lib/api-config";
 
 interface Project {
     id: string;
@@ -74,7 +74,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.LIST),
                 {
                     method: "GET",
-                    headers: getAuthHeaders(),
+                    credentials: "include",
                 },
             );
 
@@ -115,7 +115,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.GET(projectId)),
                 {
                     method: "GET",
-                    headers: getAuthHeaders(),
+                    credentials: "include",
                 },
             );
 
@@ -173,7 +173,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.CREATE),
                 {
                     method: "POST",
-                    headers: getAuthHeaders(),
+                    credentials: "include",
                     body: JSON.stringify(newProjectData),
                 },
             );
@@ -210,7 +210,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.UPDATE(projectId)),
                 {
                     method: "PUT",
-                    headers: getAuthHeaders(),
+                    credentials: "include",
                     body: JSON.stringify(updates),
                 },
             );
@@ -248,7 +248,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.DELETE(projectId)),
                 {
                     method: "DELETE",
-                    headers: getAuthHeaders(),
+                    credentials: "include",
                 },
             );
 

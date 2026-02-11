@@ -9,7 +9,7 @@ pub struct AppState {
     pub pg_pool: sqlx::PgPool,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(type_name = "text")]
 #[sqlx(rename_all = "PascalCase")]
 pub enum UserRole {
@@ -46,7 +46,7 @@ pub struct ForgotPasswordRequest {
     pub new_password: String,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct User {
     pub id: String,
     pub username: String,

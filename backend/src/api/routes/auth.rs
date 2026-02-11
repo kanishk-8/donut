@@ -1,28 +1,12 @@
-use axum::{
-    Router,
-    routing::{get, post},
-};
+use axum::{Router, routing::post};
 
 use crate::{
-    api::{
-        handlers::auth::{auth_check, login, logout, me, sign_up, update_password},
-        // middleware,
-    },
+    api::handlers::auth::{login, logout, sign_up},
     core::models::AppState,
 };
 pub fn routes() -> Router<AppState> {
-    let public_routes = Router::new()
-        .route("/auth-check", get(auth_check))
+    Router::new()
         .route("/login", post(login))
-        // .route("/forgot-password", post(forgot_password))
         .route("/sign-up", post(sign_up))
-        .route("/me", get(me));
-
-    let protected_routes = Router::new()
-        .route("/update-password", post(update_password))
         .route("/logout", post(logout))
-        // .route_layer(middleware)
-    ;
-
-    Router::new().merge(public_routes).merge(protected_routes)
 }

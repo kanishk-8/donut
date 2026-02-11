@@ -13,7 +13,7 @@ pub fn password_hash(pass: &str) -> Result<String, AppError> {
     argon2
         .hash_password(pass.as_bytes(), &salt)
         .map(|hash| hash.to_string())
-        .map_err(|_| AppError::InternalError)
+        .map_err(|_| AppError::PasswordHashingFailed)
 }
 
 pub fn password_verify(pass: &str, stored_pass: &str) -> Result<(), AppError> {
