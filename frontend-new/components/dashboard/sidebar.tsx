@@ -1,19 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Home,
-    Code,
-    MessageSquare,
-    FileText,
-    Settings,
-    Key,
-    ArrowLeft,
-    FolderOpen,
-    Book,
-    Waypoints,
-} from "lucide-react";
+    Home01Icon,
+    Book02Icon,
+    Settings02Icon,
+    ArrowLeft01Icon,
+    FolderOpenIcon,
+    Cancel01Icon,
+    AiNetworkIcon,
+} from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
 import { useProject } from "@/context/projectcontext";
@@ -42,22 +40,22 @@ const SideBar = () => {
     const menuItems = [
         {
             name: "Overview",
-            icon: <Home className="w-5 h-5" />,
+            icon: Home01Icon,
             path: `/projects/${projectId}/dashboard`,
         },
         {
             name: "Knowledge Base",
-            icon: <Book className="w-5 h-5" />,
+            icon: Book02Icon,
             path: `/projects/${projectId}/knowledgebase`,
         },
         {
             name: "Workflows",
-            icon: <Waypoints className="w-5 h-5" />,
+            icon: AiNetworkIcon,
             path: `/projects/${projectId}/workflow`,
         },
         {
             name: "Settings",
-            icon: <Settings className="w-5 h-5" />,
+            icon: Settings02Icon,
             path: `/projects/${projectId}/settings`,
         },
     ];
@@ -82,10 +80,22 @@ const SideBar = () => {
             </Button>
             {/* Overlay for mobile */}
             {open && (
-                <div
-                    className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 md:hidden"
+                <button
+                    type="button"
+                    className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 md:hidden border-0 p-0 cursor-default"
                     onClick={() => setOpen(false)}
+                    onKeyDown={(e) => {
+                        if (
+                            e.key === "Escape" ||
+                            e.key === "Enter" ||
+                            e.key === " "
+                        ) {
+                            e.preventDefault();
+                            setOpen(false);
+                        }
+                    }}
                     aria-label="Close sidebar"
+                    tabIndex={0}
                 />
             )}
             {/* Sidebar */}
@@ -119,19 +129,10 @@ const SideBar = () => {
                         onClick={() => setOpen(false)}
                         aria-label="Close sidebar"
                     >
-                        <svg
+                        <HugeiconsIcon
+                            icon={Cancel01Icon}
                             className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
+                        />
                     </Button>
                 </div>
 
@@ -145,7 +146,10 @@ const SideBar = () => {
                             className="w-full justify-start text-xs h-8"
                         >
                             <Link href="/projects">
-                                <ArrowLeft className="w-3 h-3 mr-1.5" />
+                                <HugeiconsIcon
+                                    icon={ArrowLeft01Icon}
+                                    className="w-3 h-3 mr-1.5"
+                                />
                                 All Projects
                             </Link>
                         </Button>
@@ -157,7 +161,10 @@ const SideBar = () => {
                     <div className="px-4 mb-6">
                         <div className="flex items-center gap-2 mb-1">
                             <div className="w-6 h-6 rounded bg-primary flex items-center justify-center">
-                                <FolderOpen className="w-3 h-3 text-primary-foreground" />
+                                <HugeiconsIcon
+                                    icon={FolderOpenIcon}
+                                    className="w-3 h-3 text-primary-foreground"
+                                />
                             </div>
                             <h2 className="font-semibold text-sm">
                                 {currentProject.name}
@@ -196,7 +203,10 @@ const SideBar = () => {
                                     onClick={() => setOpen(false)}
                                 >
                                     <Link href={item.path}>
-                                        {item.icon}
+                                        <HugeiconsIcon
+                                            icon={item.icon}
+                                            className="w-5 h-5"
+                                        />
                                         <span className="ml-3">
                                             {item.name}
                                         </span>
@@ -220,7 +230,7 @@ const SideBar = () => {
                             <Link href="/profile">
                                 <Avatar className="w-6 h-6 md:w-8 md:h-8">
                                     <AvatarImage
-                                        src={user?.avatar}
+                                        src={user?.avatar ?? undefined}
                                         alt={user?.name || "User profile"}
                                     />
                                     <AvatarFallback className="bg-primary text-primary-foreground text-xs">

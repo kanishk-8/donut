@@ -5,7 +5,7 @@ pub mod routes;
 use axum::{
     Router,
     extract::{Path, State},
-    http::{HeaderValue, Method, header},
+    http::{HeaderValue, Method, header::CONTENT_TYPE},
     routing::get,
 };
 use tower_http::cors::CorsLayer;
@@ -15,8 +15,9 @@ use crate::core::models::AppState;
 pub fn routes(state: AppState) -> Router {
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
-        .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION])
-        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE]);
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
+        .allow_headers([CONTENT_TYPE])
+        .allow_credentials(true);
     Router::new()
         .route("/", get(|| async { "hellow" }))
         .route("/name/{name}", get(get_name))

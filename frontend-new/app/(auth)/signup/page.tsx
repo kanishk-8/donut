@@ -82,7 +82,7 @@ const SignupPage = () => {
                     "Account created succesfully. Redirecting to your workspace...",
                 );
                 setTimeout(() => {
-                    router.push("/project");
+                    router.push("/projects");
                 }, 1500);
             } else {
                 setError(result.error || "Failed to create you account");

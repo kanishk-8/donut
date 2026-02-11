@@ -12,7 +12,7 @@ pub fn create_session_cookie(token: String, state: &AppState) -> Cookie<'static>
     cookie.set_secure(state.secure);
     cookie.set_same_site(cookie::SameSite::Strict);
 
-    let expiration = OffsetDateTime::now_utc() + timeDuration::hours(1);
+    let expiration = OffsetDateTime::now_utc() + timeDuration::minutes(15);
     cookie.set_expires(Some(expiration.into()));
 
     cookie

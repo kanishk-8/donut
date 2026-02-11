@@ -5,7 +5,7 @@ use axum::{
 
 use crate::{
     api::{
-        handlers::auth::{auth_check, login, logout, sign_up, update_password},
+        handlers::auth::{auth_check, login, logout, me, sign_up, update_password},
         // middleware,
     },
     core::models::AppState,
@@ -15,7 +15,8 @@ pub fn routes() -> Router<AppState> {
         .route("/auth-check", get(auth_check))
         .route("/login", post(login))
         // .route("/forgot-password", post(forgot_password))
-        .route("/sign-up", post(sign_up));
+        .route("/sign-up", post(sign_up))
+        .route("/me", get(me));
 
     let protected_routes = Router::new()
         .route("/update-password", post(update_password))

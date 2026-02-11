@@ -17,7 +17,7 @@ export const API_CONFIG = {
             LOGIN: "/login",
             SIGNUP: "/sign-up",
             LOGOUT: "/logout",
-            ME: "/auth/me",
+            ME: "/me",
         },
         // Project endpoints
         PROJECTS: {

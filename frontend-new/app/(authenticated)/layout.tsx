@@ -37,13 +37,13 @@ const Layout = ({ children }: { children: ReactNode }) => {
     }
 
     // Show ProjectNav only on profile and projects list page, not on nested project pages
-    const showProjectNav = pathname === "/profile" || pathname === "/project";
+    const showProjectNav = pathname === "/profile" || pathname === "/projects";
 
     return (
         <ProjectProvider>
             <div className="min-h-screen bg-background text-foreground">
                 {showProjectNav && <ProjectNav />}
-                {children}
+                <div className="pt-16 md:pt-20">{children}</div>
             </div>
         </ProjectProvider>
     );

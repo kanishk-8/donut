@@ -7,7 +7,7 @@ import {
     useCallback,
     type ReactNode,
 } from "react";
-import { API_CONFIG, getApiUrl, getAuthHeaders } from "@/lib/api-config";
+import { API_CONFIG, getApiUrl } from "@/lib/api-config";
 
 interface User {
     id: string;
@@ -43,24 +43,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const checkUser = useCallback(async () => {
         try {
-            const token = localStorage.getItem("donut_token");
-            if (!token) {
-                setLoading(false);
-                return;
-            }
-
             // Verify token with backend
             const response = await fetch(
                 getApiUrl(API_CONFIG.ENDPOINTS.AUTH.ME),
                 {
                     method: "GET",
-                    headers: getAuthHeaders(),
+                    credentials: "include",
                 },
             );
 
             if (!response.ok) {
                 // Token is invalid or expired
-                localStorage.removeItem("donut_token");
                 localStorage.removeItem("donut_user");
                 setUser(null);
                 setLoading(false);
@@ -69,25 +62,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             const data = await response.json();
             const userInfo = {
-                id: data.id,
-                email: data.email,
-                name: data.name || data.email?.split("@")[0] || "User",
-                bio: data.bio || "AI enthusiast and project builder",
-                joinDate: new Date(data.created_at).toLocaleDateString(
-                    "en-US",
-                    {
-                        month: "long",
-                        year: "numeric",
-                    },
-                ),
-                plan: data.plan || "Pro Plan",
-                avatar: data.avatar || null,
+                id: data.user.id,
+                email: data.user.email,
+                name:
+                    data.user.username ||
+                    data.user.email?.split("@")[0] ||
+                    "User",
+                bio: data.user.bio || "AI enthusiast and project builder",
+                joinDate: new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                }),
+                plan: data.user.plan || "Pro Plan",
+                avatar: data.user.avatar || null,
             };
             setUser(userInfo);
             localStorage.setItem("donut_user", JSON.stringify(userInfo));
         } catch (err) {
             console.error("checkUser error:", err);
-            localStorage.removeItem("donut_token");
             localStorage.removeItem("donut_user");
             setUser(null);
         } finally {
@@ -108,6 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.AUTH.SIGNUP),
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -134,15 +127,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             console.log("Account created:", data);
 
-            // Store token and user info
-            if (data.token) {
-                localStorage.setItem("donut_token", data.token);
-            }
-
             const userInfo = {
                 id: data.user.id,
                 email: data.user.email,
-                name: data.user.name || name,
+                name: data.user.username || name,
                 bio: "AI enthusiast and project builder",
                 joinDate: new Date().toLocaleDateString("en-US", {
                     month: "long",
@@ -179,6 +167,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGIN),
                 {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -201,24 +190,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             console.log("Login successful:", data);
 
-            // Store token
-            if (data.token) {
-                localStorage.setItem("donut_token", data.token);
-            }
-
             const userInfo = {
                 id: data.user.id,
                 email: data.user.email,
                 name:
-                    data.user.name || data.user.email?.split("@")[0] || "User",
+                    data.user.username ||
+                    data.user.email?.split("@")[0] ||
+                    "User",
                 bio: data.user.bio || "AI enthusiast and project builder",
-                joinDate: new Date(data.user.created_at).toLocaleDateString(
-                    "en-US",
-                    {
-                        month: "long",
-                        year: "numeric",
-                    },
-                ),
+                joinDate: new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                }),
                 plan: data.user.plan || "Pro Plan",
                 avatar: data.user.avatar || null,
             };
@@ -242,29 +225,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = async () => {
         try {
             console.log("Attempting logout...");
-
-            const token = localStorage.getItem("donut_token");
-            if (token) {
-                // Optional: Call backend logout endpoint if you have one
-                await fetch(getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGOUT), {
-                    method: "POST",
-                    headers: getAuthHeaders(),
-                }).catch((err) => console.error("Logout API error:", err));
-            }
-
-            console.log("Logout successful");
-
-            // Clear state and localStorage
+            await fetch(getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGOUT), {
+                method: "POST",
+                credentials: "include",
+            });
             setUser(null);
-            localStorage.removeItem("donut_token");
             localStorage.removeItem("donut_user");
 
             return { success: true };
         } catch (error) {
             console.error("Logout error:", error);
-            // Even if there's an error, clear local state
             setUser(null);
-            localStorage.removeItem("donut_token");
             localStorage.removeItem("donut_user");
 
             return { success: true }; // Return success to allow redirect

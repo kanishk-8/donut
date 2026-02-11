@@ -6,7 +6,7 @@ use crate::{
         auth::{
             cookie::{SESSION_COOKIE_NAME, create_session_cookie},
             crypto::{password_hash, password_verify},
-            jwt::generate_token,
+            jwt::{generate_token, verify_token},
         },
         errors::AppError,
         models::{AppState, AuthResponse, LoginRequest, SignUpRequest, UpdatePasswordRequest},
@@ -121,3 +121,22 @@ pub async fn update_password(
 //         .await
 //         .map_err(|e| AppError::DatabaseError(e.to_string()))
 // }
+
+pub async fn me(
+    State(state): State<AppState>,
+    jar: CookieJar,
+) -> Result<Json<AuthResponse>, AppError> {
+    let token = jar
+        .get(SESSION_COOKIE_NAME)
+        .ok_or(AppError::InvalidToken)?
+        .value()
+        .to_string();
+
+    let claims = verify_token(&token, &state)?;
+
+    let user = find_by_email(&state.pg_pool, &claims.email)
+        .await?
+        .ok_or(AppError::InvalidToken)?;
+
+    Ok(Json(AuthResponse { token, user }))
+}

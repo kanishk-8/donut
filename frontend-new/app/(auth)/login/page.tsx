@@ -49,7 +49,7 @@ const LoginPage = () => {
             const result = await login(email, password);
 
             if (result.success) {
-                router.push("/project");
+                router.push("/projects");
             } else {
                 setError(result.error || "Failed to sign in");
                 setIsLoading(false);

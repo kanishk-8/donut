@@ -92,7 +92,7 @@ const ProjectsPage = () => {
     };
 
     return (
-        <div className="min-h-screen p-4 md:p-8 pt-24 md:pt-28 bg-background">
+        <div className="min-h-screen p-4 md:p-8  bg-background">
             <div className="container mx-auto max-w-7xl">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">

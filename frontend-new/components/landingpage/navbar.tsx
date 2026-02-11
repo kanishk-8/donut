@@ -7,10 +7,10 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Moon02Icon, Sun02Icon } from "@hugeicons/core-free-icons";
+import { useAuth } from "@/context/authcontext";
 
 export const Navbar = () => {
-    // const { user } = useAuth();
-    const user = null; // Replace with actual user state from context or authentication logic
+    const { user } = useAuth();
     const { theme, setTheme } = useTheme();
     const [scrolled, setScrolled] = useState(false);
     const [mounted, setMounted] = useState(false);
