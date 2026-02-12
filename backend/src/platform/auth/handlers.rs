@@ -11,40 +11,44 @@ use crate::{
             jwt::generate_token,
         },
         errors::AppError,
-        models::{
-            AppState, AuthResponse, LoginRequest, SignUpRequest, UpdatePasswordRequest, User,
-        },
+        models::Config,
     },
-    db::users::{
-        create_user, email_exists, find_by_email, get_password_hash, update_password_byid,
+    platform::auth::models::{
+        AuthResponse, ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest,
+    },
+    storage::{
+        models::User,
+        repositories::users::{
+            create_user, email_exists, find_by_email, get_password_hash, update_password_byid,
+        },
     },
 };
 
 pub async fn login(
     jar: CookieJar,
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Json(request): Json<LoginRequest>,
 ) -> Result<(CookieJar, Json<AuthResponse>), AppError> {
     let email = &request.email;
     let password = &request.password;
-    let pool = &state.pg_pool;
+    let pool = &config.pg_pool;
 
     let user = find_by_email(pool, email)
         .await?
         .ok_or(AppError::InvalidCredentials)?;
 
-    let password_hash = get_password_hash(&state.pg_pool, email)
+    let password_hash = get_password_hash(&config.pg_pool, email)
         .await?
         .ok_or(AppError::InvalidCredentials)?;
 
     password_verify(password, password_hash.as_str()).map_err(|_| AppError::InvalidCredentials)?;
 
-    let token = generate_token(&user, &state)?;
+    let token = generate_token(&user, &config)?;
     let response = AuthResponse {
         token: token.clone(),
         user,
     };
-    let cookie = create_session_cookie(token, &state);
+    let cookie = create_session_cookie(token, &config);
     let jar = jar.add(cookie);
 
     Ok((jar, Json(response)))
@@ -52,13 +56,13 @@ pub async fn login(
 
 pub async fn sign_up(
     jar: CookieJar,
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Json(request): Json<SignUpRequest>,
 ) -> Result<(CookieJar, Json<AuthResponse>), AppError> {
     let username = &request.username;
     let email = &request.email;
     let password = &request.password;
-    let pool = &state.pg_pool;
+    let pool = &config.pg_pool;
 
     if email_exists(pool, email).await? {
         return Err(AppError::EmailAlreadyExists);
@@ -67,13 +71,13 @@ pub async fn sign_up(
     let password_hash = password_hash(password)?;
 
     let user = create_user(pool, username, email, password_hash.as_str()).await?;
-    let token = generate_token(&user, &state)?;
+    let token = generate_token(&user, &config)?;
 
     let response = AuthResponse {
         token: token.clone(),
         user,
     };
-    let cookie = create_session_cookie(token, &state);
+    let cookie = create_session_cookie(token, &config);
     let jar = jar.add(cookie);
 
     Ok((jar, Json(response)))
@@ -84,7 +88,7 @@ pub async fn logout(jar: CookieJar) -> CookieJar {
 }
 
 pub async fn update_password(
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Extension(user): Extension<User>,
     Json(request): Json<UpdatePasswordRequest>,
 ) -> Result<(), AppError> {
@@ -92,7 +96,7 @@ pub async fn update_password(
     let email = &user.email;
     let current_password = &request.current_password;
     let new_password = &request.new_password;
-    let pool = &state.pg_pool;
+    let pool = &config.pg_pool;
 
     let current_hash = get_password_hash(pool, email)
         .await?
@@ -104,24 +108,25 @@ pub async fn update_password(
     update_password_byid(pool, id, new_password_hash.as_str()).await
 }
 
-// pub async fn forgot_password(
-//     State(state): State<Arc<AppState>>,
-//     Json(request): Json<ForgotPasswordRequest>,
-// ) -> Result<(), AppError> {
-//     let email = &request.email;
-//     let new_password = &request.new_password;
-//     let pool = &state.pg_pool;
+pub async fn forgot_password(
+    State(config): State<Arc<Config>>,
+    Json(request): Json<ForgotPasswordRequest>,
+) -> Result<(), AppError> {
+    let email = &request.email;
+    let new_password = &request.new_password;
+    let pool = &config.pg_pool;
 
-//     if !email_exists(pool, email).await? {
-//         return Err(AppError::EmailNotFound);
-//     }
+    if !email_exists(pool, email).await? {
+        return Err(AppError::EmailNotFound);
+    }
 
-//     let new_password_hash = password_hash(new_password)?;
+    let new_password_hash = password_hash(new_password)?;
 
-//     update_password_byid(pool, id, new_password_hash.as_str())
-//         .await
-//         .map_err(|e| AppError::DatabaseError(e.to_string()))
-// }
+    // update_password_byid(pool, id, new_password_hash.as_str())
+    //     .await
+    //     .map_err(|e| AppError::DatabaseError(e.to_string()))
+    Ok(())
+}
 
 pub async fn me(
     jar: CookieJar,

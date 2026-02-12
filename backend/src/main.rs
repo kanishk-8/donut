@@ -1,20 +1,21 @@
-use crate::core::models::AppState;
+use crate::core::models::Config;
 
 mod api;
 mod core;
-mod db;
+mod platform;
+mod storage;
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-    let state = AppState::new()
+    let config = Config::new()
         .await
         .expect("Failed to initialize the config");
-    let port = state.port;
+    let port = config.port;
     println!("Starting server on port {}", port);
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", port))
         .await
         .unwrap();
     println!("The server is running at port: {port}");
-    axum::serve(listener, api::routes(state)).await.unwrap();
+    axum::serve(listener, api::routes(config)).await.unwrap();
 }

@@ -8,13 +8,14 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{
-        errors::AppError,
-        models::{AppState, User},
-    },
-    db::projects::{
-        ProjectRecord, create_project as create_project_db, delete_project as delete_project_db,
-        get_project_by_id, list_projects_by_owner, update_project as update_project_db,
+    core::{errors::AppError, models::Config},
+    storage::{
+        models::User,
+        repositories::projects::{
+            ProjectRecord, create_project as create_project_db,
+            delete_project as delete_project_db, get_project_by_id, list_projects_by_owner,
+            update_project as update_project_db,
+        },
     },
 };
 
@@ -86,7 +87,7 @@ impl From<ProjectRecord> for Project {
 }
 
 pub async fn create_project(
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Extension(user): Extension<User>,
     Json(request): Json<CreateProjectRequest>,
 ) -> Result<Json<Project>, AppError> {
@@ -101,7 +102,7 @@ pub async fn create_project(
     ))?;
 
     let created = create_project_db(
-        &state.pg_pool,
+        &config.pg_pool,
         &user.id,
         request.name.trim(),
         request.description.as_deref(),
@@ -113,11 +114,11 @@ pub async fn create_project(
 }
 
 pub async fn get_project(
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Extension(user): Extension<User>,
     Path(project_id): Path<String>,
 ) -> Result<Json<Project>, AppError> {
-    let project = get_project_by_id(&state.pg_pool, &project_id, &user.id)
+    let project = get_project_by_id(&config.pg_pool, &project_id, &user.id)
         .await?
         .ok_or(AppError::ValidationError("Project not found".to_string()))?;
 
@@ -125,15 +126,15 @@ pub async fn get_project(
 }
 
 pub async fn list_projects(
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Extension(user): Extension<User>,
 ) -> Result<Json<Vec<Project>>, AppError> {
-    let projects = list_projects_by_owner(&state.pg_pool, &user.id).await?;
+    let projects = list_projects_by_owner(&config.pg_pool, &user.id).await?;
     Ok(Json(projects.into_iter().map(Project::from).collect()))
 }
 
 pub async fn update_project(
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Extension(user): Extension<User>,
     Path(project_id): Path<String>,
     Json(request): Json<UpdateProjectRequest>,
@@ -149,7 +150,7 @@ pub async fn update_project(
     };
 
     let updated = update_project_db(
-        &state.pg_pool,
+        &config.pg_pool,
         &project_id,
         &user.id,
         request.name.as_deref().map(str::trim),
@@ -163,11 +164,11 @@ pub async fn update_project(
 }
 
 pub async fn delete_project(
-    State(state): State<Arc<AppState>>,
+    State(config): State<Arc<Config>>,
     Extension(user): Extension<User>,
     Path(project_id): Path<String>,
 ) -> Result<StatusCode, AppError> {
-    let deleted = delete_project_db(&state.pg_pool, &project_id, &user.id).await?;
+    let deleted = delete_project_db(&config.pg_pool, &project_id, &user.id).await?;
 
     if !deleted {
         return Err(AppError::ValidationError("Project not found".to_string()));

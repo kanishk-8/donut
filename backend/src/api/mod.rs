@@ -1,5 +1,3 @@
-pub mod handlers;
-pub mod middlewares;
 pub mod routes;
 
 use std::sync::Arc;
@@ -12,9 +10,9 @@ use axum::{
 };
 use tower_http::cors::CorsLayer;
 
-use crate::{api::middlewares::auth_middleware::auth_middleware, core::models::AppState};
+use crate::{core::models::Config, platform::auth::middleware::middleware};
 
-pub fn routes(state: Arc<AppState>) -> Router {
+pub fn routes(config: Arc<Config>) -> Router {
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
@@ -25,18 +23,14 @@ pub fn routes(state: Arc<AppState>) -> Router {
         .nest("/api/auth", routes::auth::routes())
         .nest(
             "/api/user",
-            routes::user::routes().route_layer(middleware::from_fn_with_state(
-                state.clone(),
-                auth_middleware,
-            )),
+            routes::users::routes()
+                .route_layer(middleware::from_fn_with_state(config.clone(), middleware)),
         )
         .nest(
             "/api/user",
-            routes::project::routes().route_layer(middleware::from_fn_with_state(
-                state.clone(),
-                auth_middleware,
-            )),
+            routes::projects::routes()
+                .route_layer(middleware::from_fn_with_state(config.clone(), middleware)),
         )
         .layer(cors)
-        .with_state(state)
+        .with_state(config)
 }

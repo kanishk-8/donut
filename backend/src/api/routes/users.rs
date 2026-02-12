@@ -6,11 +6,11 @@ use axum::{
 };
 
 use crate::{
-    api::handlers::auth::{me, update_password},
-    core::models::AppState,
+    core::models::Config,
+    platform::auth::handlers::{me, update_password},
 };
 
-pub fn routes() -> Router<Arc<AppState>> {
+pub fn routes() -> Router<Arc<Config>> {
     Router::new()
         .route("/update-password", post(update_password))
         .route("/me", get(me))

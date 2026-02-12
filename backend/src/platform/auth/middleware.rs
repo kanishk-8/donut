@@ -11,13 +11,13 @@ use crate::{
     core::{
         auth::{cookie::SESSION_COOKIE_NAME, jwt::verify_token},
         errors::AppError,
-        models::AppState,
+        models::Config,
     },
-    db::users::find_by_id,
+    storage::repositories::users::find_by_id,
 };
 
-pub async fn auth_middleware(
-    State(state): State<Arc<AppState>>,
+pub async fn middleware(
+    State(config): State<Arc<Config>>,
     mut request: Request,
     next: Next,
 ) -> Result<Response, AppError> {
@@ -29,8 +29,8 @@ pub async fn auth_middleware(
         .value()
         .to_string();
 
-    let claims = verify_token(&token, &state)?;
-    let user = find_by_id(&state.pg_pool, &claims.id)
+    let claims = verify_token(&token, &config)?;
+    let user = find_by_id(&config.pg_pool, &claims.id)
         .await?
         .ok_or(AppError::Unauthorized)?;
 

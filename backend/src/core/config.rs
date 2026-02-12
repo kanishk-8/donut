@@ -2,10 +2,10 @@ use std::{env, sync::Arc};
 
 use sqlx::postgres::PgPoolOptions;
 
-use crate::core::{errors::AppError, models::AppState};
+use crate::core::{errors::AppError, models::Config};
 
-impl AppState {
-    pub async fn new() -> Result<Arc<AppState>, AppError> {
+impl Config {
+    pub async fn new() -> Result<Arc<Config>, AppError> {
         let jwt_secret = env::var("JWT_SECRET")
             .map_err(|_| AppError::MissingConfig("JWT_SECRET must be set".to_string()))?;
 

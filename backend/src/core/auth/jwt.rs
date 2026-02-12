@@ -3,12 +3,13 @@ use std::sync::Arc;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
-use crate::core::{
-    errors::AppError,
-    models::{AppState, Claims, TokenResponse, User, UserRole},
+use crate::{
+    core::{errors::AppError, models::Config},
+    platform::auth::models::{Claims, TokenResponse},
+    storage::models::{User, UserRole},
 };
 
-pub fn generate_token(user: &User, state: &Arc<AppState>) -> Result<String, AppError> {
+pub fn generate_token(user: &User, config: &Arc<Config>) -> Result<String, AppError> {
     let now = Utc::now();
 
     let claims = Claims {
@@ -23,15 +24,15 @@ pub fn generate_token(user: &User, state: &Arc<AppState>) -> Result<String, AppE
     encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(&state.jwt_secret),
+        &EncodingKey::from_secret(&config.jwt_secret),
     )
     .map_err(|e| AppError::TokenGenerationFailed(e.to_string()))
 }
 
-pub fn verify_token(token: &str, state: &Arc<AppState>) -> Result<TokenResponse, AppError> {
+pub fn verify_token(token: &str, config: &Arc<Config>) -> Result<TokenResponse, AppError> {
     let token_data = decode::<Claims>(
         token,
-        &DecodingKey::from_secret(&state.jwt_secret),
+        &DecodingKey::from_secret(&config.jwt_secret),
         &Validation::default(),
     )
     .map_err(|e| match e.kind() {
