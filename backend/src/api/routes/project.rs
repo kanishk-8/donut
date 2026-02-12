@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{Router, routing::get};
 
 use crate::{
@@ -7,7 +9,7 @@ use crate::{
     core::models::AppState,
 };
 
-pub fn routes() -> Router<AppState> {
+pub fn routes() -> Router<Arc<AppState>> {
     Router::new()
         .route("/projects", get(list_projects).post(create_project))
         .route(

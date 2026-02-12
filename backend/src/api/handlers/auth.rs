@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{Extension, Json, extract::State};
 use axum_extra::extract::cookie::{Cookie, CookieJar};
 
@@ -20,7 +22,7 @@ use crate::{
 
 pub async fn login(
     jar: CookieJar,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Json(request): Json<LoginRequest>,
 ) -> Result<(CookieJar, Json<AuthResponse>), AppError> {
     let email = &request.email;
@@ -50,7 +52,7 @@ pub async fn login(
 
 pub async fn sign_up(
     jar: CookieJar,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Json(request): Json<SignUpRequest>,
 ) -> Result<(CookieJar, Json<AuthResponse>), AppError> {
     let username = &request.username;
@@ -82,7 +84,7 @@ pub async fn logout(jar: CookieJar) -> CookieJar {
 }
 
 pub async fn update_password(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Extension(user): Extension<User>,
     Json(request): Json<UpdatePasswordRequest>,
 ) -> Result<(), AppError> {
@@ -103,7 +105,7 @@ pub async fn update_password(
 }
 
 // pub async fn forgot_password(
-//     State(state): State<AppState>,
+//     State(state): State<Arc<AppState>>,
 //     Json(request): Json<ForgotPasswordRequest>,
 // ) -> Result<(), AppError> {
 //     let email = &request.email;

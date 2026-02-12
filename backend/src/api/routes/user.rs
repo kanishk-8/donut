@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{
     Router,
     routing::{get, post},
@@ -8,7 +10,7 @@ use crate::{
     core::models::AppState,
 };
 
-pub fn routes() -> Router<AppState> {
+pub fn routes() -> Router<Arc<AppState>> {
     Router::new()
         .route("/update-password", post(update_password))
         .route("/me", get(me))

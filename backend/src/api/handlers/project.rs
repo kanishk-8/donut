@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{
     Extension, Json,
     extract::{Path, State},
@@ -84,7 +86,7 @@ impl From<ProjectRecord> for Project {
 }
 
 pub async fn create_project(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Extension(user): Extension<User>,
     Json(request): Json<CreateProjectRequest>,
 ) -> Result<Json<Project>, AppError> {
@@ -111,7 +113,7 @@ pub async fn create_project(
 }
 
 pub async fn get_project(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Extension(user): Extension<User>,
     Path(project_id): Path<String>,
 ) -> Result<Json<Project>, AppError> {
@@ -123,7 +125,7 @@ pub async fn get_project(
 }
 
 pub async fn list_projects(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Extension(user): Extension<User>,
 ) -> Result<Json<Vec<Project>>, AppError> {
     let projects = list_projects_by_owner(&state.pg_pool, &user.id).await?;
@@ -131,7 +133,7 @@ pub async fn list_projects(
 }
 
 pub async fn update_project(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Extension(user): Extension<User>,
     Path(project_id): Path<String>,
     Json(request): Json<UpdateProjectRequest>,
@@ -161,7 +163,7 @@ pub async fn update_project(
 }
 
 pub async fn delete_project(
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Extension(user): Extension<User>,
     Path(project_id): Path<String>,
 ) -> Result<StatusCode, AppError> {

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
@@ -6,7 +8,7 @@ use crate::core::{
     models::{AppState, Claims, TokenResponse, User, UserRole},
 };
 
-pub fn generate_token(user: &User, state: &AppState) -> Result<String, AppError> {
+pub fn generate_token(user: &User, state: &Arc<AppState>) -> Result<String, AppError> {
     let now = Utc::now();
 
     let claims = Claims {
@@ -26,7 +28,7 @@ pub fn generate_token(user: &User, state: &AppState) -> Result<String, AppError>
     .map_err(|e| AppError::TokenGenerationFailed(e.to_string()))
 }
 
-pub fn verify_token(token: &str, state: &AppState) -> Result<TokenResponse, AppError> {
+pub fn verify_token(token: &str, state: &Arc<AppState>) -> Result<TokenResponse, AppError> {
     let token_data = decode::<Claims>(
         token,
         &DecodingKey::from_secret(&state.jwt_secret),

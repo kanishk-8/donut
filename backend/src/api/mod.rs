@@ -2,6 +2,8 @@ pub mod handlers;
 pub mod middlewares;
 pub mod routes;
 
+use std::sync::Arc;
+
 use axum::{
     Router,
     http::{HeaderValue, Method, header::CONTENT_TYPE},
@@ -12,7 +14,7 @@ use tower_http::cors::CorsLayer;
 
 use crate::{api::middlewares::auth_middleware::auth_middleware, core::models::AppState};
 
-pub fn routes(state: AppState) -> Router {
+pub fn routes(state: Arc<AppState>) -> Router {
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
