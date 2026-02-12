@@ -24,8 +24,8 @@ export const API_CONFIG = {
         },
         // Project endpoints
         PROJECTS: {
-            LIST: "/projects",
-            GET: (id: string) => `/projects/${id}`,
+            LIST: "/user/projects",
+            GET: (id: string) => `/user/projects/${id}`,
             CREATE: "/projects",
             UPDATE: (id: string) => `/projects/${id}`,
             DELETE: (id: string) => `/projects/${id}`,
