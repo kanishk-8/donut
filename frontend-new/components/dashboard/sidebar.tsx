@@ -71,7 +71,7 @@ const SideBar = () => {
                 aria-label="Open sidebar"
             >
                 <Image
-                    src="/logo.png"
+                    src="/2nutIcon.png"
                     alt="Donut logo"
                     width={40}
                     height={40}
@@ -110,7 +110,7 @@ const SideBar = () => {
                     <div className="flex items-center">
                         <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center">
                             <Image
-                                src="/logo.png"
+                                src="/2nutIcon.png"
                                 alt="Donut logo"
                                 width={32}
                                 height={32}

@@ -26,9 +26,9 @@ export const API_CONFIG = {
         PROJECTS: {
             LIST: "/user/projects",
             GET: (id: string) => `/user/projects/${id}`,
-            CREATE: "/projects",
-            UPDATE: (id: string) => `/projects/${id}`,
-            DELETE: (id: string) => `/projects/${id}`,
+            CREATE: "/user/projects",
+            UPDATE: (id: string) => `/user/projects/${id}`,
+            DELETE: (id: string) => `/user/projects/${id}`,
         },
     },
 };

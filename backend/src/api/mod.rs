@@ -28,7 +28,13 @@ pub fn routes(state: AppState) -> Router {
                 auth_middleware,
             )),
         )
-        .nest("/api/user", routes::project::routes())
+        .nest(
+            "/api/user",
+            routes::project::routes().route_layer(middleware::from_fn_with_state(
+                state.clone(),
+                auth_middleware,
+            )),
+        )
         .layer(cors)
         .with_state(state)
 }

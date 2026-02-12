@@ -43,7 +43,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <ProjectProvider>
             <div className="min-h-screen bg-background text-foreground">
                 {showProjectNav && <ProjectNav />}
-                <div className="pt-16 md:pt-20">{children}</div>
+                <div className="">{children}</div>
             </div>
         </ProjectProvider>
     );

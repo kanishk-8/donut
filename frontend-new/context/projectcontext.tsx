@@ -88,7 +88,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
             }
 
             const data = await response.json();
-            setProjects(data || []);
+            setProjects(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error("Error:", err);
             setError("Failed to load projects");
@@ -174,6 +174,9 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 {
                     method: "POST",
                     credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                     body: JSON.stringify(newProjectData),
                 },
             );
@@ -211,6 +214,9 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 {
                     method: "PUT",
                     credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                     body: JSON.stringify(updates),
                 },
             );

@@ -129,7 +129,7 @@ const page = () => {
     }
 
     return (
-        <div className="min-h-screen  pb-8">
+        <div className="min-h-screen  pt-20 md:pt-26 pb-8">
             <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                     {/* Profile Card - Fixed */}
