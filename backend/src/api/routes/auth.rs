@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{Router, routing::post};
 
 use crate::{
-    core::models::Config,
+    common::config::Config,
     platform::auth::handlers::{forgot_password, login, logout, sign_up},
 };
 pub fn routes() -> Router<Arc<Config>> {

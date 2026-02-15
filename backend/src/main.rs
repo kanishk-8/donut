@@ -1,7 +1,7 @@
-use crate::core::models::Config;
+use crate::common::config::Config;
 
 mod api;
-mod core;
+mod common;
 mod platform;
 mod storage;
 
@@ -11,8 +11,9 @@ async fn main() {
     let config = Config::new()
         .await
         .expect("Failed to initialize the config");
-    let port = config.port;
-    println!("Starting server on port {}", port);
+    let port = &config.port;
+    let app_name = &config.app_name;
+    println!("Starting server for {} on port {}", app_name, port);
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", port))
         .await
         .unwrap();

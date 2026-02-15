@@ -1,6 +1,6 @@
 use sqlx::{FromRow, PgPool};
 
-use crate::core::errors::AppError;
+use crate::common::errors::AppError;
 
 #[derive(Debug, FromRow)]
 pub struct ProjectRecord {

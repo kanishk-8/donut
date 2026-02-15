@@ -1,4 +1,4 @@
-use crate::{core::errors::AppError, storage::models::User};
+use crate::{common::errors::AppError, storage::models::User};
 use sqlx::PgPool;
 
 /// Create a new user in the database

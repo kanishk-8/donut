@@ -10,7 +10,7 @@ use axum::{
 };
 use tower_http::cors::CorsLayer;
 
-use crate::{core::models::Config, platform::auth::middleware::middleware};
+use crate::{common::config::Config, platform::auth::middleware::middleware};
 
 pub fn routes(config: Arc<Config>) -> Router {
     let cors = CorsLayer::new()

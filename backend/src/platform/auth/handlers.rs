@@ -4,14 +4,14 @@ use axum::{Extension, Json, extract::State};
 use axum_extra::extract::cookie::{Cookie, CookieJar};
 
 use crate::{
-    core::{
+    common::{
         auth::{
             cookie::{SESSION_COOKIE_NAME, create_session_cookie},
             crypto::{password_hash, password_verify},
             jwt::generate_token,
         },
+        config::Config,
         errors::AppError,
-        models::Config,
     },
     platform::auth::models::{
         AuthResponse, ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest,
@@ -113,14 +113,14 @@ pub async fn forgot_password(
     Json(request): Json<ForgotPasswordRequest>,
 ) -> Result<(), AppError> {
     let email = &request.email;
-    let new_password = &request.new_password;
+    // let new_password = &request.new_password;
     let pool = &config.pg_pool;
 
     if !email_exists(pool, email).await? {
         return Err(AppError::EmailNotFound);
     }
 
-    let new_password_hash = password_hash(new_password)?;
+    // let new_password_hash = password_hash(new_password)?;
 
     // update_password_byid(pool, id, new_password_hash.as_str())
     //     .await

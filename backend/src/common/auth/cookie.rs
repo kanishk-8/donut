@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum_extra::extract::cookie::{self, Cookie};
 use time::{Duration as timeDuration, OffsetDateTime};
 
-use crate::core::models::Config;
+use crate::common::config::Config;
 
 pub const SESSION_COOKIE_NAME: &str = "session";
 

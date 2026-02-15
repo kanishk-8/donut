@@ -4,7 +4,7 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
 use crate::{
-    core::{errors::AppError, models::Config},
+    common::{config::Config, errors::AppError},
     platform::auth::models::{Claims, TokenResponse},
     storage::models::{User, UserRole},
 };

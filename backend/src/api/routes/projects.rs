@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{Router, routing::get};
 
 use crate::{
-    core::models::Config,
+    common::config::Config,
     platform::projects::handlers::{
         create_project, delete_project, get_project, list_projects, update_project,
     },

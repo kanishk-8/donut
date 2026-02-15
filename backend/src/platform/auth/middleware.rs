@@ -8,10 +8,10 @@ use axum::{
 use axum_extra::extract::CookieJar;
 
 use crate::{
-    core::{
+    common::{
         auth::{cookie::SESSION_COOKIE_NAME, jwt::verify_token},
+        config::Config,
         errors::AppError,
-        models::Config,
     },
     storage::repositories::users::find_by_id,
 };

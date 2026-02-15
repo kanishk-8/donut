@@ -3,7 +3,7 @@ use argon2::{
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
 
-use crate::core::errors::AppError;
+use crate::common::errors::AppError;
 
 pub fn password_hash(pass: &str) -> Result<String, AppError> {
     let salt = SaltString::generate(&mut OsRng);

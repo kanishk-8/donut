@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    core::models::Config,
+    common::config::Config,
     platform::auth::handlers::{me, update_password},
 };
 
