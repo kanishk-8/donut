@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
-use super::models::{Project, ProjectStatus};
+use super::models::ProjectStatus;
 
 /// Request to create a new project
 #[derive(Debug, Deserialize)]
@@ -16,40 +16,6 @@ pub struct UpdateProjectRequest {
     pub name: Option<String>,
     pub description: Option<String>,
     pub status: Option<String>,
-}
-
-/// Response for project operations
-#[derive(Debug, Serialize)]
-pub struct ProjectResponse {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    #[serde(rename = "type")]
-    pub project_type: String,
-    pub status: String,
-    pub user_id: String,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
-impl From<Project> for ProjectResponse {
-    fn from(project: Project) -> Self {
-        Self {
-            id: project.id,
-            name: project.name,
-            description: project.description,
-            project_type: project.project_type,
-            status: match project.status {
-                ProjectStatus::Development => "Development".to_string(),
-                ProjectStatus::Active => "Active".to_string(),
-                ProjectStatus::Archived => "Archived".to_string(),
-                ProjectStatus::Failed => "Failed".to_string(),
-            },
-            user_id: project.user_id,
-            created_at: project.created_at,
-            updated_at: project.updated_at,
-        }
-    }
 }
 
 impl CreateProjectRequest {

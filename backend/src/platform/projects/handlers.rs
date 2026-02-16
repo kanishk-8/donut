@@ -9,8 +9,9 @@ use axum::{
 use crate::{
     common::{config::Config, errors::AppError},
     platform::projects::{
-        dto::{CreateProjectRequest, ProjectResponse, UpdateProjectRequest},
         models::Project,
+        requests::{CreateProjectRequest, UpdateProjectRequest},
+        responses::ProjectResponse,
     },
     storage::{
         models::User,
