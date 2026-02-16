@@ -13,8 +13,9 @@ use crate::{
         config::Config,
         errors::AppError,
     },
-    platform::auth::models::{
-        AuthResponse, ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest,
+    platform::auth::{
+        requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
+        responses::AuthResponse,
     },
     storage::{
         models::User,

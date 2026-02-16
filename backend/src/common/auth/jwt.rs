@@ -5,7 +5,7 @@ use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode}
 
 use crate::{
     common::{config::Config, errors::AppError},
-    platform::auth::models::{Claims, TokenResponse},
+    platform::auth::{models::Claims, responses::TokenResponse},
     storage::models::{User, UserRole},
 };
 
