@@ -98,31 +98,53 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [user]);
 
-    // Fetch specific project by ID
-    const fetchProject = async (projectId: string) => {
-        if (!user || !projectId) return null;
+    // Fetch specific project by ID (memoized to stabilize reference)
+    const fetchProject = useCallback(
+        async (projectId: string) => {
+            if (!user || !projectId) return null;
 
-        try {
-            // First check if we already have it in our projects array
-            const existingProject = projects.find((p) => p.id === projectId);
-            if (existingProject) {
-                setCurrentProject(existingProject);
-                return existingProject;
-            }
+            try {
+                // First check if we already have it in our projects array
+                const existingProject = projects.find(
+                    (p) => p.id === projectId,
+                );
+                if (existingProject) {
+                    setCurrentProject(existingProject);
+                    return existingProject;
+                }
 
-            // Fetch from backend
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.GET(projectId)),
-                {
-                    method: "GET",
-                    credentials: "include",
-                },
-            );
+                // Fetch from backend
+                const response = await fetch(
+                    getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.GET(projectId)),
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.log("Project not found:", errorData.message);
-                // Create fallback project data
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.log("Project not found:", errorData.message);
+                    // Create fallback project data
+                    const fallbackProject = {
+                        id: projectId,
+                        name: `Project ${projectId}`,
+                        type: "Chatbot",
+                        status: "Development",
+                        description: "",
+                        user_id: user.id,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                    };
+                    setCurrentProject(fallbackProject);
+                    return fallbackProject;
+                }
+
+                const data = await response.json();
+                setCurrentProject(data);
+                return data;
+            } catch (_err) {
+                console.log("Backend connection issue, using fallback data");
                 const fallbackProject = {
                     id: projectId,
                     name: `Project ${projectId}`,
@@ -136,26 +158,9 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 setCurrentProject(fallbackProject);
                 return fallbackProject;
             }
-
-            const data = await response.json();
-            setCurrentProject(data);
-            return data;
-        } catch (_err) {
-            console.log("Backend connection issue, using fallback data");
-            const fallbackProject = {
-                id: projectId,
-                name: `Project ${projectId}`,
-                type: "Chatbot",
-                status: "Development",
-                description: "",
-                user_id: user.id,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-            };
-            setCurrentProject(fallbackProject);
-            return fallbackProject;
-        }
-    };
+        },
+        [user, projects],
+    );
 
     // Create new project
     const createProject = async (projectData: Partial<Project>) => {

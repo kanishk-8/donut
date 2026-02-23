@@ -1,16 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
     Home01Icon,
-    Book02Icon,
     Settings02Icon,
     ArrowLeft01Icon,
     FolderOpenIcon,
     Cancel01Icon,
-    AiNetworkIcon,
+    WorkflowCircle03Icon,
 } from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
@@ -23,9 +22,10 @@ import { cn } from "@/lib/utils";
 const SideBar = () => {
     const { user } = useAuth();
     const { fetchProject, currentProject } = useProject();
+    const params = useParams();
+    const projectId = params?.id as string | undefined;
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
-    const projectId = pathname.split("/")[3]; // Extract project ID from URL
 
     // Check if we're in a project context
     const isInProject = pathname.includes("/projects/") && projectId;
@@ -44,14 +44,9 @@ const SideBar = () => {
             path: `/projects/${projectId}/dashboard`,
         },
         {
-            name: "Knowledge Base",
-            icon: Book02Icon,
-            path: `/projects/${projectId}/knowledgebase`,
-        },
-        {
             name: "Workflows",
-            icon: AiNetworkIcon,
-            path: `/projects/${projectId}/workflow`,
+            icon: WorkflowCircle03Icon,
+            path: `/projects/${projectId}/workflows`,
         },
         {
             name: "Settings",
@@ -195,17 +190,21 @@ const SideBar = () => {
                                 <Button
                                     asChild
                                     variant={
-                                        pathname === item.path
+                                        isInProject &&
+                                        pathname?.startsWith(item.path)
                                             ? "default"
                                             : "ghost"
                                     }
-                                    className="w-full justify-start"
+                                    className="w-full justify-start group transition-colors duration-150"
                                     onClick={() => setOpen(false)}
                                 >
-                                    <Link href={item.path}>
+                                    <Link
+                                        href={item.path}
+                                        className="flex items-center w-full py-2 px-3 rounded-md"
+                                    >
                                         <HugeiconsIcon
                                             icon={item.icon}
-                                            className="w-5 h-5"
+                                            className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1"
                                         />
                                         <span className="ml-3">
                                             {item.name}
@@ -219,40 +218,40 @@ const SideBar = () => {
 
                 <div className="px-3 md:px-4 py-2">
                     <div className="border-t pt-3 md:pt-4">
-                        <Button
-                            asChild
-                            variant={
-                                pathname === "/profile" ? "default" : "ghost"
-                            }
-                            className="w-full justify-start"
+                        <Link
+                            href="/profile"
+                            className={cn(
+                                "w-full flex items-center p-2 rounded-md transition-colors duration-150",
+                                pathname?.startsWith("/profile")
+                                    ? "bg-muted/20"
+                                    : "hover:bg-accent/10",
+                            )}
                             onClick={() => setOpen(false)}
                         >
-                            <Link href="/profile">
-                                <Avatar className="w-6 h-6 md:w-8 md:h-8">
-                                    <AvatarImage
-                                        src={user?.avatar ?? undefined}
-                                        alt={user?.name || "User profile"}
-                                    />
-                                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                                        {user?.name
-                                            ? user.name
-                                                  .split(" ")
-                                                  .map((n) => n[0])
-                                                  .join("")
-                                                  .toUpperCase()
-                                            : "U"}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div className="ml-2 md:ml-3 min-w-0 flex-1 text-left">
-                                    <p className="font-bold text-xs md:text-sm truncate">
-                                        {user?.name || user?.email || "User"}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                        {user?.plan || "Pro Plan"}
-                                    </p>
-                                </div>
-                            </Link>
-                        </Button>
+                            <Avatar className="w-6 h-6 md:w-8 md:h-8">
+                                <AvatarImage
+                                    src={user?.avatar ?? undefined}
+                                    alt={user?.name || "User profile"}
+                                />
+                                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                    {user?.name
+                                        ? user.name
+                                              .split(" ")
+                                              .map((n) => n[0])
+                                              .join("")
+                                              .toUpperCase()
+                                        : "U"}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="ml-2 md:ml-3 min-w-0 flex-1 text-left">
+                                <p className="font-bold text-xs md:text-sm truncate">
+                                    {user?.name || user?.email || "User"}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    {user?.plan || "Pro Plan"}
+                                </p>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </div>
