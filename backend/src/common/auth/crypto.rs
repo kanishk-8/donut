@@ -2,6 +2,8 @@ use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng},
 };
+use hex;
+use sha2::{Digest, Sha256};
 
 use crate::common::errors::AppError;
 
@@ -21,4 +23,12 @@ pub fn password_verify(pass: &str, stored_pass: &str) -> Result<(), AppError> {
     Argon2::default()
         .verify_password(pass.as_bytes(), &parsed_hash)
         .map_err(|_| AppError::InvalidCredentials)
+}
+
+pub fn hash_refresh_token(token: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(token.as_bytes());
+    let result = hasher.finalize();
+
+    hex::encode(result)
 }

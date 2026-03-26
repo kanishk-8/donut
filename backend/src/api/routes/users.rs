@@ -7,11 +7,12 @@ use axum::{
 
 use crate::{
     common::config::Config,
-    platform::auth::handlers::{me, update_password},
+    platform::auth::handlers::{me, refresh, update_password},
 };
 
 pub fn routes() -> Router<Arc<Config>> {
     Router::new()
         .route("/update-password", post(update_password))
         .route("/me", get(me))
+        .route("/refresh", get(refresh))
 }

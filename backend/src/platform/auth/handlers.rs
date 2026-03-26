@@ -6,22 +6,20 @@ use axum_extra::extract::cookie::{Cookie, CookieJar};
 use crate::{
     common::{
         auth::{
-            cookie::{SESSION_COOKIE_NAME, create_session_cookie},
-            crypto::{password_hash, password_verify},
+            cookie::create_cookie,
+            crypto::{hash_refresh_token, password_hash, password_verify},
             jwt::generate_token,
+            models::{TokenType, User},
         },
         config::Config,
         errors::AppError,
     },
     platform::auth::{
         requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
-        responses::AuthResponse,
+        responses::{AuthResponse, RefreshResponse},
     },
-    storage::{
-        models::User,
-        repositories::users::{
-            create_user, email_exists, find_by_email, get_password_hash, update_password_byid,
-        },
+    storage::repositories::users::{
+        create_user, email_exists, find_by_email, get_password_hash, update_password_byid,
     },
 };
 
@@ -49,7 +47,7 @@ pub async fn login(
         token: token.clone(),
         user,
     };
-    let cookie = create_session_cookie(token, &config);
+    let cookie = create_cookie(token, TokenType::Access, &config);
     let jar = jar.add(cookie);
 
     Ok((jar, Json(response)))
@@ -78,14 +76,14 @@ pub async fn sign_up(
         token: token.clone(),
         user,
     };
-    let cookie = create_session_cookie(token, &config);
+    let cookie = create_cookie(token, TokenType::Access, &config);
     let jar = jar.add(cookie);
 
     Ok((jar, Json(response)))
 }
 
 pub async fn logout(jar: CookieJar) -> CookieJar {
-    jar.remove(Cookie::from(SESSION_COOKIE_NAME))
+    jar.remove(Cookie::from(TokenType::Access.name()))
 }
 
 pub async fn update_password(
@@ -134,10 +132,37 @@ pub async fn me(
     Extension(user): Extension<User>,
 ) -> Result<Json<AuthResponse>, AppError> {
     let token = jar
-        .get(SESSION_COOKIE_NAME)
+        .get(TokenType::Access.name())
         .ok_or(AppError::InvalidToken)?
         .value()
         .to_string();
 
     Ok(Json(AuthResponse { token, user }))
+}
+
+pub async fn refresh(
+    jar: CookieJar,
+    State(config): State<Arc<Config>>,
+    Extension(user): Extension<User>,
+) -> Result<Json<RefreshResponse>, AppError> {
+    let token = jar
+        .get(TokenType::Access.name())
+        .ok_or(AppError::InvalidToken)?
+        .value()
+        .to_string();
+    let refresh_token = jar
+        .get(TokenType::Refresh.name())
+        .ok_or(AppError::InvalidToken)?
+        .value()
+        .to_string();
+    // Verify the refresh token with the stored token
+    let hashed_refresh_token = hash_refresh_token(&refresh_token);
+    // Check the refresh token from table and then generate and return the new refersh token
+
+    let new_token = generate_token(&user, &config)?;
+    let new_refresh_token = generate_token(&user, &config)?;
+    Ok(Json(RefreshResponse {
+        token: new_token,
+        refresh_token: new_refresh_token,
+    }))
 }

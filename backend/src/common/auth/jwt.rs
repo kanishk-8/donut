@@ -3,10 +3,9 @@ use std::sync::Arc;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
-use crate::{
-    common::{config::Config, errors::AppError},
-    platform::auth::{models::Claims, responses::TokenResponse},
-    storage::models::{User, UserRole},
+use crate::common::{
+    auth::models::{Claims, TokenResponse, User, UserRole},
+    {config::Config, errors::AppError},
 };
 
 pub fn generate_token(user: &User, config: &Arc<Config>) -> Result<String, AppError> {

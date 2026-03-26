@@ -7,18 +7,15 @@ use axum::{
 };
 
 use crate::{
-    common::{config::Config, errors::AppError},
+    common::{auth::models::User, config::Config, errors::AppError},
     platform::projects::{
         models::Project,
         requests::{CreateProjectRequest, UpdateProjectRequest},
         responses::ProjectResponse,
     },
-    storage::{
-        models::User,
-        repositories::projects::{
-            create_project as create_project_db, delete_project as delete_project_db,
-            get_project_by_id, list_projects_by_owner, update_project as update_project_db,
-        },
+    storage::repositories::projects::{
+        create_project as create_project_db, delete_project as delete_project_db,
+        get_project_by_id, list_projects_by_owner, update_project as update_project_db,
     },
 };
 

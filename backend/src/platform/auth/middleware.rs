@@ -9,7 +9,7 @@ use axum_extra::extract::CookieJar;
 
 use crate::{
     common::{
-        auth::{cookie::SESSION_COOKIE_NAME, jwt::verify_token},
+        auth::{jwt::verify_token, models::TokenType},
         config::Config,
         errors::AppError,
     },
@@ -24,7 +24,7 @@ pub async fn middleware(
     let jar = CookieJar::from_headers(request.headers());
 
     let token = jar
-        .get(SESSION_COOKIE_NAME)
+        .get(TokenType::Access.name())
         .ok_or(AppError::Unauthorized)?
         .value()
         .to_string();
