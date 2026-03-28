@@ -21,6 +21,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
     // Show loading while checking authentication
     if (loading) {
+        console.log("loading still ..");
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="flex flex-col items-center gap-4">

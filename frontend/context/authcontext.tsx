@@ -50,10 +50,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     const checkUser = useCallback(async () => {
+        console.debug("[Auth] checkUser start");
+        let finished = false;
+
+        // safety fallback: if checkUser doesn't finish in 12s, clear loading
+        const fallback = setTimeout(() => {
+            if (!finished) {
+                console.warn(
+                    "[Auth] checkUser fallback timeout, clearing loading",
+                );
+                setLoading(false);
+            }
+        }, 12000);
+
         try {
             // axios will automatically attempt refresh on 401 and retry original request
             const res = await api.get(API_CONFIG.ENDPOINTS.USER.ME);
             const data = res.data;
+            console.debug("[Auth] /user/me success", data);
 
             const userInfo = {
                 id: data.user.id,
@@ -73,13 +87,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             setUser(userInfo);
             localStorage.setItem("donut_user", JSON.stringify(userInfo));
-        } catch (err) {
-            console.error("checkUser error:", err);
-            // If axios error: err.response gives more info
+        } catch (err: unknown) {
+            console.warn("[Auth] checkUser error", err);
+            // Log axios response details if available (helps debug 401/refresh issues)
+            if (axios.isAxiosError(err)) {
+                console.warn(
+                    "[Auth] /user/me response:",
+                    err.response?.status,
+                    err.response?.data,
+                );
+                if (err.response?.status === 401) {
+                    console.warn(
+                        "[Auth] 401 Unauthorized - token may be invalid or expired",
+                    );
+                }
+            }
             localStorage.removeItem("donut_user");
             setUser(null);
         } finally {
+            finished = true;
+            clearTimeout(fallback);
             setLoading(false);
+            console.debug("[Auth] checkUser finished, loading=false");
         }
     }, []);
 
