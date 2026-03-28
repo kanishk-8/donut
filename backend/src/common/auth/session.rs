@@ -16,8 +16,19 @@ pub fn create_cookie(
     let mut cookie = Cookie::new(token_type.name(), token);
     cookie.set_http_only(true);
     cookie.set_path("/");
+
+    // Set the Secure flag based on configuration. In production (secure=true)
+    // cookies will be marked Secure and we will use SameSite=None so they are
+    // accepted in cross-site contexts (required when frontend and backend are on
+    // different origins). For local development (secure=false) use SameSite::Lax
+    // and do not set Secure so the browser accepts it over plain HTTP.
     cookie.set_secure(config.secure);
-    cookie.set_same_site(cookie::SameSite::Lax);
+    if config.secure {
+        cookie.set_same_site(cookie::SameSite::None);
+    } else {
+        cookie.set_same_site(cookie::SameSite::Lax);
+    }
+
     cookie.set_max_age(token_type.expiration());
 
     let expiration = OffsetDateTime::now_utc() + token_type.expiration();
