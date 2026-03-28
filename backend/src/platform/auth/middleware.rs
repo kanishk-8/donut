@@ -7,13 +7,10 @@ use axum::{
 };
 use axum_extra::extract::CookieJar;
 
-use crate::{
-    common::{
-        auth::{jwt::verify_token, models::TokenType},
-        config::Config,
-        errors::AppError,
-    },
-    storage::repositories::users::find_by_id,
+use crate::common::{
+    auth::{jwt::verify_token, models::TokenType},
+    config::Config,
+    errors::AppError,
 };
 
 pub async fn middleware(
@@ -23,17 +20,11 @@ pub async fn middleware(
 ) -> Result<Response, AppError> {
     let jar = CookieJar::from_headers(request.headers());
 
-    let token = jar
-        .get(TokenType::Access.name())
-        .ok_or(AppError::Unauthorized)?
-        .value()
-        .to_string();
+    if let Some(token) = jar.get(TokenType::Access.name()) {
+        if let Ok(claims) = verify_token(token.value(), &config) {
+            request.extensions_mut().insert(claims);
+        }
+    }
 
-    let claims = verify_token(&token, &config)?;
-    let user = find_by_id(&config.pg_pool, &claims.id)
-        .await?
-        .ok_or(AppError::Unauthorized)?;
-
-    request.extensions_mut().insert(user);
     Ok(next.run(request).await)
 }

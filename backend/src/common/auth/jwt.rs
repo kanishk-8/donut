@@ -4,7 +4,7 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
 use crate::common::{
-    auth::models::{Claims, TokenResponse, User, UserRole},
+    auth::models::{Claims, User, UserRole},
     {config::Config, errors::AppError},
 };
 
@@ -28,7 +28,7 @@ pub fn generate_token(user: &User, config: &Arc<Config>) -> Result<String, AppEr
     .map_err(|e| AppError::TokenGenerationFailed(e.to_string()))
 }
 
-pub fn verify_token(token: &str, config: &Arc<Config>) -> Result<TokenResponse, AppError> {
+pub fn verify_token(token: &str, config: &Arc<Config>) -> Result<Claims, AppError> {
     let token_data = decode::<Claims>(
         token,
         &DecodingKey::from_secret(&config.jwt_secret),
@@ -40,10 +40,5 @@ pub fn verify_token(token: &str, config: &Arc<Config>) -> Result<TokenResponse, 
         _ => AppError::InvalidToken,
     })?;
 
-    Ok(TokenResponse {
-        id: token_data.claims.id,
-        username: token_data.claims.username,
-        email: token_data.claims.email,
-        role: token_data.claims.role,
-    })
+    Ok(token_data.claims)
 }
