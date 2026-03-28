@@ -13,8 +13,15 @@ use tower_http::cors::CorsLayer;
 use crate::{common::config::Config, platform::auth::middleware::middleware};
 
 pub fn routes(config: Arc<Config>) -> Router {
+    let origins: Vec<HeaderValue> = config
+        .allowed_origins
+        .iter()
+        .map(|origin| origin.parse().unwrap())
+        .collect();
+
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
+        .allow_origin(origins)
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers([CONTENT_TYPE])
         .allow_credentials(true);

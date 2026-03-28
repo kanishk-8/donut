@@ -11,10 +11,16 @@ pub struct Config {
     pub jwt_secret: Vec<u8>,
     pub port: u16,
     pub pg_pool: sqlx::PgPool,
+    pub allowed_origins: Vec<String>,
 }
 
 impl Config {
     pub async fn new() -> Result<Arc<Config>, AppError> {
+        let secure = env::var("SECURE")
+            .unwrap_or_else(|_| "false".into())
+            .parse::<bool>()
+            .unwrap_or(false);
+
         let jwt_secret = env::var("JWT_SECRET")
             .map_err(|_| AppError::MissingConfig("JWT_SECRET must be set".to_string()))?;
 
@@ -35,13 +41,20 @@ impl Config {
             .connect(&db_url)
             .await
             .map_err(|e| AppError::DatabaseError(e.to_string()))?;
-
+        let allowed_origins_raw =
+            env::var("ALLOWED_ORIGINS").unwrap_or_else(|_| "http://localhost:3000".into());
+        let allowed_origins: Vec<String> = allowed_origins_raw
+            .split(',')
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
+            .collect();
         Ok(Arc::new(Self {
             app_name: "Donut".to_string(),
-            secure: false,
+            secure,
             jwt_secret: jwt_secret.into_bytes(),
             port,
             pg_pool,
+            allowed_origins,
         }))
     }
 }
