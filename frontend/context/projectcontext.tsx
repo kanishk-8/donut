@@ -8,7 +8,9 @@ import {
     type ReactNode,
 } from "react";
 import { useAuth } from "@/context/authcontext";
-import { API_CONFIG, getApiUrl } from "@/lib/api-config";
+import { API_CONFIG } from "@/lib/api-config";
+import api from "@/lib/api-client";
+import axios from "axios";
 
 interface Project {
     id: string;
@@ -70,27 +72,11 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
             setLoading(true);
             setError("");
 
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.LIST),
-                {
-                    method: "GET",
-                    credentials: "include",
-                },
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("Error fetching projects:", errorData);
-                setError("Failed to load projects");
-                setProjects([]);
-                setLoading(false);
-                return;
-            }
-
-            const data = await response.json();
+            const res = await api.get(API_CONFIG.ENDPOINTS.PROJECTS.LIST);
+            const data = res.data;
             setProjects(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error("Error:", err);
+        } catch (err: unknown) {
+            console.error("Error fetching projects:", err);
             setError("Failed to load projects");
             setProjects([]);
         } finally {
@@ -113,39 +99,26 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                     return existingProject;
                 }
 
-                // Fetch from backend
-                const response = await fetch(
-                    getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.GET(projectId)),
-                    {
-                        method: "GET",
-                        credentials: "include",
-                    },
+                // Fetch from backend via centralized api client
+                const res = await api.get(
+                    API_CONFIG.ENDPOINTS.PROJECTS.GET(projectId),
                 );
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.log("Project not found:", errorData.message);
-                    // Create fallback project data
-                    const fallbackProject = {
-                        id: projectId,
-                        name: `Project ${projectId}`,
-                        type: "Chatbot",
-                        status: "Development",
-                        description: "",
-                        user_id: user.id,
-                        created_at: new Date().toISOString(),
-                        updated_at: new Date().toISOString(),
-                    };
-                    setCurrentProject(fallbackProject);
-                    return fallbackProject;
-                }
-
-                const data = await response.json();
+                const data = res.data;
                 setCurrentProject(data);
                 return data;
-            } catch (_err) {
-                console.log("Backend connection issue, using fallback data");
-                const fallbackProject = {
+            } catch (err: unknown) {
+                // If the backend returns 404, provide a fallback as before.
+                if (axios.isAxiosError(err) && err.response?.status === 404) {
+                    console.log("Project not found (404), creating fallback");
+                } else {
+                    console.log(
+                        "Project fetch error or backend unavailable:",
+                        err,
+                    );
+                }
+
+                // Create fallback project data
+                const fallbackProject: Project = {
                     id: projectId,
                     name: `Project ${projectId}`,
                     type: "Chatbot",
@@ -174,35 +147,22 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
                 status: "Development",
             };
 
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.CREATE),
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(newProjectData),
-                },
+            const res = await api.post(
+                API_CONFIG.ENDPOINTS.PROJECTS.CREATE,
+                newProjectData,
             );
+            const data: Project = res.data;
 
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("Error creating project:", errorData);
-                return {
-                    success: false,
-                    error: errorData.error || "Failed to create project",
-                };
-            }
-
-            const data = await response.json();
-
-            // Add to local state
-            setProjects([data, ...projects]);
+            // Add to local state (use functional update to avoid stale closures)
+            setProjects((prev) => [data, ...prev]);
             return { success: true, project: data };
-        } catch (err) {
-            console.error("Error:", err);
-            return { success: false, error: "Failed to create project" };
+        } catch (err: unknown) {
+            console.error("Error creating project:", err);
+            let message = "Failed to create project";
+            if (axios.isAxiosError(err)) {
+                message = (err.response?.data as any)?.error ?? message;
+            }
+            return { success: false, error: message };
         }
     };
 
@@ -214,39 +174,27 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         if (!user) return { success: false, error: "User not authenticated" };
 
         try {
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.UPDATE(projectId)),
-                {
-                    method: "PUT",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(updates),
-                },
+            const res = await api.put(
+                API_CONFIG.ENDPOINTS.PROJECTS.UPDATE(projectId),
+                updates,
             );
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("Error updating project:", errorData);
-                return {
-                    success: false,
-                    error: errorData.error || "Failed to update project",
-                };
-            }
-
-            const data = await response.json();
+            const data: Project = res.data;
 
             // Update local state
-            setProjects(projects.map((p) => (p.id === projectId ? data : p)));
-            if (currentProject?.id === projectId) {
-                setCurrentProject(data);
-            }
-
+            setProjects((prev) =>
+                prev.map((p) => (p.id === projectId ? data : p)),
+            );
+            setCurrentProject((curr) =>
+                curr && curr.id === projectId ? data : curr,
+            );
             return { success: true, project: data };
-        } catch (err) {
-            console.error("Error:", err);
-            return { success: false, error: "Failed to update project" };
+        } catch (err: unknown) {
+            console.error("Error updating project:", err);
+            let message = "Failed to update project";
+            if (axios.isAxiosError(err)) {
+                message = (err.response?.data as any)?.error ?? message;
+            }
+            return { success: false, error: message };
         }
     };
 
@@ -255,33 +203,22 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         if (!user) return { success: false, error: "User not authenticated" };
 
         try {
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.PROJECTS.DELETE(projectId)),
-                {
-                    method: "DELETE",
-                    credentials: "include",
-                },
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                console.error("Error deleting project:", errorData);
-                return {
-                    success: false,
-                    error: errorData.error || "Failed to delete project",
-                };
-            }
+            await api.delete(API_CONFIG.ENDPOINTS.PROJECTS.DELETE(projectId));
 
             // Update local state
-            setProjects(projects.filter((p) => p.id !== projectId));
-            if (currentProject?.id === projectId) {
-                setCurrentProject(null);
-            }
+            setProjects((prev) => prev.filter((p) => p.id !== projectId));
+            setCurrentProject((curr) =>
+                curr && curr.id === projectId ? null : curr,
+            );
 
             return { success: true };
-        } catch (err) {
-            console.error("Error:", err);
-            return { success: false, error: "Failed to delete project" };
+        } catch (err: unknown) {
+            console.error("Error deleting project:", err);
+            let message = "Failed to delete project";
+            if (axios.isAxiosError(err)) {
+                message = (err.response?.data as any)?.error ?? message;
+            }
+            return { success: false, error: message };
         }
     };
 
@@ -299,7 +236,8 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
             setCurrentProject(null);
             setLoading(false);
         }
-    }, [user, fetchProjects]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     return (
         <ProjectContext.Provider

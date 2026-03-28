@@ -21,6 +21,7 @@ export const API_CONFIG = {
         },
         USER: {
             ME: "/user/me",
+            REFRESH: "/user/refresh",
         },
         // Project endpoints
         PROJECTS: {

@@ -7,7 +7,9 @@ import {
     useCallback,
     type ReactNode,
 } from "react";
-import { API_CONFIG, getApiUrl } from "@/lib/api-config";
+import api from "@/lib/api-client";
+import { API_CONFIG } from "@/lib/api-config";
+import axios from "axios";
 
 interface User {
     id: string;
@@ -17,6 +19,12 @@ interface User {
     joinDate: string;
     plan: string;
     avatar: string | null;
+}
+
+interface AuthApiResponse {
+    user: User;
+    token?: string;
+    refresh_token?: string;
 }
 
 interface AuthContextType {
@@ -43,24 +51,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const checkUser = useCallback(async () => {
         try {
-            // Verify token with backend
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.USER.ME),
-                {
-                    method: "GET",
-                    credentials: "include",
-                },
-            );
+            // axios will automatically attempt refresh on 401 and retry original request
+            const res = await api.get(API_CONFIG.ENDPOINTS.USER.ME);
+            const data = res.data;
 
-            if (!response.ok) {
-                // Token is invalid or expired
-                localStorage.removeItem("donut_user");
-                setUser(null);
-                setLoading(false);
-                return;
-            }
-
-            const data = await response.json();
             const userInfo = {
                 id: data.user.id,
                 email: data.user.email,
@@ -76,10 +70,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 plan: data.user.plan || "Pro Plan",
                 avatar: data.user.avatar || null,
             };
+
             setUser(userInfo);
             localStorage.setItem("donut_user", JSON.stringify(userInfo));
         } catch (err) {
             console.error("checkUser error:", err);
+            // If axios error: err.response gives more info
             localStorage.removeItem("donut_user");
             setUser(null);
         } finally {
@@ -94,39 +90,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const signup = async (email: string, password: string, name: string) => {
         try {
-            console.log("Attempting signup with:", { email, name });
-
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.AUTH.SIGNUP),
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email,
-                        password,
-                        username: name,
-                    }),
-                },
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                console.error("Signup error:", data);
-                return {
-                    success: false,
-                    error:
-                        data.error ||
-                        data.message ||
-                        "Failed to create account",
-                };
-            }
-
-            console.log("Account created:", data);
-
+            const res = await api.post(API_CONFIG.ENDPOINTS.AUTH.SIGNUP, {
+                email,
+                password,
+                username: name,
+            });
+            const data = res.data;
             const userInfo = {
                 id: data.user.id,
                 email: data.user.email,
@@ -139,56 +108,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 plan: "Pro Plan",
                 avatar: data.user.avatar || null,
             };
-
             setUser(userInfo);
             localStorage.setItem("donut_user", JSON.stringify(userInfo));
-
-            return {
-                success: true,
-                user: userInfo,
-            };
-        } catch (error) {
-            console.error("Signup error:", error);
-            return {
-                success: false,
-                error:
-                    error instanceof Error
-                        ? error.message
-                        : "Failed to create account",
-            };
+            return { success: true, user: userInfo };
+        } catch (err: unknown) {
+            console.error("Signup error:", err);
+            // Narrow error safely
+            let message = "Failed to create account";
+            if (axios.isAxiosError(err)) {
+                // axios error — read response safely
+                message =
+                    (err.response?.data as any)?.error ??
+                    (err.response?.data as any)?.message ??
+                    err.message ??
+                    message;
+            } else if (err instanceof Error) {
+                message = err.message;
+            }
+            return { success: false, error: message };
         }
     };
 
     const login = async (email: string, password: string) => {
         try {
-            console.log("Attempting login with:", { email });
+            const res = await api.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN, {
+                email,
+                password,
+            });
 
-            const response = await fetch(
-                getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGIN),
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email,
-                        password,
-                    }),
-                },
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                console.error("Login error:", data);
-                return {
-                    success: false,
-                    error: data.error || data.message || "Failed to sign in",
-                };
-            }
-
-            console.log("Login successful:", data);
+            const data = res.data;
 
             const userInfo = {
                 id: data.user.id,
@@ -210,35 +158,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem("donut_user", JSON.stringify(userInfo));
 
             return { success: true, user: userInfo };
-        } catch (error) {
-            console.error("Login error:", error);
-            return {
-                success: false,
-                error:
-                    error instanceof Error
-                        ? error.message
-                        : "Failed to sign in",
-            };
+        } catch (err: unknown) {
+            console.error("Login error:", err);
+            let message = "Failed to sign in";
+            if (axios.isAxiosError(err)) {
+                message =
+                    (err.response?.data as any)?.error ??
+                    (err.response?.data as any)?.message ??
+                    err.message ??
+                    message;
+            } else if (err instanceof Error) {
+                message = err.message;
+            }
+            return { success: false, error: message };
         }
     };
 
     const logout = async () => {
         try {
-            console.log("Attempting logout...");
-            await fetch(getApiUrl(API_CONFIG.ENDPOINTS.AUTH.LOGOUT), {
-                method: "POST",
-                credentials: "include",
-            });
+            await api.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT);
             setUser(null);
             localStorage.removeItem("donut_user");
-
             return { success: true };
-        } catch (error) {
-            console.error("Logout error:", error);
+        } catch (err: unknown) {
+            console.error("Logout error:", err);
+            // If it's an axios error, log the server response for debugging
+            if (axios.isAxiosError(err)) {
+                console.error("Logout API response:", err.response?.data);
+            }
             setUser(null);
             localStorage.removeItem("donut_user");
-
-            return { success: true }; // Return success to allow redirect
+            return { success: true };
         }
     };
 
