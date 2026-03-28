@@ -18,7 +18,7 @@ pub fn routes(config: Arc<Config>) -> Router {
         .iter()
         .map(|origin| origin.parse().unwrap())
         .collect();
-
+    println!("allowed origins: {:?}", config.allowed_origins);
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
         .allow_origin(origins)
