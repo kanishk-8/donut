@@ -38,7 +38,8 @@ pub async fn find_refresh_token(
                user_id::text as "user_id!",
                token_hash as "token_hash!",
                expires_at as "expires_at!",
-               revoked as "revoked!"
+               revoked as "revoked!",
+               revoked_at
            FROM refresh_tokens
            WHERE token_hash = $1"#,
         token_hash
@@ -50,7 +51,7 @@ pub async fn find_refresh_token(
 pub async fn revoke_refresh_token(pool: &PgPool, token_id: &str) -> Result<(), AppError> {
     sqlx::query!(
         r#"UPDATE refresh_tokens
-           SET revoked = TRUE
+           SET revoked = TRUE, revoked_at = NOW()
            WHERE id::text = $1"#,
         token_id
     )

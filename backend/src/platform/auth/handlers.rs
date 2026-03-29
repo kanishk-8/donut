@@ -212,6 +212,12 @@ pub async fn refresh(
         .ok_or(AppError::InvalidToken)?;
 
     if stored.revoked {
+        // Allow a 30-second grace period for concurrent requests to fail safely
+        if let Some(revoked_time) = stored.revoked_at {
+            if Utc::now() - revoked_time < Duration::seconds(30) {
+                return Err(AppError::InvalidToken);
+            }
+        }
         // 🚨 token reuse attack detected
         revoke_all_for_user(&config.pg_pool, &stored.user_id).await?;
         return Err(AppError::InvalidToken);

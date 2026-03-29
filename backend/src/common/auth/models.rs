@@ -57,4 +57,8 @@ pub struct RefreshToken {
     pub token_hash: String,
     pub expires_at: DateTime<Utc>,
     pub revoked: bool,
+    pub revoked_at: Option<DateTime<Utc>>,
+    // pub ip_address: Option<String>,
+    // pub device_info: Option<String>,
+    // pub last_used_at: Option<DateTime<Utc>>,
 }
