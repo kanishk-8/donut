@@ -8,7 +8,11 @@ use axum::{
     middleware,
     routing::get,
 };
-use tower_http::cors::CorsLayer;
+use tower_http::{
+    cors::CorsLayer,
+    trace::{DefaultMakeSpan, DefaultOnResponse, TraceLayer},
+};
+use tracing::Level;
 
 use crate::{
     common::config::Config,
@@ -21,27 +25,29 @@ pub fn routes(config: Arc<Config>) -> Router {
         .iter()
         .map(|origin| origin.parse().unwrap())
         .collect();
-    println!("allowed origins: {:?}", config.allowed_origins);
     let cors = CorsLayer::new()
         .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
         .allow_origin(origins)
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers([CONTENT_TYPE])
         .allow_credentials(true);
+
+    // Merged the routes that comes under same endpoints
+    let user_routes = routes::users::routes().merge(routes::projects::routes());
+
     Router::new()
         .route("/", get(|| async { "server is running..." }))
         .route("/cron/rem_exp_token", get(remove_expired_refresh_token))
         .nest("/api/auth", routes::auth::routes())
         .nest(
             "/api/user",
-            routes::users::routes()
-                .route_layer(middleware::from_fn_with_state(config.clone(), middleware)),
-        )
-        .nest(
-            "/api/user",
-            routes::projects::routes()
-                .route_layer(middleware::from_fn_with_state(config.clone(), middleware)),
+            user_routes.route_layer(middleware::from_fn_with_state(config.clone(), middleware)),
         )
         .layer(cors)
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+        )
         .with_state(config)
 }
