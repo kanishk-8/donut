@@ -74,10 +74,17 @@ pub async fn revoke_all_for_user(pool: &PgPool, user_id: &str) -> Result<(), App
 
     Ok(())
 }
-pub async fn delete_expired_tokens(pool: &PgPool) -> Result<(), AppError> {
+pub async fn delete_expired_refresh_tokens(pool: &PgPool) -> Result<(), AppError> {
     sqlx::query!(
-        r#"DELETE FROM refresh_tokens
-           WHERE expires_at < NOW()"#
+        r#"
+            DELETE FROM refresh_tokens
+            WHERE expires_at < NOW()
+               OR (
+                    revoked = true
+                    AND revoked_at IS NOT NULL
+                    AND revoked_at < NOW() - INTERVAL '1 day'
+               )
+            "#
     )
     .execute(pool)
     .await

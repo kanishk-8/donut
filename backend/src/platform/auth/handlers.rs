@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use axum::{Extension, Json, extract::State};
+use axum::{Json, extract::State};
 use axum_extra::extract::cookie::{Cookie, CookieJar};
 use chrono::{Duration, Utc};
 
@@ -16,13 +16,14 @@ use crate::{
         errors::AppError,
     },
     platform::auth::{
-        extractor::CurrentUser,
+        extractor::AuthUser,
         requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
         responses::{AuthResponse, RefreshResponse},
     },
     storage::repositories::{
         session::{
-            create_refresh_token, find_refresh_token, revoke_all_for_user, revoke_refresh_token,
+            create_refresh_token, delete_expired_refresh_tokens, find_refresh_token,
+            revoke_all_for_user, revoke_refresh_token,
         },
         users::{
             create_user, email_exists, find_by_email, find_by_id, get_password_hash,
@@ -141,7 +142,7 @@ pub async fn logout(
 
 pub async fn update_password(
     State(config): State<Arc<Config>>,
-    Extension(user): Extension<User>,
+    AuthUser(user): AuthUser,
     Json(request): Json<UpdatePasswordRequest>,
 ) -> Result<(), AppError> {
     let id = &user.id;
@@ -180,17 +181,23 @@ pub async fn forgot_password(
     Ok(())
 }
 
-pub async fn me(
-    jar: CookieJar,
-    CurrentUser(user): CurrentUser,
-) -> Result<Json<AuthResponse>, AppError> {
+pub async fn me(jar: CookieJar, AuthUser(user): AuthUser) -> Result<Json<AuthResponse>, AppError> {
     let token = jar
         .get(TokenType::Access.name())
         .ok_or(AppError::InvalidToken)?
         .value()
         .to_string();
 
-    Ok(Json(AuthResponse { token, user }))
+    let current_user = User {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+    };
+    Ok(Json(AuthResponse {
+        token,
+        user: current_user,
+    }))
 }
 
 pub async fn refresh(
@@ -253,4 +260,14 @@ pub async fn refresh(
             refresh_token: new_refresh,
         }),
     ))
+}
+
+pub async fn remove_expired_refresh_token(
+    State(config): State<Arc<Config>>,
+) -> Result<String, AppError> {
+    let res = delete_expired_refresh_tokens(&config.pg_pool).await;
+    match res {
+        Ok(_) => Ok("Successfully deleted all the expired refresh tokens".to_string()),
+        Err(e) => Err(e),
+    }
 }

@@ -10,7 +10,10 @@ use axum::{
 };
 use tower_http::cors::CorsLayer;
 
-use crate::{common::config::Config, platform::auth::middleware::middleware};
+use crate::{
+    common::config::Config,
+    platform::auth::{handlers::remove_expired_refresh_token, middleware::middleware},
+};
 
 pub fn routes(config: Arc<Config>) -> Router {
     let origins: Vec<HeaderValue> = config
@@ -27,6 +30,7 @@ pub fn routes(config: Arc<Config>) -> Router {
         .allow_credentials(true);
     Router::new()
         .route("/", get(|| async { "server is running..." }))
+        .route("/cron/rem_exp_token", get(remove_expired_refresh_token))
         .nest("/api/auth", routes::auth::routes())
         .nest(
             "/api/user",
