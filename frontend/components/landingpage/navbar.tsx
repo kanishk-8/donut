@@ -8,6 +8,7 @@ import { useTheme } from "next-themes";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Moon02Icon, Sun02Icon } from "@hugeicons/core-free-icons";
 import { useAuth } from "@/context/authcontext";
+import { Folder, ArrowUpRight, LogIn, ArrowRight } from "lucide-react";
 
 export const Navbar = () => {
     const { user } = useAuth();
@@ -38,9 +39,9 @@ export const Navbar = () => {
     return (
         <div className="w-full flex justify-center mt-5 fixed top-0 z-50">
             <div
-                className={`flex justify-between items-center px-6 py-2 rounded-full z-10 transition-all duration-300 border ${
+                className={`flex justify-between items-center px-4 md:px-6 py-2 rounded-full z-10 transition-all duration-300 border ${
                     scrolled
-                        ? "w-[70%] backdrop-blur-xl bg-card/80 border-border shadow-lg"
+                        ? "w-[90%] md:w-[70%] backdrop-blur-xl bg-card/80 border-border shadow-lg"
                         : "w-[95%] bg-transparent border-transparent"
                 }`}
             >
@@ -51,12 +52,16 @@ export const Navbar = () => {
                         width={56}
                         height={56}
                         className={` transition-all  ${
-                            scrolled ? "w-10 h-10" : "w-14 h-14"
+                            scrolled
+                                ? "w-8 h-8 md:w-10 md:h-10"
+                                : "w-10 h-10 md:w-14 md:h-14"
                         }`}
                     />
                     <div
                         className={`flex flex-col items-center transition-all duration-300 text-foreground ${
-                            scrolled ? "text-3xl" : "text-4xl"
+                            scrolled
+                                ? "text-xl md:text-3xl"
+                                : "text-2xl md:text-4xl"
                         }`}
                     >
                         <span>donut</span>
@@ -95,18 +100,40 @@ export const Navbar = () => {
                     {user ? (
                         <Button
                             asChild
-                            size={scrolled ? "lg" : "xl"}
-                            className="font-bold"
+                            size={scrolled ? "default" : "lg"}
+                            className="font-bold flex items-center gap-1.5 md:h-12 md:px-8"
                         >
-                            <Link href="/projects">Go To Dashboard</Link>
+                            <Link href="/projects">
+                                <span className="hidden sm:inline">
+                                    Projects
+                                </span>
+                                <Folder
+                                    className="w-5 h-5 sm:hidden"
+                                    strokeWidth={3}
+                                />
+
+                                <ArrowUpRight
+                                    className="w-4 h-4 ml-1"
+                                    strokeWidth={3}
+                                />
+                            </Link>
                         </Button>
                     ) : (
                         <Button
                             asChild
-                            size={scrolled ? "lg" : "xl"}
-                            className="font-bold"
+                            size={scrolled ? "default" : "lg"}
+                            className="font-bold flex items-center gap-1.5 md:h-12 md:px-8"
                         >
-                            <Link href="/login">Sign In</Link>
+                            <Link href="/login">
+                                <span className="hidden sm:inline">
+                                    Sign In
+                                </span>
+                                <LogIn className="w-5 h-5 sm:hidden" />
+                                <ArrowRight
+                                    className="w-4 h-4 ml-1 hidden sm:block"
+                                    strokeWidth={3}
+                                />
+                            </Link>
                         </Button>
                     )}
                 </div>

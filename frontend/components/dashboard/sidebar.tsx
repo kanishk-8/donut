@@ -10,6 +10,8 @@ import {
     FolderOpenIcon,
     Cancel01Icon,
     WorkflowCircle03Icon,
+    AuthorizedIcon,
+    Lock,
 } from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import { useAuth } from "@/context/authcontext";
@@ -47,6 +49,11 @@ const SideBar = () => {
             name: "Workflows",
             icon: WorkflowCircle03Icon,
             path: `/projects/${projectId}/workflows`,
+        },
+        {
+            name: "Auth",
+            icon: Lock,
+            path: `/projects/${projectId}/auth`,
         },
         {
             name: "Settings",

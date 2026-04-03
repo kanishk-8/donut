@@ -9,9 +9,16 @@ import {
     useEdgesState,
     addEdge,
     Position,
+    Panel,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
+import { useTheme } from "next-themes";
+import { Sidebar } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { nodeTypes } from "@/components/project/nodes";
+import { ZoomSlider } from "@/components/react-flow/zoom-slider";
+import { NodeSearch } from "@/components/react-flow/node-search";
 
 const nodeDefaults = {
     sourcePosition: Position.Right,
@@ -22,18 +29,21 @@ const initialNodes = [
     {
         id: "1",
         position: { x: 0, y: 150 },
+        type: "triggerNode", // using the custom node type
         data: { label: "default style 1" },
         ...nodeDefaults,
     },
     {
         id: "2",
         position: { x: 250, y: 0 },
-        data: { label: "default style 2" },
+        type: "apiNode",
+        data: { label: "api" },
         ...nodeDefaults,
     },
     {
         id: "3",
         position: { x: 250, y: 150 },
+        type: "initialNode",
         data: { label: "default style 3" },
         ...nodeDefaults,
     },
@@ -72,20 +82,37 @@ const Flow = () => {
         (params: any) => setEdges((els) => addEdge(params, els)),
         [],
     );
-
+    const { theme } = useTheme();
     return (
         <ReactFlow
             nodes={nodes}
             edges={edges}
+            nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             fitView
-            colorMode="dark"
+            colorMode={theme === "dark" ? "dark" : "light"}
+            panOnScroll={false}
+            selectionOnDrag
+            snapGrid={[10, 10]}
+            snapToGrid
         >
             <Background />
-            <Controls />
+            <ZoomSlider position="bottom-center" orientation={"horizontal"} />
+            <Panel position="top-left" className="w-max-10 w-5">
+                <NodeSearch />
+            </Panel>
             <MiniMap />
+            <Panel position="top-right">
+                <button
+                    onClick={() => {
+                        console.log("clicked");
+                    }}
+                >
+                    <HugeiconsIcon icon={Sidebar} className="h-6 w-6" />
+                </button>
+            </Panel>
         </ReactFlow>
     );
 };

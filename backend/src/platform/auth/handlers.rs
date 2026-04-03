@@ -219,9 +219,9 @@ pub async fn refresh(
         .ok_or(AppError::InvalidToken)?;
 
     if stored.revoked {
-        // Allow a 30-second grace period for concurrent requests to fail safely
+        // Allow a 10-second grace period for concurrent requests to fail safely
         if let Some(revoked_time) = stored.revoked_at {
-            if Utc::now() - revoked_time < Duration::seconds(30) {
+            if Utc::now() - revoked_time < Duration::seconds(10) {
                 return Err(AppError::InvalidToken);
             }
         }
