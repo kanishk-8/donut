@@ -4,18 +4,23 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
 use crate::common::{
-    auth::models::{Claims, User, UserRole},
+    auth::models::{Claims, User},
     {config::Config, errors::AppError},
 };
 
-pub fn generate_token(user: &User, config: &Arc<Config>) -> Result<String, AppError> {
+pub fn generate_token(
+    user: &User,
+    project_id: Option<String>,
+    config: &Arc<Config>,
+) -> Result<String, AppError> {
     let now = Utc::now();
 
     let claims = Claims {
         id: user.id.clone(),
         username: user.username.clone(),
+        project_id,
         email: user.email.clone(),
-        role: UserRole::PlatformUser,
+        role: user.role.clone(),
         exp: (now + Duration::minutes(15)).timestamp(),
         iat: now.timestamp(),
     };

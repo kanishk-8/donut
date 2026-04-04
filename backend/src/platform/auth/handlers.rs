@@ -51,7 +51,7 @@ pub async fn login(
 
     password_verify(password, password_hash.as_str()).map_err(|_| AppError::InvalidCredentials)?;
 
-    let access_token = generate_token(&user, &config)?;
+    let access_token = generate_token(&user, None, &config)?;
     let refresh_token = generate_refresh_token();
     let refresh_hash = hash_refresh_token(&refresh_token);
 
@@ -93,7 +93,7 @@ pub async fn sign_up(
     let password_hash = password_hash(password)?;
 
     let user = create_user(pool, username, email, password_hash.as_str()).await?;
-    let access_token = generate_token(&user, &config)?;
+    let access_token = generate_token(&user, None, &config)?;
     let refresh_token = generate_refresh_token();
     let refresh_hash = hash_refresh_token(&refresh_token);
 
@@ -234,7 +234,7 @@ pub async fn refresh(
         .await?
         .ok_or(AppError::Unauthorized)?;
 
-    let new_access = generate_token(&user, &config)?;
+    let new_access = generate_token(&user, None, &config)?;
 
     let new_refresh = generate_refresh_token();
     let new_hash = hash_refresh_token(&new_refresh);

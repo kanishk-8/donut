@@ -8,8 +8,7 @@ use chrono::{DateTime, Utc};
 #[sqlx(rename_all = "PascalCase")]
 pub enum UserRole {
     Admin,
-    PlatformUser,
-    NodeUser,
+    User,
 }
 #[derive(Deserialize, Serialize, Clone)]
 pub struct User {
@@ -22,6 +21,7 @@ pub struct User {
 pub struct Claims {
     pub id: String,
     pub username: String,
+    pub project_id: Option<String>,
     pub email: String,
     pub role: UserRole,
     pub exp: i64,

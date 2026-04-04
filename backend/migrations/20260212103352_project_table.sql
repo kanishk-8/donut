@@ -33,16 +33,8 @@ CREATE INDEX idx_projects_graph ON projects USING GIN (graph);
 -- Composite index for user's active projects
 CREATE INDEX idx_projects_owner_status ON projects(owner_id, status);
 
--- Add trigger to auto-update updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
+-- Reuse shared trigger function from users migration
 CREATE TRIGGER update_projects_updated_at
     BEFORE UPDATE ON projects
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
+    EXECUTE FUNCTION set_updated_at();

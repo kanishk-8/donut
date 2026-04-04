@@ -16,7 +16,7 @@ use crate::{
         config::Config,
         errors::AppError,
     },
-    platform::project_auth::{
+    platform::app_auth::{
         requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
         responses::{AuthResponse, RefreshResponse},
     },

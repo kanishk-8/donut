@@ -14,7 +14,7 @@ pub async fn create_refresh_token(
         Uuid::parse_str(user_id).map_err(|_| AppError::ValidationError("Invalid UUID".into()))?;
 
     sqlx::query!(
-        r#"INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
+        r#"INSERT INTO sessions (user_id, token_hash, expires_at)
            VALUES ($1, $2, $3)"#,
         user_id,
         token_hash,
@@ -40,8 +40,8 @@ pub async fn find_refresh_token(
                expires_at as "expires_at!",
                revoked as "revoked!",
                revoked_at
-           FROM refresh_tokens
-           WHERE token_hash = $1"#,
+           FROM sessions
+           WHERE token_hash = $1 AND revoked = FALSE AND expires_at > NOW()"#,
         token_hash
     )
     .fetch_optional(pool)
@@ -50,7 +50,7 @@ pub async fn find_refresh_token(
 }
 pub async fn revoke_refresh_token(pool: &PgPool, token_id: &str) -> Result<(), AppError> {
     sqlx::query!(
-        r#"UPDATE refresh_tokens
+        r#"UPDATE sessions
            SET revoked = TRUE, revoked_at = NOW()
            WHERE id::text = $1"#,
         token_id
@@ -63,8 +63,8 @@ pub async fn revoke_refresh_token(pool: &PgPool, token_id: &str) -> Result<(), A
 }
 pub async fn revoke_all_for_user(pool: &PgPool, user_id: &str) -> Result<(), AppError> {
     sqlx::query!(
-        r#"UPDATE refresh_tokens
-           SET revoked = TRUE
+        r#"UPDATE sessions
+           SET revoked = TRUE, revoked_at = NOW()
            WHERE user_id::text = $1"#,
         user_id
     )
@@ -77,7 +77,7 @@ pub async fn revoke_all_for_user(pool: &PgPool, user_id: &str) -> Result<(), App
 pub async fn delete_expired_refresh_tokens(pool: &PgPool) -> Result<(), AppError> {
     sqlx::query!(
         r#"
-            DELETE FROM refresh_tokens
+            DELETE FROM sessions
             WHERE expires_at < NOW()
                OR (
                     revoked = true

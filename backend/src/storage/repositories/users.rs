@@ -11,7 +11,7 @@ pub async fn create_user(
     sqlx::query_as!(
         User,
         r#"INSERT INTO users (username, email, password_hash, role)
-           VALUES ($1, $2, $3, 'PlatformUser')
+           VALUES ($1, $2, $3, 'User')
            RETURNING
                id::text as "id!",
                username as "username!",
