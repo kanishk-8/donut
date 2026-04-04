@@ -13,7 +13,7 @@ use crate::common::{
     errors::AppError,
 };
 
-pub async fn middleware(
+pub async fn middleware_fn(
     State(config): State<Arc<Config>>,
     mut request: Request,
     next: Next,

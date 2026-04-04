@@ -1,0 +1,5 @@
+- [ ] Fixing the bug in the login page which is using refresh access token logic on invalid credentials.
+- [ ] Adding the feature to show the user profile picture in the header of the app.
+- [ ] Implementing the forgot password functionality which will allow users to reset their password via email.
+- [ ] Refactoring the codebase to improve readability and maintainability.
+- [ ] Modifying the project table to include services and creating separate workflow tables.

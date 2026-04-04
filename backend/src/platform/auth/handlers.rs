@@ -8,7 +8,6 @@ use crate::{
     common::{
         auth::{
             crypto::{hash_refresh_token, password_hash, password_verify},
-            extractor::AuthUser,
             jwt::generate_token,
             models::{TokenType, User},
             session::{create_cookie, generate_refresh_token},
@@ -17,6 +16,7 @@ use crate::{
         errors::AppError,
     },
     platform::auth::{
+        extractor::AuthUser,
         requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
         responses::{AuthResponse, RefreshResponse},
     },

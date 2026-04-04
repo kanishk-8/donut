@@ -1,3 +1,4 @@
+pub mod middleware_fn;
 pub mod routes;
 
 use std::sync::Arc;
@@ -15,8 +16,8 @@ use tower_http::{
 use tracing::Level;
 
 use crate::{
-    common::config::Config,
-    platform::auth::{handlers::remove_expired_refresh_token, middleware::middleware},
+    api::middleware_fn::middleware_fn, common::config::Config,
+    platform::auth::handlers::remove_expired_refresh_token,
 };
 
 pub fn routes(config: Arc<Config>) -> Router {
@@ -26,7 +27,6 @@ pub fn routes(config: Arc<Config>) -> Router {
         .map(|origin| origin.parse().unwrap())
         .collect();
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
         .allow_origin(origins)
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers([CONTENT_TYPE])
@@ -41,8 +41,13 @@ pub fn routes(config: Arc<Config>) -> Router {
         .nest("/api/auth", routes::auth::routes())
         .nest(
             "/api/user",
-            user_routes.route_layer(middleware::from_fn_with_state(config.clone(), middleware)),
+            user_routes.route_layer(middleware::from_fn_with_state(
+                config.clone(),
+                middleware_fn,
+            )),
         )
+        // TODO: Add app auth routes when they are ready
+        // .nest("/app/auth", routes::app_auth::routes())
         .layer(cors)
         .layer(
             TraceLayer::new_for_http()

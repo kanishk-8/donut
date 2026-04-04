@@ -10,8 +10,8 @@ pub async fn create_user(
 ) -> Result<User, AppError> {
     sqlx::query_as!(
         User,
-        r#"INSERT INTO users (username, email, password_hash, role)
-           VALUES ($1, $2, $3, 'PlatformUser')
+        r#"INSERT INTO app_users (username, email, password_hash, role)
+           VALUES ($1, $2, $3, 'User')
            RETURNING
                id::text as "id!",
                username as "username!",
@@ -35,7 +35,7 @@ pub async fn find_by_email(pool: &PgPool, email: &str) -> Result<Option<User>, A
                username as "username!",
                email as "email!",
                role::text as "role!: _"
-           FROM users
+           FROM app_users
            WHERE email = $1"#,
         email
     )
@@ -48,7 +48,7 @@ pub async fn find_by_email(pool: &PgPool, email: &str) -> Result<Option<User>, A
 pub async fn get_password_hash(pool: &PgPool, email: &str) -> Result<Option<String>, AppError> {
     sqlx::query_scalar!(
         r#"SELECT password_hash
-           FROM users
+           FROM app_users
            WHERE email = $1"#,
         email
     )
@@ -60,7 +60,7 @@ pub async fn get_password_hash(pool: &PgPool, email: &str) -> Result<Option<Stri
 /// Check if a user with the given email exists
 pub async fn email_exists(pool: &PgPool, email: &str) -> Result<bool, AppError> {
     let result = sqlx::query_scalar!(
-        r#"SELECT EXISTS(SELECT 1 FROM users WHERE email = $1) as "exists!""#,
+        r#"SELECT EXISTS(SELECT 1 FROM app_users WHERE email = $1) as "exists!""#,
         email
     )
     .fetch_one(pool)
@@ -79,7 +79,7 @@ pub async fn find_by_username(pool: &PgPool, username: &str) -> Result<Option<Us
                username as "username!",
                email as "email!",
                role::text as "role!: _"
-           FROM users
+           FROM app_users
            WHERE username = $1"#,
         username
     )
@@ -97,7 +97,7 @@ pub async fn find_by_id(pool: &PgPool, user_id: &str) -> Result<Option<User>, Ap
                username as "username!",
                email as "email!",
                role::text as "role!: _"
-           FROM users
+           FROM app_users
            WHERE id::text = $1"#,
         user_id
     )
@@ -113,7 +113,7 @@ pub async fn update_password_byid(
     new_password_hash: &str,
 ) -> Result<(), AppError> {
     sqlx::query!(
-        r#"UPDATE users
+        r#"UPDATE app_users
            SET password_hash = $1, updated_at = CURRENT_TIMESTAMP
            WHERE id::text = $2"#,
         new_password_hash,
