@@ -1,15 +1,19 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
     ReactFlow,
     Background,
-    Controls,
     MiniMap,
-    useNodesState,
-    useEdgesState,
     addEdge,
     Position,
     Panel,
+    type Edge,
+    type Node,
+    type NodeChange,
+    type EdgeChange,
+    type Connection,
+    applyNodeChanges,
+    applyEdgeChanges,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
@@ -19,70 +23,86 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { nodeTypes } from "@/components/project/nodes";
 import { ZoomSlider } from "@/components/react-flow/zoom-slider";
 import { NodeSearch } from "@/components/react-flow/node-search";
+import WorkflowSidebar, {
+    workflowNodeCatalog,
+    WorkflowNodeType,
+} from "@/components/project/nodeselector";
 
 const nodeDefaults = {
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
 };
 
-const initialNodes = [
-    {
-        id: "1",
-        position: { x: 0, y: 150 },
-        type: "triggerNode", // using the custom node type
-        data: { label: "default style 1" },
-        ...nodeDefaults,
-    },
-    {
-        id: "2",
-        position: { x: 250, y: 0 },
-        type: "apiNode",
-        data: { label: "api" },
-        ...nodeDefaults,
-    },
-    {
-        id: "3",
-        position: { x: 250, y: 150 },
-        type: "initialNode",
-        data: { label: "default style 3" },
-        ...nodeDefaults,
-    },
-    {
-        id: "4",
-        position: { x: 250, y: 300 },
-        data: { label: "default style 4" },
-        ...nodeDefaults,
-    },
-];
-
-const initialEdges = [
-    {
-        id: "e1-2",
-        source: "1",
-        target: "2",
-        animated: true,
-    },
-    {
-        id: "e1-3",
-        source: "1",
-        target: "3",
-    },
-    {
-        id: "e1-4",
-        source: "1",
-        target: "4",
-    },
-];
+const initialEdges: Edge[] = [];
 
 const Flow = () => {
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [sideBarOpen, setSidebarOpen] = useState(false);
 
-    const onConnect = useCallback(
-        (params: any) => setEdges((els) => addEdge(params, els)),
+    const initialNodes = useMemo<Node[]>(
+        () => [
+            {
+                id: "1",
+                position: { x: 0, y: 150 },
+                type: "initialNode",
+                data: {
+                    label: "add node",
+                    onOpenNodeSelector: () => setSidebarOpen(true),
+                },
+                ...nodeDefaults,
+            },
+        ],
         [],
     );
+
+    const [nodes, setNodes] = useState<Node[]>(initialNodes);
+    const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
+    const onNodesChange = useCallback(
+        (changes: NodeChange[]) =>
+            setNodes((nodesSnapshot) =>
+                applyNodeChanges(changes, nodesSnapshot),
+            ),
+        [],
+    );
+    const onEdgesChange = useCallback(
+        (changes: EdgeChange[]) =>
+            setEdges((edgesSnapshot) =>
+                applyEdgeChanges(changes, edgesSnapshot),
+            ),
+        [],
+    );
+    const onConnect = useCallback(
+        (params: Connection) =>
+            setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
+        [],
+    );
+    const onAddNode = useCallback((type: WorkflowNodeType) => {
+        const catalogItem = workflowNodeCatalog.find(
+            (item) => item.type === type,
+        );
+        if (!catalogItem) return;
+
+        setNodes((prev) => {
+            const initial = prev.find((n) => n.type === "initialNode");
+            const baseX = initial?.position.x ?? 0;
+            const baseY = initial?.position.y ?? 150;
+
+            const nextNode: Node = {
+                id: crypto.randomUUID(),
+                type,
+                position: { x: baseX + 280, y: baseY },
+                data: { ...catalogItem.defaultData },
+                ...nodeDefaults,
+            };
+
+            const withoutInitial = prev.filter((n) => n.type !== "initialNode");
+            return [...withoutInitial, nextNode];
+        });
+
+        setSidebarOpen(false);
+    }, []);
     const { theme } = useTheme();
+
     return (
         <ReactFlow
             nodes={nodes}
@@ -107,12 +127,17 @@ const Flow = () => {
             <Panel position="top-right">
                 <button
                     onClick={() => {
-                        console.log("clicked");
+                        setSidebarOpen((open) => !open);
                     }}
                 >
                     <HugeiconsIcon icon={Sidebar} className="h-6 w-6" />
                 </button>
             </Panel>
+            <WorkflowSidebar
+                open={sideBarOpen}
+                onOpenChange={setSidebarOpen}
+                onAddNode={onAddNode}
+            />
         </ReactFlow>
     );
 };

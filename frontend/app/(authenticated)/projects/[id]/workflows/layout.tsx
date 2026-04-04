@@ -1,3 +1,5 @@
+import { ReactFlowProvider } from "@xyflow/react";
+
 export default function Layout({ children }: { children: React.ReactNode }) {
-    return <>{children}</>;
+    return <ReactFlowProvider>{children}</ReactFlowProvider>;
 }

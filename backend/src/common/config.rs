@@ -11,6 +11,7 @@ pub struct Config {
     pub jwt_secret: Vec<u8>,
     pub port: u16,
     pub pg_pool: sqlx::PgPool,
+    pub runtime_pool: sqlx::PgPool,
     pub allowed_origins: Vec<String>,
 }
 
@@ -37,8 +38,14 @@ impl Config {
         let db_url = env::var("DATABASE_URL")
             .map_err(|_| AppError::MissingConfig("DATABASE_URL must be set".to_string()))?;
 
+        let runtime_db_url = env::var("DATABASE_URL")
+            .map_err(|_| AppError::MissingConfig("DATABASE_URL must be set".to_string()))?;
         let pg_pool = PgPoolOptions::new()
             .connect(&db_url)
+            .await
+            .map_err(|e| AppError::DatabaseError(e.to_string()))?;
+        let runtime_pool = PgPoolOptions::new()
+            .connect(&runtime_db_url)
             .await
             .map_err(|e| AppError::DatabaseError(e.to_string()))?;
         let allowed_origins_raw =
@@ -54,6 +61,7 @@ impl Config {
             jwt_secret: jwt_secret.into_bytes(),
             port,
             pg_pool,
+            runtime_pool,
             allowed_origins,
         }))
     }

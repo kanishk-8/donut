@@ -1,21 +1,25 @@
 "use client";
 
 import React from "react";
-import { Settings, SettingsIcon, TrashIcon } from "lucide-react";
+import { SettingsIcon, TrashIcon } from "lucide-react";
 import { NodeToolbar, Position } from "@xyflow/react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 interface WorkFlowNodeProps {
     children: React.ReactNode;
     showToolbar?: boolean;
     name?: string;
     description?: string;
+    onSettings?: () => void;
+    onDelete?: () => void;
 }
-const WorkFlowNode = ({
+const WorkFlowNodeWrapper = ({
     children,
     showToolbar,
     name,
     description,
+    onSettings,
+    onDelete,
 }: WorkFlowNodeProps) => {
     return (
         <>
@@ -25,13 +29,15 @@ const WorkFlowNode = ({
                         variant="ghost"
                         size="sm"
                         className="p-0.5 rounded "
+                        onClick={() => onSettings}
                     >
                         <SettingsIcon className="size-4" />
-                    </Button>{" "}
+                    </Button>
                     <Button
                         variant="ghost"
                         size="sm"
                         className="p-0.5 rounded "
+                        onClick={() => onDelete}
                     >
                         <TrashIcon className="size-4" color="red" />
                     </Button>
@@ -55,4 +61,4 @@ const WorkFlowNode = ({
     );
 };
 
-export default WorkFlowNode;
+export default WorkFlowNodeWrapper;
