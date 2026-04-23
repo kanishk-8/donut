@@ -33,21 +33,30 @@ pub fn routes(config: Arc<Config>) -> Router {
         .allow_credentials(true);
 
     // Merged the routes that comes under same endpoints
-    let user_routes = routes::users::routes().merge(routes::projects::routes());
+    let platform_routes =
+        routes::platform::users::routes().merge(routes::platform::projects::routes());
+    let project_routes = routes::project::users::routes();
 
     Router::new()
         .route("/", get(|| async { "server is running..." }))
         .route("/cron/rem_exp_token", get(remove_expired_refresh_token))
-        .nest("/api/auth", routes::auth::routes())
+        .nest("/api/auth", routes::platform::auth::routes())
         .nest(
             "/api/user",
-            user_routes.route_layer(middleware::from_fn_with_state(
+            platform_routes.route_layer(middleware::from_fn_with_state(
                 config.clone(),
                 middleware_fn,
             )),
         )
         // TODO: Add app auth routes when they are ready
-        // .nest("/app/auth", routes::app_auth::routes())
+        .nest("/app/auth", routes::project::auth::routes())
+        .nest(
+            "/app/users",
+            project_routes.route_layer(middleware::from_fn_with_state(
+                config.clone(),
+                middleware_fn,
+            )),
+        )
         .layer(cors)
         .layer(
             TraceLayer::new_for_http()

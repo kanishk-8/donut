@@ -1,3 +1,3 @@
 pub mod auth;
-pub mod project_auth;
 pub mod projects;
+pub mod users;

@@ -145,3 +145,13 @@ pub async fn delete_project(
 
     Ok(result.rows_affected() > 0)
 }
+
+// pub async fn enable_project_auth(
+//     pool: &PgPool,
+//     project_id: &str,
+//     owner_id: &str
+// ) -> Result<(), AppError>{
+//     let result = sqlx::query_as!(
+//         "r# UPDATE project SET "
+//     )
+// }

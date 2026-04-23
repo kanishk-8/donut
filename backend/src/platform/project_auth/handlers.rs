@@ -8,7 +8,6 @@ use crate::{
     common::{
         auth::{
             crypto::{hash_refresh_token, password_hash, password_verify},
-            extractor::AuthUser,
             jwt::generate_token,
             models::{TokenType, User},
             session::{create_cookie, generate_refresh_token},
@@ -16,11 +15,12 @@ use crate::{
         config::Config,
         errors::AppError,
     },
-    platform::app_auth::{
+    platform::project_auth::{
+        extractor::AppAuthUser,
         requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
         responses::{AuthResponse, RefreshResponse},
     },
-    storage::repositories::{
+    storage::repositories::project::{
         session::{
             create_refresh_token, delete_expired_refresh_tokens, find_refresh_token,
             revoke_all_for_user, revoke_refresh_token,
@@ -40,6 +40,8 @@ pub async fn login(
     let email = &request.email;
     let password = &request.password;
     let pool = &config.pg_pool;
+    // TODO: handle project_id in future when we have multi-project support
+    let project_id = None;
 
     let user = find_by_email(pool, email)
         .await?
@@ -51,7 +53,7 @@ pub async fn login(
 
     password_verify(password, password_hash.as_str()).map_err(|_| AppError::InvalidCredentials)?;
 
-    let access_token = generate_token(&user, &config)?;
+    let access_token = generate_token(&user, project_id, &config)?;
     let refresh_token = generate_refresh_token();
     let refresh_hash = hash_refresh_token(&refresh_token);
 
@@ -85,6 +87,7 @@ pub async fn sign_up(
     let email = &request.email;
     let password = &request.password;
     let pool = &config.pg_pool;
+    let project_id = None;
 
     if email_exists(pool, email).await? {
         return Err(AppError::EmailAlreadyExists);
@@ -93,7 +96,7 @@ pub async fn sign_up(
     let password_hash = password_hash(password)?;
 
     let user = create_user(pool, username, email, password_hash.as_str()).await?;
-    let access_token = generate_token(&user, &config)?;
+    let access_token = generate_token(&user, project_id, &config)?;
     let refresh_token = generate_refresh_token();
     let refresh_hash = hash_refresh_token(&refresh_token);
 
@@ -142,7 +145,7 @@ pub async fn logout(
 
 pub async fn update_password(
     State(config): State<Arc<Config>>,
-    AuthUser(user): AuthUser,
+    AppAuthUser(user): AppAuthUser,
     Json(request): Json<UpdatePasswordRequest>,
 ) -> Result<(), AppError> {
     let id = &user.id;
@@ -181,7 +184,10 @@ pub async fn forgot_password(
     Ok(())
 }
 
-pub async fn me(jar: CookieJar, AuthUser(user): AuthUser) -> Result<Json<AuthResponse>, AppError> {
+pub async fn me(
+    jar: CookieJar,
+    AppAuthUser(user): AppAuthUser,
+) -> Result<Json<AuthResponse>, AppError> {
     let token = jar
         .get(TokenType::Access.name())
         .ok_or(AppError::InvalidToken)?
@@ -234,7 +240,7 @@ pub async fn refresh(
         .await?
         .ok_or(AppError::Unauthorized)?;
 
-    let new_access = generate_token(&user, &config)?;
+    let new_access = generate_token(&user, None, &config)?;
 
     let new_refresh = generate_refresh_token();
     let new_hash = hash_refresh_token(&new_refresh);

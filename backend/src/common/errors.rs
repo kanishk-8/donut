@@ -5,6 +5,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+use time::error;
 
 #[derive(Error, Debug)]
 pub enum AppError {
@@ -48,6 +49,9 @@ pub enum AppError {
 
     #[error("Password hashing failed")]
     PasswordHashingFailed,
+
+    #[error("App auth is disabled for this project")]
+    AuthDisabled,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -76,6 +80,7 @@ impl IntoResponse for AppError {
             AppError::PasswordHashingFailed => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Password hashing failed")
             }
+            AppError::AuthDisabled => (StatusCode::FORBIDDEN, "App auth is disabled"),
         };
 
         let error_response = ErrorResponse {

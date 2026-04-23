@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
+    pub api_key: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -11,6 +12,7 @@ pub struct SignUpRequest {
     pub username: String,
     pub email: String,
     pub password: String,
+    pub api_key: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -19,10 +21,12 @@ pub struct UpdatePasswordRequest {
     pub email: String,
     pub current_password: String,
     pub new_password: String,
+    pub api_key: String,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct ForgotPasswordRequest {
     pub email: String,
     pub new_password: String,
+    pub api_key: String,
 }

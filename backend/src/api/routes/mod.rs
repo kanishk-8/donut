@@ -1,3 +1,2 @@
-pub mod auth;
-pub mod projects;
-pub mod users;
+pub mod platform;
+pub mod project;

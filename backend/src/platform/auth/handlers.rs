@@ -20,7 +20,7 @@ use crate::{
         requests::{ForgotPasswordRequest, LoginRequest, SignUpRequest, UpdatePasswordRequest},
         responses::{AuthResponse, RefreshResponse},
     },
-    storage::repositories::{
+    storage::repositories::platform::{
         session::{
             create_refresh_token, delete_expired_refresh_tokens, find_refresh_token,
             revoke_all_for_user, revoke_refresh_token,

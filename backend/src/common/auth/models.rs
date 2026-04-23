@@ -17,6 +17,7 @@ pub struct User {
     pub email: String,
     pub role: UserRole,
 }
+
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Claims {
     pub id: String,

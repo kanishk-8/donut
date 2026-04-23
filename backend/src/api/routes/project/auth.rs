@@ -4,7 +4,7 @@ use axum::{Router, routing::post};
 
 use crate::{
     common::config::Config,
-    platform::app_auth::handlers::{forgot_password, login, logout, sign_up},
+    platform::project_auth::handlers::{forgot_password, login, logout, sign_up},
 };
 pub fn routes() -> Router<Arc<Config>> {
     Router::new()

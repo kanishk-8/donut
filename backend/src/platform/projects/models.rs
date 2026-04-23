@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::storage::repositories::projects::ProjectRecord;
+use crate::storage::repositories::platform::projects::ProjectRecord;
 
 /// Domain model for Project (used in business logic)
 #[derive(Debug, Clone, Serialize, Deserialize)]

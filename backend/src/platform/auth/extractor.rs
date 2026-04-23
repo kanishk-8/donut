@@ -11,7 +11,7 @@ use crate::{
         config::Config,
         errors::AppError,
     },
-    storage::repositories::users::find_by_id,
+    storage::repositories::platform::users::find_by_id,
 };
 
 pub struct CurrentUser(pub User);
