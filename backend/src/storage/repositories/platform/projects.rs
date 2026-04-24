@@ -14,6 +14,17 @@ pub struct ProjectRecord {
     pub updated_at: String,
 }
 
+#[derive(Debug, FromRow)]
+pub struct ProjectApiKeyRecord {
+    pub id: String,
+    pub project_id: String,
+    pub name: Option<String>,
+    pub key_prefix: String,
+    pub role: String,
+    pub created_at: String,
+    pub expires_at: Option<String>,
+}
+
 pub async fn list_projects_by_owner(
     pool: &PgPool,
     owner_id: &str,
@@ -146,6 +157,67 @@ pub async fn delete_project(
     Ok(result.rows_affected() > 0)
 }
 
+pub async fn create_api_key_for_project(
+    pool: &PgPool,
+    project_id: &str,
+    owner_id: &str,
+    name: Option<&str>,
+    key_hash: &str,
+    key_prefix: &str,
+    role: &str,
+) -> Result<ProjectApiKeyRecord, AppError> {
+    sqlx::query_as::<_, ProjectApiKeyRecord>(
+        r#"
+        INSERT INTO project_api_keys (project_id, name, key_hash, key_prefix, role)
+        SELECT p.id, $3, $4, $5, $6
+        FROM projects p
+        WHERE p.id::text = $1 AND p.owner_id::text = $2
+        RETURNING
+            id::text as id,
+            project_id::text as project_id,
+            name,
+            key_prefix,
+            role,
+            created_at::text as created_at,
+            expires_at::text as expires_at
+        "#,
+    )
+    .bind(project_id)
+    .bind(owner_id)
+    .bind(name)
+    .bind(key_hash)
+    .bind(key_prefix)
+    .bind(role)
+    .fetch_one(pool)
+    .await
+    .map_err(|e| AppError::DatabaseError(format!("Failed to create API key: {e}")))
+}
+
+pub async fn delete_api_key_for_project(
+    pool: &PgPool,
+    project_id: &str,
+    owner_id: &str,
+    api_key_id: &str,
+) -> Result<bool, AppError> {
+    let result = sqlx::query(
+        r#"
+        DELETE FROM project_api_keys pak
+        USING projects p
+        WHERE pak.project_id = p.id
+          AND p.id::text = $1
+          AND p.owner_id::text = $2
+          AND pak.id::text = $3
+        "#,
+    )
+    .bind(project_id)
+    .bind(owner_id)
+    .bind(api_key_id)
+    .execute(pool)
+    .await
+    .map_err(|e| AppError::DatabaseError(format!("Failed to delete API key: {e}")))?;
+
+    Ok(result.rows_affected() > 0)
+}
 // pub async fn enable_project_auth(
 //     pool: &PgPool,
 //     project_id: &str,

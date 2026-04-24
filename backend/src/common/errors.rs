@@ -50,6 +50,12 @@ pub enum AppError {
     #[error("Password hashing failed")]
     PasswordHashingFailed,
 
+    #[error("API key hashing failed")]
+    ApiKeyHashingFailed,
+
+    #[error("API key verification failed")]
+    ApiKeyVerificationFailed,
+
     #[error("App auth is disabled for this project")]
     AuthDisabled,
 }
@@ -79,6 +85,12 @@ impl IntoResponse for AppError {
             AppError::InternalError => (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error"),
             AppError::PasswordHashingFailed => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Password hashing failed")
+            }
+            AppError::ApiKeyHashingFailed => {
+                (StatusCode::INTERNAL_SERVER_ERROR, "API key hashing failed")
+            }
+            AppError::ApiKeyVerificationFailed => {
+                (StatusCode::UNAUTHORIZED, "API key verification failed")
             }
             AppError::AuthDisabled => (StatusCode::FORBIDDEN, "App auth is disabled"),
         };

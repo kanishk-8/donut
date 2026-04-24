@@ -34,3 +34,14 @@ impl From<Project> for ProjectResponse {
         }
     }
 }
+#[derive(Debug, Serialize)]
+pub struct CreateApiKeyResponse {
+    pub id: String,
+    pub project_id: String,
+    pub name: Option<String>,
+    pub key: String, // raw key shown once
+    pub key_prefix: String,
+    pub role: String,
+    pub created_at: String,
+    pub expires_at: Option<String>,
+}

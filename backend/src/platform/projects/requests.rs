@@ -59,3 +59,9 @@ impl UpdateProjectRequest {
         }
     }
 }
+
+#[derive(Debug, Deserialize)]
+pub struct CreateApiKeyRequest {
+    pub name: Option<String>,
+    pub role: Option<String>, // default: "secret"
+}
